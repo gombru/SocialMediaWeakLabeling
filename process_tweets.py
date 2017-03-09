@@ -67,6 +67,8 @@ for t in tweets:
         for hashtag in t['entities']['hashtags']:
             hashtags_str = hashtags_str + ',' + hashtag['text']
 
+    print t['id']
+
     with open(images_dir + str(t['id']) + '.txt', "w") as text_file:
         text_file.write(str(t['id']) + '\n' + t['created_at'].encode("utf8", "ignore") + '\n' + t['text'].encode("utf8", "ignore") + '\n' + hashtags_str[1:].encode("utf8", "ignore"))
 
