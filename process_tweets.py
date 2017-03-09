@@ -2,7 +2,7 @@ import json
 import urllib
 
 # -- CONFIG --
-tweets_data_path = 'twitter_data.txt'
+tweets_data_path = '../../datasets/SocialMedia/data/twitter_data.txt'
 min_text_length = 8
 images_dir = '../../datasets/SocialMedia/img/'
 ann_dir = '../../datasets/SocialMedia/ann/'
@@ -67,7 +67,7 @@ for t in tweets:
         for hashtag in t['entities']['hashtags']:
             hashtags_str = hashtags_str + ',' + hashtag['text']
 
-    with open(images_dir + str(t['id']) +  '.txt', "w") as text_file:
+    with open(images_dir + str(t['id']) + '.txt', "w") as text_file:
         text_file.write(str(t['id']) + '\n' + t['created_at'].encode("utf8", "ignore") + '\n' + t['text'].encode("utf8", "ignore") + '\n' + hashtags_str[1:].encode("utf8", "ignore"))
 
 
