@@ -1,0 +1,11 @@
+Consumer Key (API Key) uHmr7pmSU6yBiEtbpZQPSsqlQ
+Consumer Secret (API Secret) xICgXtFxp6HrQDQh2oAd6OysFxDoO9mo5blarLeBB8aegALrkH 
+
+
+
+Access Token 81841533-PU84e9z6jNt1AtgHP13GnS8tRJGTMSJ3lLvMevYpE
+Access Token Secret 33ySOzqucOiMCst5dZcRcbyzKPjKx7xSNp9aj7esdCFa5
+Access Level Read and write
+Owner gombru
+Owner ID 81841533
+
