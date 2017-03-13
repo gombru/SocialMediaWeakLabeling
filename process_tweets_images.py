@@ -4,7 +4,7 @@ import os.path
 
 # -- CONFIG --
 tweets_data_path = '../../datasets/SocialMedia/data/twitter_data.txt'
-min_text_length = 0
+min_text_length = 10
 images_dir = '../../datasets/SocialMedia/img/'
 ann_dir = '../../datasets/SocialMedia/ann/'
 
@@ -17,24 +17,18 @@ def download_save_image(url, filename):
 
 
 # -- LOAD DATA -- each tweet is a dictionary
-tweets = []
 tweets_file = open(tweets_data_path, "r")
+c=0
 for line in tweets_file:
-    try:
-        t = json.loads(line)
-        tweets.append(t)
-    except:
-        continue
-
-print "Number of tweets to process: " + str(len(tweets))
-
-c = 0
-for t in tweets:
 
     c += 1
     if c % 100 == 0:
         print c
 
+    try:
+        t = json.loads(line)
+    except:
+        continue
 
     # Check if file already exists
     if os.path.isfile(images_dir + str(t['id']) + ".jpg"): continue

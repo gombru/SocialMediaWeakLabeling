@@ -8,27 +8,18 @@ min_text_length = 10
 text_dir = '../../datasets/SocialMedia/text/'
 text_filename = 'text_trump_test_big.txt'
 
-
-# -- LOAD DATA -- each tweet is a dictionary
-tweets = []
-tweets_file = open(tweets_data_path, "r")
-for line in tweets_file:
-    try:
-        t = json.loads(line)
-        tweets.append(t)
-    except:
-        continue
-
-print "Number of tweets to process: " + str(len(tweets))
-
-c = 0
-
 with open(text_dir + text_filename, "w") as text_file:
-
-    for t in tweets:
+    c = 0
+    # -- LOAD DATA -- each tweet is a dictionary
+    tweets_file = open(tweets_data_path, "r")
+    for line in tweets_file:
+        try:
+            t = json.loads(line)
+        except:
+            continue
 
         c += 1
-        if c % 100 == 0:
+        if c % 1000 == 0:
             print c
 
         # -- FILTER BY TEXT AND SAVE TEXT CONTENT -- discard short tweets
