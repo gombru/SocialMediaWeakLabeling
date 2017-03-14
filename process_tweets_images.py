@@ -3,10 +3,10 @@ import urllib
 import os.path
 
 # -- CONFIG --
-tweets_data_path = '../../datasets/SocialMedia/data/twitter_data.txt'
+tweets_data_path = '../../datasets/SocialMedia/data/tweets_data_trump_10-3-17.txt'
 min_text_length = 10
-images_dir = '../../datasets/SocialMedia/img/'
-ann_dir = '../../datasets/SocialMedia/ann/'
+images_dir = '../../datasets/SocialMedia/img/trump/'
+ann_dir = '../../datasets/SocialMedia/ann/trump/'
 
 
 def download_save_image(url, filename):
@@ -19,19 +19,34 @@ def download_save_image(url, filename):
 # -- LOAD DATA -- each tweet is a dictionary
 tweets_file = open(tweets_data_path, "r")
 c=0
+i=0
 for line in tweets_file:
 
     c += 1
     if c % 100 == 0:
-        print c
+        print "Num of tweets analyzed:" + str(c)
+
+
+    # Discard short tweets
+    if len(line) < 10: continue
 
     try:
         t = json.loads(line)
     except:
+        print "Failed to load tweet json, continuing"
         continue
 
+    if not t.has_key(u'id'):
+        print "Tweet doesn't have id, continuing"
+        continue
+
+    # Discard retweets
+    if t.has_key('retweeted_status'): continue;
+
     # Check if file already exists
-    if os.path.isfile(images_dir + str(t['id']) + ".jpg"): continue
+    if os.path.isfile(images_dir + str(t['id']) + ".jpg"):
+        print "Image already exists"
+        continue
 
     # -- FILTER BY IMAGE AND SAVE IMAGES -- discard tweets without image
     if t.has_key(u'id') and t.has_key(u'entities'):
@@ -48,8 +63,8 @@ for line in tweets_file:
                 except:
                     print "Failed downloading image from: " + t['entities']['media'][0]['media_url']
                     continue
-
-                print t['entities']['media'][0]['media_url']
+                i += 1
+                print str(i) + ': ' + t['entities']['media'][0]['media_url']
 
                 # -- FILTER BY TEXT AND SAVE TEXT CONTENT -- discard short tweets
                 if t.has_key(u'id') and t.has_key(u'text') and t.has_key(u'created_at'):
