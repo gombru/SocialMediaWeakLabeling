@@ -4,9 +4,9 @@ from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 
 tweets_text_data_path = '../../datasets/SocialMedia/text/text_trump_weekend.txt'
-model_path = '../../datasets/SocialMedia/models/lda_model_trump_weekend.model'
+model_path = '../../datasets/SocialMedia/models/lda_model_trump_weekend2.model'
 
-words2filter = ['rt','http','t','trump','gt','co','s','https','http','tweet', 'pictur','markars_','photo','donald','pictur','say']
+words2filter = ['rt','http','t','trump','gt','co','s','https','http','tweet','markars_','photo','donald','pictur','picture','say','dondald','photo','much','tweet']
 
 #Initialize Tokenizer
 tokenizer = RegexpTokenizer(r'\w+')
