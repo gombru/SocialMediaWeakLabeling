@@ -29,7 +29,7 @@ for line in tweets_file:
 
 
     # Discard short tweets
-    if len(line) < 10: continue
+    if len(line) < min_text_length: continue
 
     try:
         t = json.loads(line)
