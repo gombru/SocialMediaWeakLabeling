@@ -23,8 +23,9 @@ i=0
 for line in tweets_file:
 
     c += 1
-    if c % 100 == 0:
+    if c % 1000 == 0:
         print "Num of tweets analyzed:" + str(c)
+        print "Num of images downloaded:" + str(i)
 
 
     # Discard short tweets
@@ -36,12 +37,14 @@ for line in tweets_file:
         print "Failed to load tweet json, continuing"
         continue
 
-    if not t.has_key(u'id'):
-        print "Tweet doesn't have id, continuing"
-        continue
+    if not t.has_key(u'id'): continue
 
     # Discard retweets
     if t.has_key('retweeted_status'): continue;
+
+    # Discard non-enlish
+    if not t.has_key('lang'): continue
+    if t['lang'] != 'en': continue;
 
     # Check if file already exists
     if os.path.isfile(images_dir + str(t['id']) + ".jpg"):
@@ -64,7 +67,7 @@ for line in tweets_file:
                     print "Failed downloading image from: " + t['entities']['media'][0]['media_url']
                     continue
                 i += 1
-                print str(i) + ': ' + t['entities']['media'][0]['media_url']
+                # print str(i) + ': ' + t['entities']['media'][0]['media_url']
 
                 # -- FILTER BY TEXT AND SAVE TEXT CONTENT -- discard short tweets
                 if t.has_key(u'id') and t.has_key(u'text') and t.has_key(u'created_at'):
