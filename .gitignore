@@ -1,2 +1,6 @@
-/api_key.txt
+/twitter/api_key.txt
+/lda/topics.txt
+/cnn/models/bvlc_reference_caffenet.caffemodel
 .idea/
+/cnn/training/
+/cnn/models/
