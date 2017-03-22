@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "layers"
     layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 227, \'HSV_jitter\': 0, \'crop_h\': 227, \'batch_size\': 100, \'HSV_prob\': 0, \'crop_w\': 227, \'train\': False, \'split\': \'valTrump\', \'mirror\': 0, \'resize_w\': 227, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
+    param_str: "{\'rotate\': 0, \'resize_h\': 227, \'HSV_jitter\': 0, \'crop_h\': 227, \'batch_size\': 100, \'HSV_prob\': 0, \'crop_w\': 227, \'train\': False, \'split\': \'testTrumpUnique\', \'mirror\': 0, \'resize_w\': 227, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
   }
 }
 layer {

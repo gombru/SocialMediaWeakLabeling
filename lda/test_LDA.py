@@ -10,12 +10,12 @@ from random import randint
 
 # It also creates the splits train/val/test randomly
 
-tweets_text_data_path = '../../../datasets/SocialMedia/weak_ann/trump'
+tweets_text_data_path = '../../../datasets/SocialMedia/weak_ann/trumpUnique'
 model_path = '../../../datasets/SocialMedia/models/lda_model_trump_weekend.model'
 
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/trump/train.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/trump/val.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/trump/test.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/trumpUnique/train.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/trumpUnique/val.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/trumpUnique/test.txt'
 
 
 words2filter = ['rt','http','t','trump','gt','co','s','https','http','tweet','markars_','photo','donald','pictur','picture','say','dondald','photo','much','tweet']

@@ -14,17 +14,17 @@ weights = 'models/bvlc_reference_caffenet.caffemodel'
 assert os.path.exists(weights)
 
 
-split_train = 'trainTrump'
-split_val = 'valTrump'
+split_train = 'trainTrumpUnique'
+split_val = 'valTrumpUnique'
 num_labels = 8
-batch_size = 100
+batch_size = 1 #100
 resize_w = 300
 resize_h = 300
 crop_w = 227
 crop_h = 227
 crop_margin = 10 #The crop won't include the margin in pixels
 mirror = True #Mirror images with 50% prob
-rotate = 0#15,8 #Always rotate with angle between -a and a
+rotate = 0 #15,8 #Always rotate with angle between -a and a
 HSV_prob = 0 #0.3,0.15 #Jitter saturation and vale of the image with this prob
 HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different random values between 1 +/- jitter
 

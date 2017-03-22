@@ -3,9 +3,9 @@
 import os
 from PIL import Image
 
-file = "../../../datasets/SocialMedia/trainTrump.txt"
-img_path = "../../../datasets/SocialMedia/img/trump/"
-destPath = "../../../datasets/SocialMedia/samples/trump/"
+file = "../../../datasets/SocialMedia/trainTrumpUnique.txt"
+img_path = "../../../datasets/SocialMedia/imgUnique/trump/"
+destPath = "../../../datasets/SocialMedia/samples/trumpUnique/"
 num_images = 1000
 
 n=0
