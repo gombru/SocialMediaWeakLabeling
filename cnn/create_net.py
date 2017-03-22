@@ -1,12 +1,7 @@
-#DEFINING AND RUNNING THE NET
 
-caffe_root = '../'  # this file should be run from {caffe_root}/examples (otherwise change this line)
-import sys
-sys.path.insert(0, caffe_root + 'python')
 import caffe
 from caffe import layers as L
 from caffe import params as P
-import tempfile
 
 frozen_weight_param = dict(lr_mult=0, decay_mult=0)
 frozen_bias_param = dict(lr_mult=0, decay_mult=0)
@@ -86,19 +81,19 @@ def build_net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop
     n.conv4, n.relu4 = conv_relu(n.relu3, 3, 384, pad=1, group=2, param=learned_param)
     n.conv5, n.relu5 = conv_relu(n.relu4, 3, 256, pad=1, group=2, param=learned_param)
     n.pool5 = max_pool(n.relu5, 3, stride=2)
-    n.fc6c, n.relu6 = fc_relu(n.pool5, 512, param=boosted_param) #4096
+    n.fc6, n.relu6 = fc_relu(n.pool5, 4096, param=boosted_param) #4096
     if train:
         n.drop6 = fc7input = L.Dropout(n.relu6, in_place=True)
     else:
         fc7input = n.relu6
-    n.fc7c, n.relu7 = fc_relu(fc7input, 512, param=boosted_param) #4096
+    n.fc7, n.relu7 = fc_relu(fc7input, 4096, param=boosted_param) #4096
     if train:
         n.drop7 = fc8input = L.Dropout(n.relu7, in_place=True)
     else:
         fc8input = n.relu7
-    # always learn fc8 (param=learned_param)
+
     fc8 = L.InnerProduct(fc8input, num_output=num_classes, param=boosted_param)
-    # give fc8 the name specified by argument `classifier_name`
+
     n.__setattr__('classifier', fc8)
     if not train:
         n.probs = L.Softmax(fc8)

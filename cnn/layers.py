@@ -3,6 +3,7 @@ import caffe
 import numpy as np
 from PIL import Image
 from PIL import ImageOps
+import time
 
 import random
 
@@ -73,8 +74,8 @@ class customDataLayer(caffe.Layer):
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
         # make eval deterministic
-        if 'train' not in self.split:
-            self.random = False
+        # if 'train' not in self.split and 'trainTrump' not in self.split:
+        #     self.random = False
 
         self.idx = np.arange(self.batch_size)
         # randomization: seed and pick
@@ -134,13 +135,21 @@ class customDataLayer(caffe.Layer):
         - subtract mean
         - transpose to channel x height x width order
         """
-        im = Image.open('{}/img/test_random/{}.jpg'.format(self.dir, idx)).resize((self.resize_w, self.resize_h), Image.ANTIALIAS)
+        # print '{}/img/trump/{}.jpg'.format(self.dir, idx)
+        # start = time.time()
+        im = Image.open('{}/imgResized/trump/{}.jpg'.format(self.dir, idx))#.resize((self.resize_w, self.resize_h), Image.ANTIALIAS)
+        # end = time.time()
+        # print "Time load and resize image: " + str((end - start))
+
+        if im.size[0] != self.resize_w or im.size[1] != self.resize_h:
+            im = im.resize((self.resize_w, self.resize_h), Image.ANTIALIAS)
 
         if( im.size.__len__() == 2):
             im_gray = im
             im = Image.new("RGB", im_gray.size)
             im.paste(im_gray)
 
+        # start = time.time()
         if self.train: #Data Aumentation
             if(self.rotate is not 0):
                 im = self.rotate_image(im)
@@ -153,6 +162,9 @@ class customDataLayer(caffe.Layer):
 
             if(self.HSV_prob is not 0):
                 im = self.saturation_value_jitter_image(im)
+
+        # end = time.time()
+        # print "Time data aumentation: " + str((end - start))
 
         in_ = np.array(im, dtype=np.float32)
         in_ = in_[:,:,::-1]

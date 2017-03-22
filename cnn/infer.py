@@ -1,28 +1,24 @@
-caffe_root = '../'  # this file should be run from {caffe_root}/examples (otherwise change this line)
-
 import sys
-sys.path.insert(0, caffe_root + 'python')
 import caffe
 from deprocess import deprocess_net_image
 from create_net import build_net
 from pylab import *
 import time
 
-
 #Load weights of model to be evaluated
-weights = caffe_root + 'models/IIT5K/cnn-char-best/IIT5K_iter_15000.caffemodel'
+weights = 'models/trump/_iter_15000.caffemodel'
 
 # Load style labels to style_labels
-label_file = caffe_root + 'data/IIT5K/char_names.txt'
+label_file = '../../../datasets/SocialMedia/lda_gt/trump/topic_names.txt'
 labels = list(np.loadtxt(label_file, str, delimiter='\n'))
 
-num_labels = 36
+num_labels = 8
 #Number of image to be tested are batch size (100) * test iterations
-test_iters = 10
-split_val = 'test'
+test_iters = 1
+split_val = 'valTrump'
 batch_size = 100
-resize_w = 32
-resize_h = 32
+resize_w = 227
+resize_h = 227
 
 
 #Compute test accuracy

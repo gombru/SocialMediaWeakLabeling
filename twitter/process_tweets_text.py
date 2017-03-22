@@ -1,3 +1,7 @@
+# Processes the tweets text file and creates a new text file with only tweets text and hashtags.
+# Filters RT, short tweets, non-enflish and corrupted tweets.
+
+
 import json
 import urllib
 import os.path

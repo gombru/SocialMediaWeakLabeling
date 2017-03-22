@@ -1,3 +1,5 @@
+# Trains and saves an LDA model with the fiven text file.
+
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer

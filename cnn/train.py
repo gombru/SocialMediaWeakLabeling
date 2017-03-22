@@ -14,8 +14,8 @@ weights = 'models/bvlc_reference_caffenet.caffemodel'
 assert os.path.exists(weights)
 
 
-split_train = 'trainRandom'
-split_val = 'valRandom'
+split_train = 'trainTrump'
+split_val = 'valTrump'
 num_labels = 8
 batch_size = 100
 resize_w = 300

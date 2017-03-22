@@ -7,6 +7,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
     import numpy as np
     import os
     from pylab import zeros, arange, subplots, plt, savefig
+    import time
 
     # SET PLOTS DATA
     train_loss = zeros(niter/disp_interval)
@@ -32,7 +33,10 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
     #RUN TRAINING
     for it in range(niter):
         for name, s in solvers:
+            # start = time.time()
             s.step(1)  # run a single SGD step in Caffe
+            # end = time.time()
+            # print "Time step: " + str((end - start))
             loss[name][it], acc[name][it] = (s.net.blobs[b].data.copy()
                                              for b in blobs)
 

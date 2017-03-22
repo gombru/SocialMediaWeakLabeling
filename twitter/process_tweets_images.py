@@ -1,3 +1,8 @@
+# Processes the tweets text file and saves 2 files per tweets, both names with tweet id:
+    # Image file
+    # Annotation file: Tweet text, date and hashtags
+# Filters already existing images (by id), RT, short tweets, non-english tweets and corrupted tweets.
+
 import json
 import urllib
 import os.path
@@ -28,7 +33,7 @@ for line in tweets_file:
         print "Num of images downloaded:" + str(i)
 
 
-    # Discard short tweets
+    # Discard short lines
     if len(line) < min_text_length: continue
 
     try:
@@ -37,7 +42,10 @@ for line in tweets_file:
         print "Failed to load tweet json, continuing"
         continue
 
+    # Discard tweets without mandatory fields
     if not t.has_key(u'id'): continue
+    if not t.has_key(u'text'): continue
+    if not t.has_key(u'created_at'): continue
 
     # Discard retweets
     if t.has_key('retweeted_status'): continue;
@@ -49,6 +57,11 @@ for line in tweets_file:
     # Check if file already exists
     if os.path.isfile(images_dir + str(t['id']) + ".jpg"):
         print "Image already exists"
+        continue
+
+    # Discard short tweets
+    if len(t['text']) < min_text_length:
+        print "Text too short: " + t['text']
         continue
 
     # -- FILTER BY IMAGE AND SAVE IMAGES -- discard tweets without image
@@ -69,22 +82,16 @@ for line in tweets_file:
                 i += 1
                 # print str(i) + ': ' + t['entities']['media'][0]['media_url']
 
-                # -- FILTER BY TEXT AND SAVE TEXT CONTENT -- discard short tweets
-                if t.has_key(u'id') and t.has_key(u'text') and t.has_key(u'created_at'):
+                # -- CREATE ANNS
+                hashtags_str = ''
+                if t.has_key(u'entities'):
+                    for hashtag in t['entities']['hashtags']:
+                        hashtags_str = hashtags_str + ',' + hashtag['text']
 
-                    if len(t['text']) < min_text_length:
-                        print "Text too short: " + t['text']
-                        continue
-
-                    hashtags_str = ''
-                    if t.has_key(u'entities'):
-                        for hashtag in t['entities']['hashtags']:
-                            hashtags_str = hashtags_str + ',' + hashtag['text']
-
-                    with open(ann_dir + str(t['id']) + '.txt', "w") as text_file:
-                        text_file.write(
-                            str(t['id']) + '\n' + t['created_at'].encode("utf8", "ignore") + '\n' + t['text'].encode(
-                                "utf8", "ignore").replace('\n', ' ').replace('\r', '') + '\n' + hashtags_str[1:].encode("utf8", "ignore"))
+                with open(ann_dir + str(t['id']) + '.txt', "w") as text_file:
+                    text_file.write(
+                        str(t['id']) + '\n' + t['created_at'].encode("utf8", "ignore") + '\n' + t['text'].encode(
+                            "utf8", "ignore").replace('\n', ' ').replace('\r', '') + '\n' + hashtags_str[1:].encode("utf8", "ignore"))
 
 
 

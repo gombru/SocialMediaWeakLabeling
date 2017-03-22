@@ -11,7 +11,7 @@ momentum: 0.9
 weight_decay: 0.004
 stepsize: 20000
 snapshot: 1000
-snapshot_prefix: "models/numbers"
+snapshot_prefix: "models/trump/"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"
