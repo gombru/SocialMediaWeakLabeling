@@ -5,10 +5,14 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 
-tweets_text_data_path = '../../datasets/SocialMedia/text/text_trump_weekend.txt'
-model_path = '../../datasets/SocialMedia/models/lda_model_trump_weekend2.model'
+tweets_text_data_path = '../../../datasets/SocialMedia/text/text_cities_1day.txt'
+model_path = '../../../datasets/SocialMedia/models/lda_model_cities_1day.model'
 
-words2filter = ['rt','http','t','trump','gt','co','s','https','http','tweet','markars_','photo','donald','pictur','picture','say','dondald','photo','much','tweet']
+words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
+
+num_topics = 50
+threads = 8
+passes = 20
 
 #Initialize Tokenizer
 tokenizer = RegexpTokenizer(r'\w+')
@@ -75,7 +79,7 @@ texts = []
 # Generate an LDA model
 print "Creating LDA model"
 #ldamodel = models.ldamodel.LdaModel(corpus, num_topics=3, id2word = dictionary, passes=20)
-ldamodel = models.LdaMulticore(corpus, num_topics=8, id2word = dictionary, passes=20, workers=4)
+ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
 ldamodel.save(model_path)
 # Our LDA model is now stored as ldamodel
 

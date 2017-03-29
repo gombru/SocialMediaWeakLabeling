@@ -3,10 +3,10 @@
 import os
 from PIL import Image
 
-file = "../../../datasets/SocialMedia/trainTrumpUnique.txt"
-img_path = "../../../datasets/SocialMedia/imgUnique/trump/"
-destPath = "../../../datasets/SocialMedia/samples/trumpUnique/"
-num_images = 1000
+file = "../../../datasets/SocialMedia/valCities1Day.txt"
+img_path = "../../../datasets/SocialMedia/img_unique/cities_1day/"
+destPath = "../../../datasets/SocialMedia/samples/cities_1day"
+num_images = 900
 
 n=0
 

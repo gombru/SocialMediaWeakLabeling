@@ -7,10 +7,13 @@ import urllib
 import os.path
 
 # -- CONFIG --
-tweets_data_path = '../../datasets/SocialMedia/data/tweets_data_trump_10-3-17.txt'
+tweets_data_path = '/home/imatge/disk2/twitter_data/tweets_cities_27-3-17.txt'
 min_text_length = 10
-text_dir = '../../datasets/SocialMedia/text/'
-text_filename = 'text_trump_weekend.txt'
+text_dir = '../../../datasets/SocialMedia/text/'
+text_filename = 'text_cities_1day.txt'
+
+discard = ['sex','model','xvideos','cam','porn','nude','fuck','girl','milf','babe','adult','naked','cock','dating','date','hookups','lingerie','boobs','swingers']
+
 
 with open(text_dir + text_filename, "w") as text_file:
     processed = 0
@@ -47,11 +50,20 @@ with open(text_dir + text_filename, "w") as text_file:
                 for hashtag in t['entities']['hashtags']:
                     hashtags_str = hashtags_str + ',' + hashtag['text']
 
+            text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '').replace(','," ") + ' ' + hashtags_str[1:].encode("utf8", "ignore").replace(',',' ')
+
+            # Discard if containing words
+            todiscard = False
+            for w in discard:
+                if text.__contains__(w):
+                    # print "Discarding: " + text
+                    todiscard = True
+                    continue
+            if todiscard: continue
             # Save single text file with lines (id,text)
             correct += 1
             text_file.write(
-                str(t['id']) + ',' + t['text'].encode(
-                    "utf8", "ignore").replace('\n', ' ').replace('\r', '').replace(','," ") + ' ' + hashtags_str[1:].encode("utf8", "ignore").replace(',',' ') + '\n')
+                str(t['id']) + ',' + text + '\n')
 
 
 

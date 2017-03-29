@@ -7,25 +7,35 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from shutil import copyfile
 
-images_path = "/home/imatge/datasets/SocialMedia/img/trump"
+images_path = "/home/imatge/datasets/SocialMedia/img/cities_1day/"
+cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid']
 
 i = 0
 images = {}
 paths = {}
-for file in glob.glob(images_path + "/*.jpg"):
-    i+=1
-    s = os.path.getsize(file)
-    im = Image.open(file)
-    key = str(im.size[0]) + str(im.size[1]) + str(s)
-    if not images.has_key(key):
-        images[key] = 1
 
-        copyfile(file.replace('img', 'imgResized'), file.replace('img', 'imgUnique'))
-        copyfile(file.replace('img', 'weak_ann').replace('.jpg','.txt'), file.replace('img', 'weak_ann').replace('trump','trumpUnique').replace('.jpg','.txt'))
+for city in cities:
+    if not os.path.exists(images_path.replace('img', 'img_unique') + '/' + city):
+        os.makedirs(images_path.replace('img', 'img_unique') + '/' + city)
+    if not os.path.exists(images_path.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique') + '/' + city):
+        os.makedirs(images_path.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique') + '/' + city)
 
-    else:
-        images[key]+=1
-    print i
+for c in cities:
+    for file in glob.glob(images_path + c + "/*.jpg"):
+        i+=1
+        s = os.path.getsize(file)
+        print file
+        im = Image.open(file)
+        key = str(im.size[0]) + str(im.size[1]) + str(s)
+        if not images.has_key(key):
+            images[key] = 1
+
+            copyfile(file, file.replace('img', 'img_unique'))
+            copyfile(file.replace('img', 'tweets_info').replace('.jpg','.txt'), file.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique').replace('.jpg','.txt'))
+
+        else:
+            images[key]+=1
+        print i
 
 values = sorted(images.values(), reverse = True)
 

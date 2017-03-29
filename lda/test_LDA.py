@@ -10,21 +10,22 @@ from random import randint
 
 # It also creates the splits train/val/test randomly
 
-tweets_text_data_path = '../../../datasets/SocialMedia/weak_ann/trumpUnique'
-model_path = '../../../datasets/SocialMedia/models/lda_model_trump_weekend.model'
+tweets_text_data_path = '../../../datasets/SocialMedia/tweets_info/cities_1day_unique/'
+model_path = '../../../datasets/SocialMedia/models/lda_model_cities_1day.model'
 
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/trumpUnique/train.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/trumpUnique/val.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/trumpUnique/test.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/train.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/val.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/test.txt'
 
-
-words2filter = ['rt','http','t','trump','gt','co','s','https','http','tweet','markars_','photo','donald','pictur','picture','say','dondald','photo','much','tweet']
+num_topics = 50
+words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 # create English stop words list
 en_stop = get_stop_words('en')
 # add own stop words
 for w in words2filter:
     en_stop.append(w)
 
+cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid']
 
 ldamodel = models.ldamodel.LdaModel.load(model_path)
 tokenizer = RegexpTokenizer(r'\w+')
@@ -32,7 +33,7 @@ tokenizer = RegexpTokenizer(r'\w+')
 # Create p_stemmer of class PorterStemmer
 p_stemmer = PorterStemmer()
 
-topics = ldamodel.print_topics(num_topics=8, num_words=20)
+topics = ldamodel.print_topics(num_topics=num_topics, num_words=10)
 print topics
 
 file = open('topics.txt', 'w')
@@ -46,49 +47,75 @@ train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
 
+for city in cities:
+    for file in glob.glob(tweets_text_data_path + city + "/*.txt"):
 
-for file in glob.glob(tweets_text_data_path + "/*.txt"):
+        with open(file, 'r') as fin:
+            lines = fin.readlines()
+            id = lines[0][:-1]
+            tweet_city = lines[-1]
 
-    # Assign split
+            t = ""
+            try:
+                t = lines[-1][:-1].decode('utf-8').lower()
+            except:
+                print "Error decoding utf-8"
+                continue
 
-    with open(file, 'r') as fin:
-        lines = fin.readlines()
-        id = lines[0][:-1]
+            c += 1
+            if c % 100 == 0:
+                print c
 
-        t = ""
-        try:
-            t = lines[-1][:-1].decode('utf-8').lower()
-        except:
-            print "Error decoding utf-8"
-            continue
+            tokens = tokenizer.tokenize(t)
+            # remove stop words from tokens
+            stopped_tokens = [i for i in tokens if not i in en_stop]
+            # stem token
+            text = [p_stemmer.stem(i) for i in stopped_tokens]
+            bow = ldamodel.id2word.doc2bow(tokens)
+            r = ldamodel[bow]
+            # print r
 
-        c += 1
-        if c % 100 == 0:
-            print c
+            #Save txt per tweet TODO depending on net gt format
 
-        tokens = tokenizer.tokenize(t)
-        # remove stop words from tokens
-        stopped_tokens = [i for i in tokens if not i in en_stop]
-        # stem token
-        text = [p_stemmer.stem(i) for i in stopped_tokens]
-        bow = ldamodel.id2word.doc2bow(tokens)
-        r = ldamodel[bow]
+            #To make a fast test I can use one-hot (classification) wiht caffe
+            # top_topic = 0
+            # top_value = 0
+            # for topic in r:
+            #     if topic[1] > top_value:
+            #         top_topic = topic[0]
+            #         top_value = topic[1]
+            #
+            # split = randint(0,9)
+            # if split < 8:
+            #     train_file.write(id + ',' + str(top_topic) + '\n')
+            # elif split == 8: val_file.write(id + ',' + str(top_topic) + '\n')
+            # else: test_file.write(id + ',' + str(top_topic) + '\n')
 
-        #Save txt per tweet TODO depending on net gt format
 
-        #To make a fast test I can use one-hot (classification) wiht caffe
-        top_topic = 0
-        top_value = 0
-        for topic in r:
-            if topic[1] > top_value:
-                top_topic = topic[0]
-                top_value = topic[1]
+            # GT for regression
 
-        split = randint(0,9)
-        if split < 8:
-            train_file.write(id + ',' + str(top_topic) + '\n')
-        elif split == 8: val_file.write(id + ',' + str(top_topic) + '\n')
-        else: test_file.write(id + ',' + str(top_topic) + '\n')
+            topic_probs = ''
+
+            for t in range(0,num_topics):
+                assigned = False
+                for topic in r:
+                        if topic[0] == t:
+                            topic_probs = topic_probs + ',' + str(topic[1])
+                            assigned = True
+                            continue
+                if not assigned:
+                    topic_probs = topic_probs + ',' + '0'
+
+            # print id + topic_probs
+
+            split = randint(0,9)
+            if split < 8:
+                train_file.write(tweet_city + '/' + id + topic_probs + '\n')
+            elif split == 8: val_file.write(tweet_city + '/' + id + topic_probs + '\n')
+            else: test_file.write(tweet_city + '/' + id + topic_probs + '\n')
+
+
+
 
 train_file.close()
 val_file.close()
