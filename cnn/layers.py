@@ -137,11 +137,11 @@ class customDataLayer(caffe.Layer):
         """
         # print '{}/img/trump/{}.jpg'.format(self.dir, idx)
         # start = time.time()
-        im = Image.open('{}/imgResized/trump/{}.jpg'.format(self.dir, idx))
+        im = Image.open('{}/img/cities_instagram/{}.jpg'.format(self.dir, idx))
         #.resize((self.resize_w, self.resize_h), Image.ANTIALIAS) # --> No longer suing this resizing, no if below
         # end = time.time()
         # print "Time load and resize image: " + str((end - start))
-
+        #
         if im.size[0] != self.resize_w or im.size[1] != self.resize_h:
             im = im.resize((self.resize_w, self.resize_h), Image.ANTIALIAS)
 

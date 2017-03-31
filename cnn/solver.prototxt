@@ -10,8 +10,8 @@ gamma: 0.1
 momentum: 0.9
 weight_decay: 0.004
 stepsize: 20000
-snapshot: 5
-snapshot_prefix: "models/trump/"
+snapshot: 200
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNN/intagram_cities_VGG16_"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

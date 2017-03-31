@@ -58,7 +58,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             for i in range(test_iters):
                 solvers[0][1].test_nets[0].forward()
                 loss_val += solvers[0][1].test_nets[0].blobs['loss'].data
-                loss_val /= test_iters
+            loss_val /= test_iters
             print("Val loss: {:.3f}".format(loss_val))
 
             val_loss[it/test_interval - 1] = loss_val
@@ -66,7 +66,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             plt.ion()
             plt.show()
             plt.pause(0.001)
-            title = 'training/training-' + str(it) + '.png'  # Save graph to disk
+            title = '../../../datasets/SocialMedia/models/training/training-' + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 

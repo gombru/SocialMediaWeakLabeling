@@ -38,7 +38,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # learning more stable. L2 weight decay regularizes learning, to help prevent
     # the model from overfitting.
     s.momentum = 0.9
-    s.weight_decay = 0.004
+    s.weight_decay = 0.004 #AlexNet 0.004  #VGG16 0.0001
 
     # Display the current training loss and accuracy every 1000 iterations.
     s.display = 1000000
@@ -46,7 +46,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 2000 #1000
-    s.snapshot_prefix = 'models/trump/'
+    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16_'
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU

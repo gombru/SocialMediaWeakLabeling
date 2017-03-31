@@ -7,8 +7,8 @@ import matplotlib.pyplot as plt
 from PIL import Image
 from shutil import copyfile
 
-images_path = "/home/imatge/datasets/SocialMedia/img/cities_1day/"
-cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid']
+images_path = "/home/imatge/datasets/SocialMedia/img/cities_instagram/"
+cities = ['chicago']
 
 i = 0
 images = {}
@@ -17,8 +17,8 @@ paths = {}
 for city in cities:
     if not os.path.exists(images_path.replace('img', 'img_unique') + '/' + city):
         os.makedirs(images_path.replace('img', 'img_unique') + '/' + city)
-    if not os.path.exists(images_path.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique') + '/' + city):
-        os.makedirs(images_path.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique') + '/' + city)
+    if not os.path.exists(images_path.replace('img', 'captions').replace('cities_instagram','cities_instagram_unique') + '/' + city):
+        os.path.exists(images_path.replace('img', 'captions').replace('cities_instagram', 'cities_instagram_unique') + '/' + city)
 
 for c in cities:
     for file in glob.glob(images_path + c + "/*.jpg"):
@@ -31,7 +31,7 @@ for c in cities:
             images[key] = 1
 
             copyfile(file, file.replace('img', 'img_unique'))
-            copyfile(file.replace('img', 'tweets_info').replace('.jpg','.txt'), file.replace('img', 'tweets_info').replace('cities_1day','cities_1day_unique').replace('.jpg','.txt'))
+            copyfile(file.replace('img', 'captions').replace('.jpg','.txt'), file.replace('img', 'captions').replace('cities_instagram','cities_instagram_unique').replace('.jpg','.txt'))
 
         else:
             images[key]+=1

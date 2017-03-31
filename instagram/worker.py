@@ -99,14 +99,16 @@ class InstaDownloader(threading.Thread):
             save = False
 
         if save:
-            with open(caption_name, "w") as text_file:
-                text_file.write(caption_text)
-            # save full-resolution photo
-            self._dl(photo_url, photo_name)
-
-            # put info from Instagram post into image metadata
-            if self.add_metadata:
-                self._add_metadata(photo_name, media)
+            try:
+                # save full-resolution photo
+                self._dl(photo_url, photo_name)
+                with open(caption_name, "w") as text_file:
+                    text_file.write(caption_text)
+                # put info from Instagram post into image metadata
+                if self.add_metadata:
+                    self._add_metadata(photo_name, media)
+            except:
+                print "Failed downloading photo"
 
 
     def _download_video(self, media):

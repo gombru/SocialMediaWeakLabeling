@@ -11,7 +11,7 @@ momentum: 0.9
 weight_decay: 0.004
 stepsize: 20000
 snapshot: 2000
-snapshot_prefix: "models/trump/"
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16_"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

@@ -13,9 +13,11 @@ cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vi
 
 def resize(file):
     # print t
+    saved = False
     try:
         im = Image.open(file).resize((300, 300), Image.ANTIALIAS)
         im.save(file.replace("img_unique","imgResized"))
+        saved = True
     except:
         # c+=1
         # os.remove(file)

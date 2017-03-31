@@ -8,13 +8,13 @@ from utils import (warn_with_hues, warn_windows)
 
 directory = '../../../datasets/SocialMedia/img/cities_instagram/'
 get_videos = False
-login = 'lazarpitas'
-password = 'Gata20'
+login = 'raulgombru'
+password = 'Girasoles19'
 add_metadata = True
 jobs = 32
-num_2_download = 50000
+num_2_download = 20100
 
-cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
+cities = ['singapore','sanfrancisco','london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto']
 
 
 warnings._showwarning = warnings.showwarning

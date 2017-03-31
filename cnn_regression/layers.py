@@ -155,7 +155,7 @@ class customDataLayer(caffe.Layer):
         # print '{}/img/trump/{}.jpg'.format(self.dir, idx)
         # start = time.time()
         im = Image.open('{}/img_resized/cities_1day/{}.jpg'.format(self.dir, idx))
-        # Tor esize try im = scipy.misc.imresize(im, self.im_shape)
+        # To resize try im = scipy.misc.imresize(im, self.im_shape)
         #.resize((self.resize_w, self.resize_h), Image.ANTIALIAS) # --> No longer suing this resizing, no if below
         # end = time.time()
         # print "Time load and resize image: " + str((end - start))

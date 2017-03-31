@@ -42,7 +42,7 @@ def max_pool(bottom, ks, stride=1):
 def ave_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.AVE, kernel_size=ks, stride=stride)
 
-def build_VGG16net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True):
+def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True):
 
     weight_param = dict(lr_mult=1, decay_mult=1)
     bias_param = dict(lr_mult=2, decay_mult=0)
@@ -52,7 +52,7 @@ def build_VGG16net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
 
     n = caffe.NetSpec()
 
-    pydata_params = dict(split=split, mean=(104.00699, 116.66877, 122.67892))
+    pydata_params = dict(split=split, mean=(103.939, 116.779, 123.68)) #For VGG16 different mean than AlexNet
 
     pydata_params['dir'] = '../../../datasets/SocialMedia'
     pydata_params['train'] = train
@@ -66,14 +66,14 @@ def build_VGG16net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
     pydata_params['rotate'] = rotate
     pydata_params['HSV_prob'] = HSV_prob
     pydata_params['HSV_jitter'] = HSV_jitter
+    pydata_params['num_classes'] = num_classes
+
 
     pylayer = 'customDataLayer'
 
     n.data, n.label = L.Python(module='layers', layer=pylayer,
                                ntop=2, param_str=str(pydata_params))
 
-
-    n.conv4, n.relu4 = conv_relu(n.relu3, 3, 384, pad=1, group=2, param=learned_param)
 
 
     # conv
@@ -103,13 +103,13 @@ def build_VGG16net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
     # fully conn
     n.fc6, n.relu6 = fc_relu(n.pool5, 4096, param=boosted_param)
     if train:
-        n.drop6 = fc7input = L.Dropout(n.relu6, in_place=True, dropout_ratio=0.5)
+        n.drop6 = fc7input = L.Dropout(n.relu6, in_place=True, dropout_ratio=0.5) #0.5
     else:
         fc7input = n.relu6
 
     n.fc7, n.relu7 = fc_relu(fc7input, 4096, param=boosted_param)
     if train:
-        n.drop7 = fc8input = L.Dropout(n.relu7, in_place=True, dropout_ratio=0.5)
+        n.drop7 = fc8input = L.Dropout(n.relu7, in_place=True, dropout_ratio=0.5) #0.5
     else:
         fc8input = n.relu7
 
@@ -119,9 +119,10 @@ def build_VGG16net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
     if not train:
         n.probs = L.Softmax(fc8)
 
-    n.loss = L.SoftmaxWithLoss(fc8, n.label)
-    n.acc = L.Accuracy(fc8, n.label)
+    # n.loss = L.SoftmaxWithLoss(fc8, n.label)
+    # n.acc = L.Accuracy(fc8, n.label)
 
+    n.loss = L.SigmoidCrossEntropyLoss(fc8, n.label)
 
 
 
