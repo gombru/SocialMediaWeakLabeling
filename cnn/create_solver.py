@@ -38,7 +38,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # learning more stable. L2 weight decay regularizes learning, to help prevent
     # the model from overfitting.
     s.momentum = 0.9
-    s.weight_decay = 0.004
+    s.weight_decay = 0.004 #VGG 0.0001
 
     # Display the current training loss and accuracy every 1000 iterations.
     s.display = 1000000

@@ -1,7 +1,7 @@
 
 import sys
 import caffe
-from create_net import build_net
+from create_net_AlexNet import build_AlexNet
 from create_solver import create_solver
 from do_solve import do_solve
 import os
@@ -30,12 +30,12 @@ HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different
 
 
 #Create the net architecture
-net_train = build_net(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
 #Prepare validation net
-net_val = build_net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
+net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 niter = 1000111
-base_lr = 0.0001
+base_lr = 0.0001 #VGG 0.1
 display_interval = 20
 
 #number of validating images  is  test_iters * batchSize

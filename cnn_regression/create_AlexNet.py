@@ -42,7 +42,7 @@ def max_pool(bottom, ks, stride=1):
 def ave_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.AVE, kernel_size=ks, stride=stride)
 
-def build_net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True):
+def build_AlexNet(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True):
     weight_param = dict(lr_mult=1, decay_mult=1)
     bias_param = dict(lr_mult=2, decay_mult=0)
     learned_param = [weight_param, bias_param]
@@ -65,6 +65,7 @@ def build_net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop
     pydata_params['rotate'] = rotate
     pydata_params['HSV_prob'] = HSV_prob
     pydata_params['HSV_jitter'] = HSV_jitter
+    pydata_params['num_classes'] = num_classes
 
     pylayer = 'customDataLayer'
 
@@ -98,8 +99,8 @@ def build_net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop
     if not train:
         n.probs = L.Softmax(fc8)
 
-    n.loss = L.SoftmaxWithLoss(fc8, n.label)
-    n.acc = L.Accuracy(fc8, n.label)
+    n.loss = L.SigmoidCrossEntropyLoss(fc8, n.label)
+    # n.acc = L.MULTI_LABEL_ACCURACY(fc8, n.label)
 
     if train:
         with open('train.prototxt', 'w') as f:

@@ -81,7 +81,7 @@ class InstaDownloader(threading.Thread):
     def _download_photo(self, media):
         """
         """
-
+        save = True
         photo_url = self._NO_RESIZE_RX.sub('', media.get('display_src'))
         photo_name = os.path.join(self.directory, self.owner._make_filename(media))
 
@@ -90,19 +90,23 @@ class InstaDownloader(threading.Thread):
         caption_name = os.path.join(self.directory, self.owner._make_filename(media)).replace('img','captions').replace('.jpg','.txt')
         try:
             caption_text = media['caption'].replace('\n', ' ').replace('\r', ' ').encode('utf-8','ignore')
-            print caption_text
+        except:
+            # if media.has_key('caption'):
+            #     print 'Continuing: Failed parsing caption: ' + media['caption']
+            # else:
+            #     print 'Continuing: Image has not caption.'
+
+            save = False
+
+        if save:
             with open(caption_name, "w") as text_file:
                 text_file.write(caption_text)
-        except:
-            print 'Failed parsing caption'
-            return
+            # save full-resolution photo
+            self._dl(photo_url, photo_name)
 
-        # save full-resolution photo
-        self._dl(photo_url, photo_name)
-
-        # put info from Instagram post into image metadata
-        if self.add_metadata:
-            self._add_metadata(photo_name, media)
+            # put info from Instagram post into image metadata
+            if self.add_metadata:
+                self._add_metadata(photo_name, media)
 
 
     def _download_video(self, media):
