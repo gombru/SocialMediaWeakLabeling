@@ -13,8 +13,9 @@ password = 'Girasoles19'
 add_metadata = True
 jobs = 32
 num_2_download = 20100
+new_only = True # Download only images newer than the current images in folder
 
-cities = ['singapore','sanfrancisco','london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto']
+cities = ['singapore','toronto','london','newyork','sydney','losangeles','chicago','melbourne','miami','sanfrancisco']
 
 
 warnings._showwarning = warnings.showwarning
@@ -54,7 +55,7 @@ for i in range(0,len(cities)):
     hues.success('Logged in.')
 
     try:
-        looter.download(media_count=remaining_num_2_download, new_only = False, with_pbar=False)
+        looter.download(media_count=remaining_num_2_download, new_only = new_only, with_pbar=False)
     except:
         print "Error, continuing ... "
 

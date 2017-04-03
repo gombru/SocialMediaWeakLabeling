@@ -4,14 +4,23 @@ from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
+import glob
+import string
 
-tweets_text_data_path = '../../../datasets/SocialMedia/text/text_cities_1day.txt'
-model_path = '../../../datasets/SocialMedia/models/lda_model_cities_1day.model'
+
+whitelist = string.letters + string.digits + ' '
+
+# tweets_text_data_path = '../../../datasets/SocialMedia/text/text_cities_1day.txt'
+instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
+
+model_path = '../../../datasets/SocialMedia/models/lda_model_cities_instagram.model'
 
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
-num_topics = 50
-threads = 8
+cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
+
+num_topics = 100
+threads = 6
 passes = 20
 
 #Initialize Tokenizer
@@ -24,27 +33,50 @@ for w in words2filter:
 # Create p_stemmer of class PorterStemmer
 p_stemmer = PorterStemmer()
 
-
-# -- LOAD DATA --
-tweets_text_file = open(tweets_text_data_path, "r")
 #ids = []
-tweets_text = []
+posts_text = []
 texts = [] #List of lists of tokens
 
-print "Loading data ..."
-for line in tweets_text_file:
-    info = line.split(',')
-    #ids.append(info[0])
-    tweets_text.append(info[1].decode('utf-8'))
+# -- LOAD DATA FROM TWITTER --
+# posts_text_file = open(tweets_text_data_path, "r")
 
-tweets_text_file.close()
+# print "Loading data ..."
+# for line in tweets_text_file:
+#     info = line.split(',')
+#     #ids.append(info[0])
+#     tweets_text.append(info[1].decode('utf-8'))
+#
+# tweets_text_file.close()
 
-print "Number of tweets: " + str(len(tweets_text))
+
+# -- LOAD DATA FROM INSTAGRAM --
+
+for city in cities:
+    print "Loading data from " + city
+    for file_name in glob.glob(instagram_text_data_path + city + "/*.txt"):
+        caption = ""
+        filtered_caption = ""
+        file = open(file_name, "r")
+        for line in file:
+            caption =  caption + line
+
+        # -- Keep only letters and numbers
+        for char in caption:
+            if char in whitelist:
+                filtered_caption += char
+
+        posts_text.append(filtered_caption.decode('utf-8'))
+        # print filtered_caption.decode('utf-8')
+
+
+
+
+print "Number of posts: " + str(len(posts_text))
 
 print "Creating tokens"
 c= 0
 
-for t in tweets_text:
+for t in posts_text:
 
     c += 1
     if c % 10000 == 0:
@@ -64,7 +96,7 @@ for t in tweets_text:
     #Remove element from list if memory limitation TODO
     #del tweets_text[0]
 
-tweets_text = []
+posts_text = []
 # Construct a document-term matrix to understand how frewuently each term occurs within each document
 # The Dictionary() function traverses texts, assigning a unique integer id to each unique token while also collecting word counts and relevant statistics.
 # To see each token unique integer id, try print(dictionary.token2id)

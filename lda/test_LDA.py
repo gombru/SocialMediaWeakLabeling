@@ -10,12 +10,12 @@ from random import randint
 
 # It also creates the splits train/val/test randomly
 
-tweets_text_data_path = '../../../datasets/SocialMedia/tweets_info/cities_1day_unique/'
-model_path = '../../../datasets/SocialMedia/models/lda_model_cities_1day.model'
+text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
+model_path = '../../../datasets/SocialMedia/models/lda_model_cities_instagram.model'
 
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/train.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/val.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_1day_unique/test.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/train.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/val.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/test.txt'
 
 num_topics = 50
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
@@ -25,7 +25,7 @@ en_stop = get_stop_words('en')
 for w in words2filter:
     en_stop.append(w)
 
-cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid']
+cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 ldamodel = models.ldamodel.LdaModel.load(model_path)
 tokenizer = RegexpTokenizer(r'\w+')
@@ -48,7 +48,7 @@ val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
 
 for city in cities:
-    for file in glob.glob(tweets_text_data_path + city + "/*.txt"):
+    for file in glob.glob(text_data_path + city + "/*.txt"):
 
         with open(file, 'r') as fin:
             lines = fin.readlines()
