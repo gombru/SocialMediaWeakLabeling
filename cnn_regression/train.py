@@ -2,7 +2,7 @@
 import sys
 import caffe
 from create_AlexNet import build_AlexNet
-from create_VGG16Net import build_VGG16net
+from create_VGG16Net import build_VGG16Net
 from create_solver import create_solver
 from do_solve import do_solve
 import os
@@ -15,10 +15,10 @@ weights = '../../../datasets/SocialMedia/models/pretrained/VGG_ILSVRC_16_layers.
 assert os.path.exists(weights)
 
 
-split_train = 'trainCities1Day'
-split_val = 'valCities1Day'
-num_labels = 50
-batch_size = 10 #100
+split_train = 'minitrainCitiesInstagram'
+split_val = 'minivalCitiesInstagram'
+num_labels = 100
+batch_size = 4 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
 crop_w = 224 #227 AlexNet, 224 VGG16
@@ -31,17 +31,17 @@ HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different
 
 
 #Create the net architecture
-net_train = build_VGG16net(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+net_train = build_VGG16Net(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
 #Prepare validation net
-net_val = build_VGG16net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
+net_val = build_VGG16Net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 niter = 1000111
-base_lr = 0.0001 #AlexNet 0.0001 #VGG16 0.1?
-display_interval = 20
+base_lr = 0.0001 #VGG 0.0001  #AlexNet 0.0001
+display_interval = 1
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 400 #200
-test_iters = 20
+test_interval = 20 #200
+test_iters = 1 #20
 
 #Set solver configuration
 solver_filename = create_solver(net_train, net_val, base_lr=base_lr)

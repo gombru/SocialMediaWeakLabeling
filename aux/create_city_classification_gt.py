@@ -3,7 +3,7 @@
 import glob
 from random import randint
 
-images_path = "/home/imatge/datasets/SocialMedia/img/cities_instagram/"
+images_path = "/home/imatge/datasets/SocialMedia/img_resized/cities_instagram/"
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 

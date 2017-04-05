@@ -107,8 +107,10 @@ class InstaDownloader(threading.Thread):
                 # put info from Instagram post into image metadata
                 if self.add_metadata:
                     self._add_metadata(photo_name, media)
+
             except:
-                print "Failed downloading photo"
+                print "Download image failed"
+                return
 
 
     def _download_video(self, media):

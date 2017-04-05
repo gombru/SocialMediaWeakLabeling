@@ -1,26 +1,29 @@
 import sys
 import caffe
 from deprocess import deprocess_net_image
-from create_net import build_net
+from create_VGG16Net import build_VGG16Net
 from pylab import *
 import time
 
+caffe.set_device(0)
+caffe.set_mode_gpu()
+
 #Load weights of model to be evaluated
-weights = 'models/trump/_iter_12000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/CNN/intagram_cities_VGG16__iter_21600.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 
 # Load style labels to style_labels
-label_file = '../../../datasets/SocialMedia/lda_gt/trump/topic_names.txt'
+label_file = '../../../datasets/SocialMedia/lda_gt/cities_instagram/topic_names.txt'
 labels = list(np.loadtxt(label_file, str, delimiter='\n'))
 
-num_labels = 8
+num_labels = 10
 #Number of image to be tested are batch size (100) * test iterations
-test_iters = 10
-split_val = 'testTrumpUnique'
-batch_size = 100
-resize_w = 227
-resize_h = 227
+test_iters = 100
+split_val = 'testCitiesClassification'
+batch_size = 150
+resize_w = 224
+resize_h = 224
 
 #Print per class accuracy of last batch
 perClass = np.zeros([len(labels),2])
@@ -38,13 +41,13 @@ def disp_preds(net, image, labels, batch_index, k=5):
 
 #Compute test accuracy
 def eval_net(weights, test_iters):
-    test_net = caffe.Net(build_net(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False), weights, caffe.TEST)
+    test_net = caffe.Net(build_VGG16Net(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False), weights, caffe.TEST)
     accuracy = 0
 
     t = time.time()
 
     for it in xrange(test_iters):
-
+        print it
         accuracy += test_net.forward()['acc']
 
         # Save accuracy per class

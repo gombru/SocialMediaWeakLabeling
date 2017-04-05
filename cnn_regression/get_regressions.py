@@ -10,7 +10,7 @@ from PIL import Image
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../SocialMedia/testCities1day.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/testCities1Day.txt', dtype=str)
 
 #Output file
 output_file_path = '../../../datasets/SocialMedia/regression_output/testCitiesClassification.txt'

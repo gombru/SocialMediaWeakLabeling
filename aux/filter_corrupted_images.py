@@ -6,6 +6,7 @@ from PIL import Image
 import os
 from joblib import Parallel, delayed
 
+
 images_path = "../../../../datasets/SocialMedia/img/trump"
 
 c = 0

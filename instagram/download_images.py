@@ -25,7 +25,7 @@ warnings.showwarning = warn_with_hues if os.name == "posix" else warn_windows
 c = 0
 same_city = False
 
-for i in range(0,len(cities)):
+while c < range(0,len(cities)):
 
     city = cities[c]
     city_dir = directory + city + '/'
@@ -51,13 +51,17 @@ for i in range(0,len(cities)):
     looter = InstaLooter(directory=city_dir, hashtag=city,
         add_metadata=False, get_videos=get_videos, jobs=jobs)
 
-    looter.login(login, password)
-    hues.success('Logged in.')
+    try:
+        looter.login(login, password)
+        hues.success('Logged in.')
+    except:
+        print "Error while loggining"
+        time.sleep(10)
 
     try:
         looter.download(media_count=remaining_num_2_download, new_only = new_only, with_pbar=False)
     except:
-        print "Error, continuing ... "
+        print "Error while downloading, continuing ... "
 
     #Count number of images for curr city, and continue downloading if is not completed
     if len(os.listdir(city_dir)) < num_2_download:
@@ -66,3 +70,4 @@ for i in range(0,len(cities)):
     else: #Go for the next city only if we have all the images for this city
         print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir)))
         c+=1
+        print c

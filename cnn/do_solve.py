@@ -33,10 +33,10 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
     #RUN TRAINING
     for it in range(niter):
         for name, s in solvers:
-            start = time.time()
+            # start = time.time()
             s.step(1)  # run a single SGD step in Caffe
-            end = time.time()
-            print "Time step: " + str((end - start))
+            # end = time.time()
+            # print "Time step: " + str((end - start))
             loss[name][it], acc[name][it] = (s.net.blobs[b].data.copy()
                                              for b in blobs)
 

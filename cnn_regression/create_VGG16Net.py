@@ -77,22 +77,22 @@ def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
 
 
     # conv
-    n.conv1_1, n.relu1_1 = conv_relu(n.data, 3, 64, pad=1, param=learned_param)
-    n.conv1_2, n.relu1_2 = conv_relu(n.relu1_1, 3, 64, pad=1, param=learned_param)
+    n.conv1_1, n.relu1_1 = conv_relu(n.data, 3, 64, pad=1, param=froozen_param)
+    n.conv1_2, n.relu1_2 = conv_relu(n.relu1_1, 3, 64, pad=1, param=froozen_param)
     n.pool1 = max_pool(n.relu1_2, 2, stride=2)
 
-    n.conv2_1, n.relu2_1 = conv_relu(n.pool1, 3, 128, pad=1, param=learned_param)
-    n.conv2_2, n.relu2_2 = conv_relu(n.relu2_1, 3, 128, pad=1, param=learned_param)
+    n.conv2_1, n.relu2_1 = conv_relu(n.pool1, 3, 128, pad=1, param=froozen_param)
+    n.conv2_2, n.relu2_2 = conv_relu(n.relu2_1, 3, 128, pad=1, param=froozen_param)
     n.pool2 = max_pool(n.relu2_2, 2, stride=2)
 
-    n.conv3_1, n.relu3_1 = conv_relu(n.pool2, 3, 256, pad=1, param=learned_param)
-    n.conv3_2, n.relu3_2 = conv_relu(n.relu3_1, 3, 256, pad=1, param=learned_param)
-    n.conv3_3, n.relu3_3 = conv_relu(n.relu3_2, 3, 256, pad=1, param=learned_param)
+    n.conv3_1, n.relu3_1 = conv_relu(n.pool2, 3, 256, pad=1, param=froozen_param)
+    n.conv3_2, n.relu3_2 = conv_relu(n.relu3_1, 3, 256, pad=1, param=froozen_param)
+    n.conv3_3, n.relu3_3 = conv_relu(n.relu3_2, 3, 256, pad=1, param=froozen_param)
     n.pool3 = max_pool(n.relu3_3, 2, stride=2)
 
-    n.conv4_1, n.relu4_1 = conv_relu(n.pool3, 3, 512, pad=1, param=learned_param)
-    n.conv4_2, n.relu4_2 = conv_relu(n.relu4_1, 3, 512, pad=1, param=learned_param)
-    n.conv4_3, n.relu4_3 = conv_relu(n.relu4_2, 3, 512, pad=1, param=learned_param)
+    n.conv4_1, n.relu4_1 = conv_relu(n.pool3, 3, 512, pad=1, param=froozen_param)
+    n.conv4_2, n.relu4_2 = conv_relu(n.relu4_1, 3, 512, pad=1, param=froozen_param)
+    n.conv4_3, n.relu4_3 = conv_relu(n.relu4_2, 3, 512, pad=1, param=froozen_param)
     n.pool4 = max_pool(n.relu4_3, 2, stride=2)
 
     n.conv5_1, n.relu5_1 = conv_relu(n.pool4, 3, 512, pad=1, param=learned_param)

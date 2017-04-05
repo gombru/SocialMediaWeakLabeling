@@ -37,11 +37,11 @@ net_train = build_VGG16Net(split_train, num_labels, batch_size, resize_w, resize
 net_val = build_VGG16Net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 niter = 1000111
-base_lr = 0.0001 #VGG 0.1
-display_interval = 2
+base_lr = 0.001 #VGG  #AlexNet 0.0001
+display_interval = 100
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 200 #200
+test_interval = 400 #200
 test_iters = 20
 
 #Set solver configuration

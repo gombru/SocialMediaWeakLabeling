@@ -60,6 +60,8 @@ for city in cities:
         for line in file:
             caption =  caption + line
 
+        # --Replace hashtags with spaces
+        capion = caption.replace('#', ' ')
         # -- Keep only letters and numbers
         for char in caption:
             if char in whitelist:

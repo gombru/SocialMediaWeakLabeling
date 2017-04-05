@@ -1,14 +1,9 @@
-layer {
-  name: "data"
-  type: "Python"
-  top: "data"
-  top: "label"
-  python_param {
-    module: "layers"
-    layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 4, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': True, \'split\': \'minitrainCitiesInstagram\', \'mirror\': True, \'num_classes\': 100, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
-  }
-}
+name: "VGG_ILSVRC_16_layers"
+input: "data"
+input_dim: 10
+input_dim: 3
+input_dim: 224
+input_dim: 224
 layer {
   name: "conv1_1"
   type: "Convolution"
@@ -551,15 +546,6 @@ layer {
   top: "fc6"
 }
 layer {
-  name: "drop6"
-  type: "Dropout"
-  bottom: "fc6"
-  top: "fc6"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
   name: "fc7"
   type: "InnerProduct"
   bottom: "fc6"
@@ -591,15 +577,6 @@ layer {
   top: "fc7"
 }
 layer {
-  name: "drop7"
-  type: "Dropout"
-  bottom: "fc7"
-  top: "fc7"
-  dropout_param {
-    dropout_ratio: 0.5
-  }
-}
-layer {
   name: "classifier"
   type: "InnerProduct"
   bottom: "fc7"
@@ -613,13 +590,12 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 100
+    num_output: 10
   }
 }
 layer {
-  name: "loss"
-  type: "SigmoidCrossEntropyLoss"
+  name: "probs"
+  type: "Softmax"
   bottom: "classifier"
-  bottom: "label"
-  top: "loss"
+  top: "probs"
 }
