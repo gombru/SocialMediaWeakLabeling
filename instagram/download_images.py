@@ -10,20 +10,18 @@ directory = '../../../datasets/SocialMedia/img/cities_instagram/'
 get_videos = False
 login = 'raulgombru'
 password = 'Girasoles19'
-add_metadata = True
 jobs = 32
-num_2_download = 20100
-new_only = True # Download only images newer than the current images in folder
+num_2_query= 10000000 #Num of images to build the looter
+num_2_download = 100000 #Num of images we want to end up having
+new_only = False # Download only images newer than the current images in folder
 
 cities = ['singapore','toronto','london','newyork','sydney','losangeles','chicago','melbourne','miami','sanfrancisco']
 
 
-warnings._showwarning = warnings.showwarning
-warnings.showwarning = warn_with_hues if os.name == "posix" else warn_windows
-
+# warnings._showwarning = warnings.showwarning
+# warnings.showwarning = warn_with_hues if os.name == "posix" else warn_windows
 
 c = 0
-same_city = False
 
 while c < range(0,len(cities)):
 
@@ -46,7 +44,7 @@ while c < range(0,len(cities)):
         continue
 
 
-    time.sleep(2)
+    time.sleep(1)
 
     looter = InstaLooter(directory=city_dir, hashtag=city,
         add_metadata=False, get_videos=get_videos, jobs=jobs)
@@ -56,10 +54,10 @@ while c < range(0,len(cities)):
         hues.success('Logged in.')
     except:
         print "Error while loggining"
-        time.sleep(10)
+        time.sleep(2)
 
     try:
-        looter.download(media_count=remaining_num_2_download, new_only = new_only, with_pbar=False)
+        looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
     except:
         print "Error while downloading, continuing ... "
 

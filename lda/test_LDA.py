@@ -14,9 +14,9 @@ import string
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
 
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/train.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/val.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/test.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram40.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram40l.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram40.txt'
 
 num_topics = 100
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
@@ -41,8 +41,13 @@ print topics
 
 file = open('topics.txt', 'w')
 
+i = 0
 for item in topics:
+    file.write(str(i) + " - ")
     file.write("%s\n" % item[1])
+    i+=1
+    print i
+file.close()
 
 c= 0
 

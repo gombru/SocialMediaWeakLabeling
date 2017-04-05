@@ -17,8 +17,8 @@ weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VG
 num_labels = 100
 #Number of image to be tested are batch size (100) * test iterations
 test_iters = 1
-split_val = 'minitrainCitiesInstagram'
-batch_size = 5
+split_val = 'londonClearTP'
+batch_size = 10
 resize_w = 224
 resize_h = 224
 k = 5
@@ -45,7 +45,7 @@ for it in xrange(test_iters):
 
     loss += test_net.forward()['loss']
 
-for b in range(0,5):
+for b in range(0,10):
     #Print labels of an arbitrary image
     batch_index = b
     image = test_net.blobs['data'].data[batch_index]

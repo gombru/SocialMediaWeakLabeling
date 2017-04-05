@@ -78,6 +78,8 @@ class InstaLooter(object):
                 download media (12 or more is advised to have a true parallel
                 download of media files) **[default: 16]**
         """
+        print "Initializing looter"
+
         if profile is not None and hashtag is not None:
             raise ValueError("Give only a profile or an hashtag, not both !")
 
@@ -394,7 +396,6 @@ class InstaLooter(object):
                 condition = lambda media: True
         else:
             condition = kwargs.get('_condition')
-
         medias_queued = self._fill_media_queue(
             media_count=media_count, with_pbar=with_pbar,
             condition=condition, timeframe=timeframe,
@@ -464,10 +465,12 @@ class InstaLooter(object):
     def _fill_media_queue(self, media_count=None, with_pbar=False, condition=None, timeframe=None, new_only=False):
         medias_queued = 0
         condition = condition or (lambda media: self.get_videos or not media['is_video'])
+        print 'Filling cue...'
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
             medias_queued, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
             if stop:
                 break
+        print 'Num of media added to cue: ' + str(medias_queued)
         return medias_queued
 
     def _add_media_to_queue(self, media, condition, media_count, medias_queued, new_only):
