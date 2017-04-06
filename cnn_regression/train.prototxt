@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "layers"
     layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 4, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': True, \'split\': \'minitrainCitiesInstagram\', \'mirror\': True, \'num_classes\': 100, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
+    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 40, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': True, \'split\': \'trainCitiesInstagram40\', \'mirror\': True, \'num_classes\': 40, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
   }
 }
 layer {
@@ -600,10 +600,10 @@ layer {
   }
 }
 layer {
-  name: "classifier"
+  name: "InnerProduct1"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "classifier"
+  top: "InnerProduct1"
   param {
     lr_mult: 10
     decay_mult: 1
@@ -613,13 +613,13 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 100
+    num_output: 40
   }
 }
 layer {
   name: "loss"
-  type: "SigmoidCrossEntropyLoss"
-  bottom: "classifier"
+  type: "EuclideanLoss"
+  bottom: "InnerProduct1"
   bottom: "label"
   top: "loss"
 }

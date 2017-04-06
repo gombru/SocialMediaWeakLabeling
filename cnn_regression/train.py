@@ -15,10 +15,10 @@ weights = '../../../datasets/SocialMedia/models/pretrained/VGG_ILSVRC_16_layers.
 assert os.path.exists(weights)
 
 
-split_train = 'minitrainCitiesInstagram'
-split_val = 'minivalCitiesInstagram'
-num_labels = 100
-batch_size = 4 #AlexNet 100, VGG 40
+split_train = 'trainCitiesInstagram40'
+split_val = 'valCitiesInstagram40'
+num_labels = 40
+batch_size = 40 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
 crop_w = 224 #227 AlexNet, 224 VGG16
@@ -35,13 +35,15 @@ net_train = build_VGG16Net(split_train, num_labels, batch_size, resize_w, resize
 #Prepare validation net
 net_val = build_VGG16Net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
-niter = 1000111
+
 base_lr = 0.0001 #VGG 0.0001  #AlexNet 0.0001
-display_interval = 1
+
+display_interval = 50
+niter = 1000111
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 20 #200
-test_iters = 1 #20
+test_interval = 250 #200
+test_iters = 40 #20
 
 #Set solver configuration
 solver_filename = create_solver(net_train, net_val, base_lr=base_lr)

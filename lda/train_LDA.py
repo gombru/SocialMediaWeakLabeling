@@ -67,7 +67,7 @@ for city in cities:
             if char in whitelist:
                 filtered_caption += char
 
-        posts_text.append(filtered_caption.decode('utf-8'))
+        posts_text.append(filtered_caption.decode('utf-8').lower())
         # print filtered_caption.decode('utf-8')
 
 

@@ -11,7 +11,7 @@ import threading
 import datetime
 import os
 import re
-
+import timeit
 
 try:
     import PIL.Image
@@ -36,11 +36,18 @@ class InstaDownloader(threading.Thread):
 
     def run(self):
 
+        # print "Runing worker"
         while not self._killed:
+            # print "Worker while iteration"
+            # start = timeit.timeit()
             media = self.medias.get()
+            # end = timeit.timeit()
+            # print end - start
             if media is None:
+                # print "media is None"
                 break
             elif media.get('is_video'):
+                # print "media is Video"
                 self._download_video(media)
             else:
                 self._download_photo(media)
@@ -81,6 +88,7 @@ class InstaDownloader(threading.Thread):
     def _download_photo(self, media):
         """
         """
+        # print "Download photo call"
         save = True
         photo_url = self._NO_RESIZE_RX.sub('', media.get('display_src'))
         photo_name = os.path.join(self.directory, self.owner._make_filename(media))
@@ -135,6 +143,10 @@ class InstaDownloader(threading.Thread):
 
     def _dl(self, source, dest):
         self.session.headers['Accept'] = '*/*'
+        # if os.path.isfile(dest):
+        #     print "Replacing: " + dest + '\n'
+        # else:
+        #     print "Saving: " + dest + '\n'
         with contextlib.closing(self.session.get(source)) as res:
             with open(dest, 'wb') as dest_file:
                 for block in res.iter_content(1024):

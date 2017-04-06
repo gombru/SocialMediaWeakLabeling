@@ -12,13 +12,13 @@ import string
 # It also creates the splits train/val/test randomly
 
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_40.model'
 
 gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram40.txt'
 gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram40l.txt'
 gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram40.txt'
 
-num_topics = 100
+num_topics = 40
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 # create English stop words list
 en_stop = get_stop_words('en')

@@ -17,6 +17,7 @@ import requests
 import six
 import time
 import bs4 as bs
+import myglobals
 
 from worker import InstaDownloader
 from utils import get_times
@@ -226,9 +227,11 @@ class InstaLooter(object):
             `dict`: the page content deserialised from JSON
         """
         url = self._base_url.format(self.target)
-        current_page = 0
+        current_page = myglobals.start_page
         while True:
             current_page += 1
+            myglobals.start_page = current_page
+            print "Current page: " + str(current_page)
             res = self.session.get(url)
             data = self._get_shared_data(res)
 
@@ -464,16 +467,21 @@ class InstaLooter(object):
 
     def _fill_media_queue(self, media_count=None, with_pbar=False, condition=None, timeframe=None, new_only=False):
         medias_queued = 0
+        medias_refused = 0
         condition = condition or (lambda media: self.get_videos or not media['is_video'])
         print 'Filling cue...'
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
-            medias_queued, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
+            medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, medias_refused, new_only)
+            if medias_refused > 10000:
+                stop = True
+                print "Medias refused limit (5000) reached. It seems all images have been downloaded for this city. Or maybe images already existed in the folder. Check that."
             if stop:
+                print "Stopping"
                 break
-        print 'Num of media added to cue: ' + str(medias_queued)
+        print 'Num of media tried to download: ' + str(medias_queued)
         return medias_queued
 
-    def _add_media_to_queue(self, media, condition, media_count, medias_queued, new_only):
+    def _add_media_to_queue(self, media, condition, media_count, medias_queued, medias_refused, new_only):
 
         if media.get('__typename') == "GraphSidecar":
             return self._add_sidecars_to_queue(
@@ -483,13 +491,21 @@ class InstaLooter(object):
             if not os.path.exists(os.path.join(self.directory, media_basename)):
                 medias_queued += 1
                 self._medias_queue.put(media)
+                print "Element added to cue: " + str(medias_queued)
+
+
             # stop here if the file already exists and we want only new files
             elif new_only:
                 return medias_queued, True
             # stop here if we have as many files queued as wanted
             if media_count is not None and medias_queued >= media_count:
                 return medias_queued, True
-        return medias_queued, False
+
+            if os.path.exists(os.path.join(self.directory, media_basename)):
+                print "File exists, not added to cue"
+                medias_refused += 1
+
+        return medias_queued, medias_refused, False
 
     def _add_sidecars_to_queue(self, media, condition, media_count, medias_queued, new_only):
         media = self.get_post_info(media['code'])
@@ -499,6 +515,8 @@ class InstaLooter(object):
                 sidecar, condition, media_count, medias_queued, new_only)
             if stop:
                 break
+        print "looter ended"
+        print "medias_queued: " + str(medias_queued)
         return medias_queued, stop
 
     def _make_filename(self, media):
