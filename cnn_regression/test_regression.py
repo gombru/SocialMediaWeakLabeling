@@ -6,7 +6,7 @@ from pylab import *
 import time
 
 #Load weights of model to be evaluated
-weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16__iter_96000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16__iter_10000.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 
@@ -30,7 +30,7 @@ def disp_preds(net, image, batch_index):
     input_blob = net.blobs['data']
     net.blobs['data'].data[0, ...] = image
     # probs = net.forward(start='conv1')['probs'][0]
-    probs = net.blobs['probs'].data[batch_index]
+    probs = net.blobs['classifier'].data[batch_index]
     # print '\nPredic l. =', probs
     top_k = (-probs).argsort()[:k]
     print 'top %d predicted labels =' % (k)

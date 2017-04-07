@@ -115,9 +115,9 @@ def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
 
     fc8 = L.InnerProduct(fc8input, num_output=num_classes, param=boosted_param)
 
-    # n.__setattr__('classifier', fc8)
-    # if not train:
-    #     n.probs = L.Softmax(fc8)
+    n.__setattr__('classifier', fc8)
+    if not train:
+        n.probs = L.Softmax(fc8)
 
     # n.loss = L.SoftmaxWithLoss(fc8, n.label)
     # n.acc = L.Accuracy(fc8, n.label)

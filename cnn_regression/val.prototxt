@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "layers"
     layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 224, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 40, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': False, \'split\': \'valCitiesInstagram40\', \'mirror\': 0, \'num_classes\': 40, \'resize_w\': 224, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
+    param_str: "{\'rotate\': 0, \'resize_h\': 224, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 10, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': False, \'split\': \'londonClearTP\', \'mirror\': 0, \'num_classes\': 100, \'resize_w\': 224, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
   }
 }
 layer {
@@ -582,10 +582,10 @@ layer {
   top: "fc7"
 }
 layer {
-  name: "InnerProduct1"
+  name: "classifier"
   type: "InnerProduct"
   bottom: "fc7"
-  top: "InnerProduct1"
+  top: "classifier"
   param {
     lr_mult: 10
     decay_mult: 1
@@ -595,13 +595,19 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 40
+    num_output: 100
   }
+}
+layer {
+  name: "probs"
+  type: "Softmax"
+  bottom: "classifier"
+  top: "probs"
 }
 layer {
   name: "loss"
   type: "EuclideanLoss"
-  bottom: "InnerProduct1"
+  bottom: "classifier"
   bottom: "label"
   top: "loss"
 }

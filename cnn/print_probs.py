@@ -12,7 +12,7 @@ from PIL import ImageDraw
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/SocialMedia/londonTestImages.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/NYTestImages.txt', dtype=str)
 
 
 # load net
@@ -72,8 +72,8 @@ for idx in test:
         y += 20
         draw.text((0, y),l,(10,255,10), font=font)
 
-    if top_k[0] == 0:
-        im_o.save('../../../datasets/SocialMedia/samples/' + idx.replace('london','london_TP') + '.jpg')
+    if top_k[0] == 1:
+        im_o.save('../../../datasets/SocialMedia/samples/' + idx.replace('newyork','newyork_TP') + '.jpg')
     im_o.save('../../../datasets/SocialMedia/samples/' + idx + '.jpg')
 
 
