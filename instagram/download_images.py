@@ -8,7 +8,7 @@ from core import InstaLooter
 from utils import (warn_with_hues, warn_windows)
 import myglobals
 
-directory = '../../../datasets/SocialMedia/img/cities_instagram2/'
+directory = '/home/imatge/disk2/cities_instagram/'
 get_videos = False
 login = 'pura_nata_djset'
 password = 'Girasoles20'
@@ -19,13 +19,11 @@ new_only = False # Download only images newer than the current images in folder
 myglobals.init()
 myglobals.start_page = 0
 
-cities = ['toronto','singapore','london','newyork','losangeles','chicago','melbourne','miami','sanfrancisco','sydney']
+cities = ['losangeles','chicago','melbourne','miami','sanfrancisco','sydney','toronto','singapore','london','newyork']
 
 
 # warnings._showwarning = warnings.showwarning
 # warnings.showwarning = warn_with_hues if os.name == "posix" else warn_windows
-
-c = 0
 
 # Download posts from a certain period of time
 # today = datetime.date.today()
@@ -34,61 +32,72 @@ c = 0
 # timeframe = today - dateutil.relativedelta.relativedelta(month=starting_month - 1), today - dateutil.relativedelta.relativedelta(month=starting_month)
 timeframe = None
 
-while c < range(0,len(cities)):
+first = True
 
-    city = cities[c]
-    city_dir = directory + city + '/'
+while True:
 
-    if not os.path.exists(city_dir):
-        os.makedirs(city_dir)
-    if not os.path.exists(city_dir.replace('img','captions')):
-        os.makedirs(city_dir.replace('img','captions'))
+    print "Sleeping"
+    if not first: time.sleep(60*20)
+    first = False
+    c = 0
 
-    remaining_num_2_download = num_2_download - len(os.listdir(city_dir))
-    if remaining_num_2_download < 0: remaining_num_2_download = 0
+    while c < range(0, len(cities) - 1):
 
-    print city
-    print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir))) + "  --  Remaining: " + str(remaining_num_2_download)
+        city = cities[c]
+        city_dir = directory + city + '/'
 
-    if remaining_num_2_download < 1:
-        c+=1
-        continue
+        if not os.path.exists(city_dir):
+            os.makedirs(city_dir)
+        if not os.path.exists(city_dir.replace('img','captions')):
+            os.makedirs(city_dir.replace('img','captions'))
+
+        remaining_num_2_download = num_2_download - len(os.listdir(city_dir))
+        if remaining_num_2_download < 0: remaining_num_2_download = 0
+
+        print city
+        print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir))) + "  --  Remaining: " + str(remaining_num_2_download)
+
+        if remaining_num_2_download < 1:
+            c+=1
+            continue
 
 
-    time.sleep(1)
+        time.sleep(1)
 
-    looter = InstaLooter(directory=city_dir, hashtag=city,
-        add_metadata=False, get_videos=get_videos, jobs=jobs)
+        looter = InstaLooter(directory=city_dir, hashtag=city,
+            add_metadata=False, get_videos=get_videos, jobs=jobs)
 
-    try:
-        looter.login(login, password)
-        hues.success('Logged in.')
-    except:
-        print "Error while loggining"
-        time.sleep(2)
-        continue
+        try:
+            looter.login(login, password)
+            hues.success('Logged in.')
+        except:
+            print "Error while loggining"
+            time.sleep(2)
+            continue
 
-    try:
-        print "Starting page: " + str(myglobals.start_page )
-        looter.download(media_count=num_2_query, new_only = new_only, timeframe = timeframe, with_pbar=False)
-    except:
-        print "Error while downloading, continuing ... "
+        try:
+            # print "Starting page: " + str(myglobals.start_page )
+            looter.download(media_count=num_2_query, new_only = new_only, timeframe = timeframe, with_pbar=False)
+        except:
+            print "Error while downloading, continuing ... "
 
-    #Count number of images for curr city, and continue downloading if is not completed
-    if len(os.listdir(city_dir)) < num_2_download:
-        print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir)))
-        print "Continue downloading images for same city..."
-        myglobals.start_page = myglobals.start_page + 2
-        # #Now get images of previous month
-        # month += 1
-        # timeframe = today- dateutil.relativedelta.relativedelta(months=month - 1), today - dateutil.relativedelta.relativedelta(months=month)
+        c +=1 # Go for next city
 
-    else: #Go for the next city only if we have all the images for this city
-        print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir)))
-        c+=1
-        print c
-        myglobals.start_page = 0
-        #Start from 1st month
-        # month = starting_month
-        # timeframe = today - dateutil.relativedelta.relativedelta(month=starting_month - 1), today - dateutil.relativedelta.relativedelta(month=starting_month)
+        # #Count number of images for curr city, and continue downloading if is not completed
+        # if len(os.listdir(city_dir)) < num_2_download:
+        #     print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir)))
+        #     print "Continue downloading images for same city..."
+        #     myglobals.start_page = myglobals.start_page + 2
+        #     # #Now get images of previous month
+        #     # month += 1
+        #     # timeframe = today- dateutil.relativedelta.relativedelta(months=month - 1), today - dateutil.relativedelta.relativedelta(months=month)
+        #
+        # else: #Go for the next city only if we have all the images for this city
+        #     print "Number of images for " + city + ': ' + str(len(os.listdir(city_dir)))
+        #     c+=1
+        #     print c
+        #     myglobals.start_page = 0
+            #Start from 1st month
+            # month = starting_month
+            # timeframe = today - dateutil.relativedelta.relativedelta(month=starting_month - 1), today - dateutil.relativedelta.relativedelta(month=starting_month)
 

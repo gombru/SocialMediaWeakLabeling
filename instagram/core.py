@@ -227,11 +227,12 @@ class InstaLooter(object):
             `dict`: the page content deserialised from JSON
         """
         url = self._base_url.format(self.target)
-        current_page = myglobals.start_page
+        # current_page = myglobals.start_page
+        current_page = 0
         while True:
             current_page += 1
-            myglobals.start_page = current_page
-            print "Current page: " + str(current_page)
+            # myglobals.start_page = current_page
+            # print "Current page: " + str(current_page)
             res = self.session.get(url)
             data = self._get_shared_data(res)
 
@@ -472,13 +473,15 @@ class InstaLooter(object):
         print 'Filling cue...'
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
             medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, medias_refused, new_only)
-            if medias_refused > 10000:
+            print " + Queued: " + str(medias_queued)
+            print " - Refused: " + str(medias_refused)
+            if medias_refused > 1000:
                 stop = True
-                print "Medias refused limit (5000) reached. It seems all images have been downloaded for this city. Or maybe images already existed in the folder. Check that."
+                print "Medias refused limit (1000) reached. It seems all images have been downloaded for this city. Or maybe images already existed in the folder. Check that."
             if stop:
                 print "Stopping"
                 break
-        print 'Num of media tried to download: ' + str(medias_queued)
+        print 'Num of media downloaded: ' + str(medias_queued)
         return medias_queued
 
     def _add_media_to_queue(self, media, condition, media_count, medias_queued, medias_refused, new_only):
@@ -491,7 +494,7 @@ class InstaLooter(object):
             if not os.path.exists(os.path.join(self.directory, media_basename)):
                 medias_queued += 1
                 self._medias_queue.put(media)
-                print "Element added to cue: " + str(medias_queued)
+                # print "Element added to cue: " + str(medias_queued)
 
 
             # stop here if the file already exists and we want only new files
@@ -502,7 +505,7 @@ class InstaLooter(object):
                 return medias_queued, True
 
             if os.path.exists(os.path.join(self.directory, media_basename)):
-                print "File exists, not added to cue"
+                # print "File exists, not added to cue"
                 medias_refused += 1
 
         return medias_queued, medias_refused, False

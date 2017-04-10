@@ -11,18 +11,18 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-weights = '../../../datasets/SocialMedia/models/pretrained/VGG_ILSVRC_16_layers.caffemodel'
+weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_reference_caffenet.caffemodel'
 assert os.path.exists(weights)
 
 
-split_train = 'trainCitiesInstagram40'
-split_val = 'valCitiesInstagram40'
-num_labels = 40
-batch_size = 40 #AlexNet 100, VGG 40
+split_train = 'trainCitiesInstagram'
+split_val = 'valCitiesInstagram'
+num_labels = 100
+batch_size = 256 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
-crop_w = 224 #227 AlexNet, 224 VGG16
-crop_h = 224
+crop_w = 227 #227 AlexNet, 224 VGG16
+crop_h = 227
 crop_margin = 10 #The crop won't include the margin in pixels
 mirror = True #Mirror images with 50% prob
 rotate = 0 #15,8 #Always rotate with angle between -a and a
@@ -31,14 +31,14 @@ HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different
 
 
 #Create the net architecture
-net_train = build_VGG16Net(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
 #Prepare validation net
-net_val = build_VGG16Net(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
+net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 
-base_lr = 0.0001 #VGG 0.0001  #AlexNet 0.0001
+base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001
 
-display_interval = 50
+display_interval = 2
 niter = 1000111
 
 #number of validating images  is  test_iters * batchSize

@@ -31,14 +31,14 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # every `stepsize` iterations.
     s.lr_policy = 'step'
     s.gamma = 0.1
-    s.stepsize = 20000
+    s.stepsize = 50000
 
     # Set other SGD hyperparameters. Setting a non-zero `momentum` takes a
     # weighted average of the current gradient and previous gradients to make
     # learning more stable. L2 weight decay regularizes learning, to help prevent
     # the model from overfitting.
     s.momentum = 0.9
-    s.weight_decay = 0.0001  #VGG 0.0001 AlexNet 0.004
+    s.weight_decay = 0.0005  #VGG 0.0001 AlexNet 0.004
 
     # Display the current training loss and accuracy every 1000 iterations.
     s.display = 1000000
@@ -46,7 +46,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 10000 #1000
-    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16_'
+    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_'
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU

@@ -82,25 +82,21 @@ def build_AlexNet(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, 
     n.conv4, n.relu4 = conv_relu(n.relu3, 3, 384, pad=1, group=2, param=learned_param)
     n.conv5, n.relu5 = conv_relu(n.relu4, 3, 256, pad=1, group=2, param=learned_param)
     n.pool5 = max_pool(n.relu5, 3, stride=2)
-    n.fc6, n.relu6 = fc_relu(n.pool5, 4096, param=boosted_param) #4096
+    n.fc6, n.relu6 = fc_relu(n.pool5, 4096, param=learned_param) #4096
     if train:
-        n.drop6 = fc7input = L.Dropout(n.relu6, in_place=True)
+        n.drop6 = fc7input = L.Dropout(n.relu6, in_place=True, dropout_ratio=0.5)
     else:
         fc7input = n.relu6
-    n.fc7, n.relu7 = fc_relu(fc7input, 4096, param=boosted_param) #4096
+    n.fc7, n.relu7 = fc_relu(fc7input, 4096, param=learned_param) #4096
     if train:
-        n.drop7 = fc8input = L.Dropout(n.relu7, in_place=True)
+        n.drop7 = fc8input = L.Dropout(n.relu7, in_place=True, dropout_ratio=0.5)
     else:
         fc8input = n.relu7
 
-    fc8 = L.InnerProduct(fc8input, num_output=num_classes, param=boosted_param)
+    n.fc8C = L.InnerProduct(fc8input, num_output=num_classes,  weight_filler=dict(type='gaussian', std=0.01),
+            bias_filler=dict(type='constant', value=0.1), param=learned_param)
 
-    n.__setattr__('classifier', fc8)
-    if not train:
-        n.probs = L.Softmax(fc8)
-
-    n.loss = L.SigmoidCrossEntropyLoss(fc8, n.label)
-    # n.acc = L.MULTI_LABEL_ACCURACY(fc8, n.label)
+    n.loss = L.SigmoidCrossEntropyLoss(n.fc8C, n.label)
 
     if train:
         with open('train.prototxt', 'w') as f:

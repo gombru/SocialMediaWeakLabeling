@@ -1,7 +1,5 @@
 import sys
 import caffe
-from deprocess import deprocess_net_image
-from create_VGG16Net import build_VGG16Net
 from pylab import *
 import time
 
@@ -30,22 +28,19 @@ def disp_preds(net, image, batch_index):
     input_blob = net.blobs['data']
     net.blobs['data'].data[0, ...] = image
     # probs = net.forward(start='conv1')['probs'][0]
-    probs = net.blobs['probs'].data[batch_index]
+    probs = net.blobs['loss3/classifierCustom'].data[batch_index]
     # print '\nPredic l. =', probs
     top_k = (-probs).argsort()[:k]
     print 'top %d predicted labels =' % (k)
-    print '\n'.join('\t(%d) %5.2f%% %s' % (i+1, 100*probs[p], p)
+    print '\n'.join('\t(%d) %5.2f %s' % (i+1, probs[p], p)
                     for i, p in enumerate(top_k))
 
 
 
-# test_net = caffe.Net(build_VGG16Net(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False), weights, caffe.TEST)
-test_net = caffe.Net('deploy.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/.caffemodel', caffe.TEST)
+test_net = caffe.Net('val.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_GoogLeNet__iter_98000.caffemodel', caffe.TEST)
 
-loss = 0
 for it in xrange(test_iters):
-
-    loss += test_net.forward()['loss']
+    test_net.forward()
 
 for b in range(0,10):
     #Print labels of an arbitrary image
