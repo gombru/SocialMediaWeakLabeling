@@ -38,12 +38,12 @@ net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_
 
 base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001
 
-display_interval = 2
+display_interval = 20
 niter = 1000111
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 250 #200
-test_iters = 40 #20
+test_interval = 120 #200
+test_iters = 20 #20
 
 #Set solver configuration
 solver_filename = create_solver(net_train, net_val, base_lr=base_lr)
