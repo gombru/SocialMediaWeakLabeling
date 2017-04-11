@@ -15,9 +15,9 @@ weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_reference_caffen
 assert os.path.exists(weights)
 
 
-split_train = 'trainCitiesInstagram'
-split_val = 'valCitiesInstagram'
-num_labels = 100
+split_train = 'trainCitiesInstagram40'
+split_val = 'valCitiesInstagram40'
+num_labels = 40
 batch_size = 256 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
@@ -36,10 +36,10 @@ net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_
 net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 
-base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001
+base_lr = 0.0001 #VGG 0.0001  #AlexNet 0.0001 #Regression 0.001
 
 display_interval = 20
-niter = 1000111
+niter = 100011100
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 120 #200

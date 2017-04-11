@@ -110,6 +110,7 @@ class InstaDownloader(threading.Thread):
             try:
                 # save full-resolution photo
                 self._dl(photo_url, photo_name)
+                # print caption_name
                 with open(caption_name, "w") as text_file:
                     text_file.write(caption_text)
                 # put info from Instagram post into image metadata
@@ -143,10 +144,6 @@ class InstaDownloader(threading.Thread):
 
     def _dl(self, source, dest):
         self.session.headers['Accept'] = '*/*'
-        # if os.path.isfile(dest):
-        #     print "Replacing: " + dest + '\n'
-        # else:
-        #     print "Saving: " + dest + '\n'
         with contextlib.closing(self.session.get(source)) as res:
             with open(dest, 'wb') as dest_file:
                 for block in res.iter_content(1024):

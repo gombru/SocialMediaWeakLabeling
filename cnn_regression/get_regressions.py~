@@ -56,10 +56,10 @@ for idx in test:
     topic_probs = net.blobs['probs'].data[0]   #Text score
 
     topic_probs_str = ''
-
+    print topic_probs
     for t in topic_probs:
         topic_probs_str = topic_probs_str + ',' + str(t)
-
+    print topic_probs_str
     output_file.write(idx + topic_probs_str + '\n')
 
 output_file.close()

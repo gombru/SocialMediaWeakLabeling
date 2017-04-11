@@ -2,11 +2,12 @@ import sys
 import caffe
 from deprocess import deprocess_net_image
 from create_VGG16Net import build_VGG16Net
+from create_AlexNet import build_AlexNet
 from pylab import *
 import time
 
 #Load weights of model to be evaluated
-weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VGG16__iter_10000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet__iter_30000.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 
@@ -14,10 +15,10 @@ weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VG
 # label_file = '../../../datasets/SocialMedia/lda_gt/trump/topic_names.txt'
 # labels = list(np.loadtxt(label_file, str, delimiter='\n'))
 
-num_labels = 100
+num_labels = 40
 #Number of image to be tested are batch size (100) * test iterations
 test_iters = 1
-split_val = 'londonClearTP'
+split_val = 'testCitiesInstagram40'
 batch_size = 10
 resize_w = 224
 resize_h = 224
@@ -39,13 +40,12 @@ def disp_preds(net, image, batch_index):
 
 
 
-# test_net = caffe.Net(build_VGG16Net(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False), weights, caffe.TEST)
-test_net = caffe.Net('deploy.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/.caffemodel', caffe.TEST)
+test_net = caffe.Net(build_AlexNet(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False, deploy = True), weights, caffe.TEST)
+# test_net = caffe.Net('deploy.prototxt', weights , caffe.TEST)
 
 loss = 0
 for it in xrange(test_iters):
-
-    loss += test_net.forward()['loss']
+    test_net.forward()
 
 for b in range(0,10):
     #Print labels of an arbitrary image

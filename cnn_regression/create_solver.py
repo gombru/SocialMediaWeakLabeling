@@ -17,11 +17,11 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # affecting memory utilization.
     s.iter_size = 1
 
-    s.max_iter = 100000  # # of times to update the net (training iterations)
+    s.max_iter = 10000000  # # of times to update the net (training iterations)
 
     # Solve using the stochastic gradient descent (SGD) algorithm.
     # Other choices include 'Adam' and 'RMSProp'.
-    s.type = 'SGD'
+    s.type = 'RMSProp'
 
     # Set the initial learning rate for SGD.
     s.base_lr = base_lr
@@ -37,7 +37,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # weighted average of the current gradient and previous gradients to make
     # learning more stable. L2 weight decay regularizes learning, to help prevent
     # the model from overfitting.
-    s.momentum = 0.9
+    s.momentum = 0 #SGD 0.9
     s.weight_decay = 0.0005  #VGG 0.0001 AlexNet 0.004
 
     # Display the current training loss and accuracy every 1000 iterations.
@@ -46,7 +46,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 10000 #1000
-    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_'
+    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_RMSProp_40'
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU

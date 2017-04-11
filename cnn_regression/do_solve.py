@@ -48,6 +48,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             ax1.plot(it_axes[0:it/disp_interval], train_loss[0:it/disp_interval], 'r')
             ax1.set_ylim([0,5])
             plt.ion()
+            plt.grid(True)
             plt.show()
             plt.pause(0.001)
             # title = '../training/numbers/training-' + str(it) + '.png'  # Save graph to disk
@@ -66,9 +67,10 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
             ax1.set_ylim([0,5])
             plt.ion()
+            plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../datasets/SocialMedia/models/training/training-' + str(it) + '.png'  # Save graph to disk
+            title = '../../../datasets/SocialMedia/models/training/training-intagram_cities_CaffeNet_RMSProp_40' + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 

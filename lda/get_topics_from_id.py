@@ -61,6 +61,6 @@ while "aed" in stopped_tokens:
     print "aed error"
 
 text = [p_stemmer.stem(i) for i in stopped_tokens]
-bow = ldamodel.id2word.doc2bow(tokens)
+bow = ldamodel.id2word.doc2bow(text)
 r = ldamodel[bow]
 print r
