@@ -1,3 +1,5 @@
+# Loads a txt with lines city/{im_id},score1,score2 into a dictionary with city/{im_id} as keys and np arrays of dim num_topics as values
+
 import numpy as np
 
 def load_regressions_from_txt(path, num_topics):

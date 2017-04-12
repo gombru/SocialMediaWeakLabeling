@@ -1,4 +1,5 @@
 # Saves images examples of each topic for visualization
+# DEPRECATED: This was uses for twitter images
 
 import os
 from PIL import Image

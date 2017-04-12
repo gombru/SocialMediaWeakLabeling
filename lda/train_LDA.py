@@ -1,4 +1,4 @@
-# Trains and saves an LDA model with the fiven text file.
+# Trains and saves an LDA model with the given text files.
 
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
@@ -60,9 +60,9 @@ for city in cities:
         for line in file:
             caption =  caption + line
 
-        # --Replace hashtags with spaces
+        # Replace hashtags with spaces
         capion = caption.replace('#', ' ')
-        # -- Keep only letters and numbers
+        # Keep only letters and numbers
         for char in caption:
             if char in whitelist:
                 filtered_caption += char

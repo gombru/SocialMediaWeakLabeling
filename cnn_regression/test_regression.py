@@ -7,7 +7,7 @@ from pylab import *
 import time
 
 #Load weights of model to be evaluated
-weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet__iter_30000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_RMSProp_40_iter_10000.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 

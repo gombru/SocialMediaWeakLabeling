@@ -1,4 +1,4 @@
-# Resizes the images in a folder and creates a resized sets in another
+# Resizes the images in a folder and creates a resized datasetcd in another
 # It also filters  corrupted images
 
 import glob

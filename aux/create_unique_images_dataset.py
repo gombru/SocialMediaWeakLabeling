@@ -1,6 +1,9 @@
 # Takes a folder of images and finds duplicates using the im size and the file size. It creates a new folder with non-repeated images and another folder with the weak annotations of the
 # non-repeated images. Then the LDA test should be run in that weak annotations file to create the splits to train the net
 
+#This was used for twitter images. Not needed for instagram since there are not duplicates
+#DEPRECATED
+
 import glob
 import os
 import matplotlib.pyplot as plt

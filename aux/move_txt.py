@@ -1,3 +1,5 @@
+# Moves all txt files in a folder to another folder
+
 import glob
 from shutil import copyfile
 import os

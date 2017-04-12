@@ -1,5 +1,6 @@
 # Removes the corrupted image nfiles and its anotations. Then LDA test should be run to do the splits for training
 # DEPRECATED: Now process_tweets_images.py is already filtering corrupted images
+# DEPRECATED: Now resize_dataset is already filtering corrupted images
 
 import glob
 from PIL import Image

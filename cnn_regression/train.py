@@ -36,7 +36,7 @@ net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_
 net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 
-base_lr = 0.0001 #VGG 0.0001  #AlexNet 0.0001 #Regression 0.001
+base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001 #Regression 0.001
 
 display_interval = 20
 niter = 100011100

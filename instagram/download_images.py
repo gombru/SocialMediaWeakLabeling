@@ -1,11 +1,15 @@
+# Downloads instagram images and captions given query words.
+# It's web-based, it does a search and goes page by page retrivieng results
+# Once in page 3XXX the results start to be repeated. So this script checks if the file to be downloaded already exists,
+# It stops downloading when N already existing images have been tried to download.
+# It fires 4 ever every X minutes, so new uploaded images have been uploaded and can be dowloaded as the first results.
+# Tried to do a controled navigation of page results, but did not work, still repeated results.
+
+
 import os
 import hues
-import warnings
 import time
-import datetime
-import dateutil.relativedelta
 from core import InstaLooter
-from utils import (warn_with_hues, warn_windows)
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 

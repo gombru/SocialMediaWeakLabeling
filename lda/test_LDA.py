@@ -1,5 +1,6 @@
 # Load trained LDA model and infer topics for unseen text.
-# Make the train/val/test splits for CNN training
+# Make the train/val/test splits for CNN regression training
+# It also creates the splits train/val/test randomly
 
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
@@ -9,24 +10,30 @@ import glob
 from random import randint
 import string
 
-# It also creates the splits train/val/test randomly
-
+# Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_40.model'
 
+# Create output files
 gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram40.txt'
 gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram40.txt'
 gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram40.txt'
+train_file = open(gt_path_train, "w")
+val_file = open(gt_path_val, "w")
+test_file = open(gt_path_test, "w")
+
+cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 num_topics = 40
+
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
+
 # create English stop words list
 en_stop = get_stop_words('en')
+
 # add own stop words
 for w in words2filter:
     en_stop.append(w)
-
-cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 whitelist = string.letters + string.digits + ' '
 
@@ -37,10 +44,11 @@ tokenizer = RegexpTokenizer(r'\w+')
 p_stemmer = PorterStemmer()
 
 topics = ldamodel.print_topics(num_topics=num_topics, num_words=20)
+
 print topics
 
+# Save a txt with the topics and thei weights
 file = open('topics.txt', 'w')
-
 i = 0
 for item in topics:
     file.write(str(i) + " - ")
@@ -49,15 +57,10 @@ for item in topics:
     print i
 file.close()
 
+
 c= 0
-
-train_file = open(gt_path_train, "w")
-val_file = open(gt_path_val, "w")
-test_file = open(gt_path_test, "w")
-
 for city in cities:
     for file_name in glob.glob(text_data_path + city + "/*.txt"):
-
         id = file_name.split('/')[-1][:-4]
 
         with open(file_name, 'r') as file:
@@ -68,10 +71,10 @@ for city in cities:
             for line in file:
                 caption = caption + line
 
-            # --Replace hashtags with spaces
+            # Replace hashtags with spaces
             capion = caption.replace('#',' ')
 
-            # -- Keep only letters and numbers
+            # Keep only letters and numbers
             for char in caption:
                 if char in whitelist:
                     filtered_caption += char
@@ -83,7 +86,7 @@ for city in cities:
             stopped_tokens = [i for i in tokens if not i in en_stop]
             # stem token
 
-            #Check this error
+            # Handle stemmer error
             while "aed" in stopped_tokens:
                 stopped_tokens.remove("aed")
                 print "aed error"
@@ -118,8 +121,8 @@ for city in cities:
 
             # GT for regression
 
+            # Add zeros to topics without score
             topic_probs = ''
-
             for t in range(0,num_topics):
                 assigned = False
                 for topic in r:
@@ -136,13 +139,12 @@ for city in cities:
             if c % 100 == 0:
                 print c
 
+            # Create splits
             split = randint(0,9)
             if split < 8:
                 train_file.write(city + '/' + id + topic_probs + '\n')
             elif split == 8: val_file.write(city + '/' + id + topic_probs + '\n')
             else: test_file.write(city + '/' + id + topic_probs + '\n')
-
-
 
 
 train_file.close()

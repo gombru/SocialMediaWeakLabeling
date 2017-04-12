@@ -1,5 +1,4 @@
-# Load trained LDA model and infer topics for unseen text.
-# Make the train/val/test splits for CNN training
+# Get the topic distribution from a text file
 
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
@@ -9,8 +8,6 @@ import glob
 from random import randint
 import string
 
-# It also creates the splits train/val/test randomly
-
 id = '1480255059174847010'
 city = 'sydney'
 file_name =  '../../../datasets/SocialMedia/captions_resized/cities_instagram/' + city + '/' + id + '.txt'
@@ -19,6 +16,7 @@ model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagra
 
 num_topics = 100
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
+
 # create English stop words list
 en_stop = get_stop_words('en')
 # add own stop words
