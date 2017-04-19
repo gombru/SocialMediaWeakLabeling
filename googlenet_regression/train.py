@@ -24,7 +24,7 @@ test_interval = 200
 test_iters = 25
 
 #Set solver configuration
-solver_filename = create_solver('train.prototxt', 'val.prototxt', base_lr=base_lr)
+solver_filename = create_solver('train_frozen_100_reduced.prototxt', 'val_frozen_100_reduced.prototxt', base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

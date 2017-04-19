@@ -53,4 +53,4 @@ def build_net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop
 
 
 #JUSTO TO CREATE DATA LAYER; NET ARQ IS HARDCODED
-build_net(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+build_net(split_train, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
