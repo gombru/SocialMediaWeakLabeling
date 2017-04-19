@@ -42,7 +42,7 @@ def max_pool(bottom, ks, stride=1):
 def ave_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.AVE, kernel_size=ks, stride=stride)
 
-def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True):
+def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True, deploy=False):
 
     weight_param = dict(lr_mult=1, decay_mult=1)
     bias_param = dict(lr_mult=2, decay_mult=0)
@@ -113,17 +113,26 @@ def build_VGG16Net(split, num_classes, batch_size, resize_w, resize_h, crop_w=0,
     else:
         fc8input = n.relu7
 
-    fc8 = L.InnerProduct(fc8input, num_output=num_classes, param=boosted_param)
+    n.fc8C = L.InnerProduct(fc8input, num_output=num_classes, param=boosted_param)
 
-    n.__setattr__('classifier', fc8)
-    if not train:
-        n.probs = L.Softmax(fc8)
+    if not deploy:
+        n.loss = L.SigmoidCrossEntropyLoss(n.fc8C, n.label)
 
-    # n.loss = L.SoftmaxWithLoss(fc8, n.label)
-    # n.acc = L.Accuracy(fc8, n.label)
+    if deploy:
+        n.probs = L.Sigmoid(n.fc8C)
+        with open('deploy.prototxt', 'w') as f:
+            f.write(str(n.to_proto()))
+            return f.name
+    else:
 
-    # n.loss = L.SigmoidCrossEntropyLoss(fc8, n.label)
-    n.loss = L.EuclideanLoss(fc8, n.label)
+        if train:
+            with open('train.prototxt', 'w') as f:
+                f.write(str(n.to_proto()))
+                return f.name
+        else:
+            with open('val.prototxt', 'w') as f:
+                f.write(str(n.to_proto()))
+                return f.name
 
 
 

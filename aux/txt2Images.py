@@ -1,7 +1,6 @@
-import os
-from PIL import Image
-from shutil import copyfile
+# Copies images listed in a txt to a separate folder
 
+from shutil import copyfile
 
 file = "../../../datasets/SocialMedia/londonTestImages.txt"
 img_path = "../../../datasets/SocialMedia/img_resized/cities_instagram/"
@@ -9,7 +8,6 @@ destPath = "../../../datasets/SocialMedia/samples/"
 
 # num_images = 900
 # n=0
-
 
 with open(file, 'r') as fin:
     lines = fin.readlines()

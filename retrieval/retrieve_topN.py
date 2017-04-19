@@ -16,7 +16,7 @@ LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_inst
 num_topics = 40 # Num LDA model topics
 num_results = 5 # Num retrival results we want save
 
-text = "sun rise sunrise" # Query text
+text = "dog cat animal" # Query text
 results_path = "../../../datasets/SocialMedia/retrieval_results/" + text.replace(' ','_') + '/'
 
 if not os.path.exists(results_path):
@@ -33,27 +33,38 @@ topics = text2topics(text, ldamodel, num_topics)
 database = load_regressions_from_txt(database_path, num_topics)
 
 # Create empty dict for distances
-distances = {}
+# distances = {}
 
-# Compute distances (This should be used to parallelize. TODO How to share a dictionary between threads?)
-# def compute_distances(id):
-#     dist = np.linalg.norm(database[id]-topics)
-#     distances[id] = dist
-#
-# # Compute distances in parallel
-# Parallel(n_jobs=10)(delayed(compute_distances)(id) for id in database)
+# Compute distances parallel
+def compute_distances(id):
+    dist = np.linalg.norm(database[id]-topics)
+    return dist, id
 
-# Compute distances
-print "Computing distances"
-for id in database:    distances[id] = np.linalg.norm(database[id]-topics)
+# Compute distances in parallel
+parallelizer = Parallel(n_jobs=4)
+tasks_iterator = (delayed(compute_distances)(id) for id in database)
+r = parallelizer(tasks_iterator)
+# merging the output of the jobs
+distances = np.vstack(r)
+# # Compute distances
+# print "Computing distances"
+# for id in database:    distances[id] = np.linalg.norm(database[id]-topics)
 
 # Get elements with min distances
-results = []
 for n in range(0,num_results):
-    id = min(distances.iteritems(), key=operator.itemgetter(1))[0]
-    print id + " -- " + str(distances[id])
-    distances.pop(id)
-    results.append(id)
+
+    # If dictionary (non-paralel)
+    # id = min(distances.iteritems(), key=operator.itemgetter(1))[0]
+    # print id + " -- " + str(distances[id])
+    # distances.pop(id)
+
+    # If array (parallel)
+    el = np.argmin(distances[:, 0])
+    dist = distances[el,0]
+    id = distances[el,1]
+    distances[el, 0] = 1000
+    print id + " -- " + str(dist)
+
     # Copy image results
     copyfile('../../../datasets/SocialMedia/img_resized/cities_instagram/' + id + '.jpg', results_path + id.replace('/','_') + '.jpg')
 

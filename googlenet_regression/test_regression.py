@@ -12,13 +12,8 @@ weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_VG
 # label_file = '../../../datasets/SocialMedia/lda_gt/trump/topic_names.txt'
 # labels = list(np.loadtxt(label_file, str, delimiter='\n'))
 
-num_labels = 100
-#Number of image to be tested are batch size (100) * test iterations
+num_labels = 40
 test_iters = 1
-split_val = 'londonClearTP'
-batch_size = 10
-resize_w = 224
-resize_h = 224
 k = 5
 
 #Print per class accuracy of last batch
@@ -28,7 +23,7 @@ def disp_preds(net, image, batch_index):
     input_blob = net.blobs['data']
     net.blobs['data'].data[0, ...] = image
     # probs = net.forward(start='conv1')['probs'][0]
-    probs = net.blobs['loss3/classifierCustom'].data[batch_index]
+    probs = net.blobs['probs'].data[batch_index]
     # print '\nPredic l. =', probs
     top_k = (-probs).argsort()[:k]
     print 'top %d predicted labels =' % (k)
@@ -37,7 +32,7 @@ def disp_preds(net, image, batch_index):
 
 
 
-test_net = caffe.Net('val.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_GoogLeNet__iter_98000.caffemodel', caffe.TEST)
+test_net = caffe.Net('val.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_Inception__iter_90000.caffemodel', caffe.TEST)
 
 for it in xrange(test_iters):
     test_net.forward()

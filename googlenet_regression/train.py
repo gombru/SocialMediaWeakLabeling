@@ -15,13 +15,13 @@ caffe.set_mode_gpu()
 weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
 assert os.path.exists(weights)
 
-niter = 1000111
-base_lr = 0.0001 #Starting from 0.01
-display_interval = 2
+niter = 10001111
+base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
+display_interval = 40
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 20
-test_iters = 10
+test_interval = 200
+test_iters = 25
 
 #Set solver configuration
 solver_filename = create_solver('train.prototxt', 'val.prototxt', base_lr=base_lr)

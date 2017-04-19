@@ -16,8 +16,10 @@ requests.packages.urllib3.disable_warnings()
 directory = '/home/imatge/disk2/cities_instagram/img/'
 get_videos = False
 first = True
-login = 'lazarpitas'
-password = 'Gata20'
+login1 = login = 'raulgombru'
+password1 = password ='Girasoles19'
+login2 = 'lazarpitas'
+password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
 
 cities = ['losangeles','chicago','melbourne','miami','sanfrancisco','sydney','toronto','singapore','london','newyork']
@@ -63,6 +65,13 @@ while True:
             hues.success('Logged in.')
         except:
             print "Error while loggining"
+            if login == login1:
+                login = login2
+                password = password2
+            else:
+                login = login1
+                password = password1
+
             time.sleep(60)
             continue
 

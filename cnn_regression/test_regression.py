@@ -7,7 +7,7 @@ from pylab import *
 import time
 
 #Load weights of model to be evaluated
-weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_RMSProp_40_iter_10000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/saved/intagram_cities_CaffeNet_100_iter_40000.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 
@@ -15,10 +15,10 @@ weights = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_Ca
 # label_file = '../../../datasets/SocialMedia/lda_gt/trump/topic_names.txt'
 # labels = list(np.loadtxt(label_file, str, delimiter='\n'))
 
-num_labels = 40
+num_labels = 100
 #Number of image to be tested are batch size (100) * test iterations
 test_iters = 1
-split_val = 'testCitiesInstagram40'
+split_val = 'testCitiesInstagram100'
 batch_size = 10
 resize_w = 224
 resize_h = 224

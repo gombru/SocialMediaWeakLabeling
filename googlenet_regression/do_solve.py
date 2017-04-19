@@ -46,8 +46,9 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             train_loss[it/disp_interval] = loss['my_solver'][it]
 
             ax1.plot(it_axes[0:it/disp_interval], train_loss[0:it/disp_interval], 'r')
-            # ax1.set_ylim([0,10])
+            ax1.set_ylim([0,5])
             plt.ion()
+            plt.grid(True)
             plt.show()
             plt.pause(0.001)
             # title = '../training/numbers/training-' + str(it) + '.png'  # Save graph to disk
@@ -64,8 +65,9 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
 
             val_loss[it/test_interval - 1] = loss_val
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
-            # ax1.set_ylim([0,10])
+            ax1.set_ylim([0,5])
             plt.ion()
+            plt.grid(True)
             plt.show()
             plt.pause(0.001)
             title = '../../../datasets/SocialMedia/models/training/training-' + str(it) + '.png'  # Save graph to disk

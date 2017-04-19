@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "layers"
     layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 224, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 10, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': False, \'split\': \'testCitiesInstagram40\', \'mirror\': 0, \'num_classes\': 40, \'resize_w\': 224, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
+    param_str: "{\'rotate\': 0, \'resize_h\': 224, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 10, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': False, \'split\': \'testCitiesInstagram100\', \'mirror\': 0, \'num_classes\': 100, \'resize_w\': 224, \'crop_margin\': 0, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
   }
 }
 layer {
@@ -315,7 +315,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 40
+    num_output: 100
     weight_filler {
       type: "gaussian"
       std: 0.01

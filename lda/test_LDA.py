@@ -9,6 +9,8 @@ from gensim import corpora, models
 import glob
 from random import randint
 import string
+from joblib import Parallel, delayed
+import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
@@ -47,104 +49,108 @@ topics = ldamodel.print_topics(num_topics=num_topics, num_words=20)
 
 print topics
 
-# Save a txt with the topics and thei weights
+# Save a txt with the topics and the weights
 file = open('topics.txt', 'w')
 i = 0
 for item in topics:
     file.write(str(i) + " - ")
     file.write("%s\n" % item[1])
     i+=1
-    print i
 file.close()
 
 
-c= 0
+def infer_LDA(file_name):
+
+    id = file_name.split('/')[-1][:-4]
+
+    with open(file_name, 'r') as file:
+
+        caption = ""
+        filtered_caption = ""
+
+        for line in file:
+            caption = caption + line
+
+        # Replace hashtags with spaces
+        capion = caption.replace('#',' ')
+
+        # Keep only letters and numbers
+        for char in caption:
+            if char in whitelist:
+                filtered_caption += char
+
+        filtered_caption = filtered_caption.lower()
+
+        tokens = tokenizer.tokenize(filtered_caption)
+        # remove stop words from tokens
+        stopped_tokens = [i for i in tokens if not i in en_stop]
+        # stem token
+
+        # Handle stemmer error
+        while "aed" in stopped_tokens:
+            stopped_tokens.remove("aed")
+            print "aed error"
+
+        try:
+            text = [p_stemmer.stem(i) for i in stopped_tokens]
+            bow = ldamodel.id2word.doc2bow(text)
+            r = ldamodel[bow]
+            # print r
+        except:
+            print "Tokenizer error"
+            print stopped_tokens
+            return
+
+
+        # GT for classification
+
+        #To make a fast test I can use one-hot (classification) wiht caffe
+        # top_topic = 0
+        # top_value = 0
+        # for topic in r:
+        #     if topic[1] > top_value:
+        #         top_topic = topic[0]
+        #         top_value = topic[1]
+        #
+        # split = randint(0,9)
+        # if split < 8:
+        #     train_file.write(id + ',' + str(top_topic) + '\n')
+        # elif split == 8: val_file.write(id + ',' + str(top_topic) + '\n')
+        # else: test_file.write(id + ',' + str(top_topic) + '\n')
+
+
+        # GT for regression
+
+        # Add zeros to topics without score
+        topic_probs = ''
+        for t in range(0,num_topics):
+            assigned = False
+            for topic in r:
+                    if topic[0] == t:
+                        topic_probs = topic_probs + ',' + str(topic[1])
+                        assigned = True
+                        continue
+            if not assigned:
+                topic_probs = topic_probs + ',' + '0'
+
+        # print id + topic_probs
+        return city + '/' + id + topic_probs
+
+
 for city in cities:
-    for file_name in glob.glob(text_data_path + city + "/*.txt"):
-        id = file_name.split('/')[-1][:-4]
+        parallelizer = Parallel(n_jobs=4)
+        tasks_iterator = (delayed(infer_LDA)(file_name) for file_name in glob.glob(text_data_path + city + "/*.txt"))
+        r = parallelizer(tasks_iterator)
+        # merging the output of the jobs
+        strings = np.vstack(r)
 
-        with open(file_name, 'r') as file:
-
-            caption = ""
-            filtered_caption = ""
-
-            for line in file:
-                caption = caption + line
-
-            # Replace hashtags with spaces
-            capion = caption.replace('#',' ')
-
-            # Keep only letters and numbers
-            for char in caption:
-                if char in whitelist:
-                    filtered_caption += char
-
-            filtered_caption = filtered_caption.lower()
-
-            tokens = tokenizer.tokenize(filtered_caption)
-            # remove stop words from tokens
-            stopped_tokens = [i for i in tokens if not i in en_stop]
-            # stem token
-
-            # Handle stemmer error
-            while "aed" in stopped_tokens:
-                stopped_tokens.remove("aed")
-                print "aed error"
-
-            try:
-                text = [p_stemmer.stem(i) for i in stopped_tokens]
-                bow = ldamodel.id2word.doc2bow(text)
-                r = ldamodel[bow]
-                # print r
-            except:
-                print "Tokenizer error"
-                print stopped_tokens
-                continue
-
-
-            # GT for classification
-
-            #To make a fast test I can use one-hot (classification) wiht caffe
-            # top_topic = 0
-            # top_value = 0
-            # for topic in r:
-            #     if topic[1] > top_value:
-            #         top_topic = topic[0]
-            #         top_value = topic[1]
-            #
-            # split = randint(0,9)
-            # if split < 8:
-            #     train_file.write(id + ',' + str(top_topic) + '\n')
-            # elif split == 8: val_file.write(id + ',' + str(top_topic) + '\n')
-            # else: test_file.write(id + ',' + str(top_topic) + '\n')
-
-
-            # GT for regression
-
-            # Add zeros to topics without score
-            topic_probs = ''
-            for t in range(0,num_topics):
-                assigned = False
-                for topic in r:
-                        if topic[0] == t:
-                            topic_probs = topic_probs + ',' + str(topic[1])
-                            assigned = True
-                            continue
-                if not assigned:
-                    topic_probs = topic_probs + ',' + '0'
-
-            # print id + topic_probs
-
-            c += 1
-            if c % 100 == 0:
-                print c
-
+        for s in strings:
             # Create splits
             split = randint(0,9)
             if split < 8:
-                train_file.write(city + '/' + id + topic_probs + '\n')
-            elif split == 8: val_file.write(city + '/' + id + topic_probs + '\n')
-            else: test_file.write(city + '/' + id + topic_probs + '\n')
+                train_file.write(s[0] + '\n')
+            elif split == 8: val_file.write(s[0] + '\n')
+            else: test_file.write(s[0] + '\n')
 
 
 train_file.close()
