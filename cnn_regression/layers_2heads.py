@@ -8,7 +8,7 @@ import time
 import random
 
 
-class customDataLayer(caffe.Layer):
+class twoHeadsDataLayer(caffe.Layer):
     """
     Load (input image, label image) pairs from the SBDD extended labeling
     of PASCAL VOC for semantic segmentation
@@ -59,12 +59,11 @@ class customDataLayer(caffe.Layer):
 
         self.num_classes= params['num_classes']
 
-
-
+        self.cities = ['london', 'newyork', 'sydney', 'losangeles', 'chicago', 'melbourne', 'miami', 'toronto', 'singapore','sanfrancisco']
 
         # two tops: data and label
-        if len(top) != 2:
-            raise Exception("Need to define two tops: data and label.")
+        if len(top) != 3:
+            raise Exception("Need to define two tops: data, regression labels and classification label.")
         # data layers have no bottoms
         if len(bottom) != 0:
             raise Exception("Do not define a bottom.")
@@ -77,10 +76,14 @@ class customDataLayer(caffe.Layer):
 
         # Load labels for multiclass
         self.labels = np.zeros((len(self.indices), self.num_classes))
+        self.labels_class = np.zeros((len(self.indices), 1))
 
         for c,i in enumerate(self.indices):
+            #Load regression labels
             for l in range(1,self.num_classes):
                 self.labels[c,l] = float(i.split(',')[l])
+            #Load classification labels
+                self.labels_class[c] = self.cities.index(i.split('/')[0])
 
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
@@ -106,22 +109,25 @@ class customDataLayer(caffe.Layer):
         # once. Else, we'd have to do it in the reshape call.
         top[0].reshape(self.batch_size, 3, params['crop_w'], params['crop_h'])
         top[1].reshape(self.batch_size, self.num_classes)
+        top[2].reshape(self.batch_size, 1)
 
 
     def reshape(self, bottom, top):
         # load image + label image pair
         self.data = np.zeros((self.batch_size, 3, self.crop_w, self.crop_h))
         self.label = np.zeros((self.batch_size, self.num_classes))
+        self.label_class = np.zeros((self.batch_size, 1))
+
         for x in range(0,self.batch_size):
             self.data[x,] = self.load_image(self.indices[self.idx[x]])
             self.label[x,] = self.labels[self.idx[x],]
-
-
+            self.label_class[x,] = self.labels_class[self.idx[x],]
 
     def forward(self, bottom, top):
         # assign output
         top[0].data[...] = self.data
         top[1].data[...] = self.label
+        top[2].data[...] = self.label_class
 
         self.idx = np.arange(self.batch_size)
 

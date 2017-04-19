@@ -2,6 +2,7 @@
 import sys
 import caffe
 from create_AlexNet import build_AlexNet
+from create_AlexNet_2heads import build_AlexNet_2heads
 from create_VGG16Net import build_VGG16Net
 from create_solver import create_solver
 from do_solve import do_solve
@@ -15,9 +16,9 @@ weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_reference_caffen
 assert os.path.exists(weights)
 
 
-split_train = 'trainCitiesInstagram40'
-split_val = 'valCitiesInstagram40'
-num_labels = 40
+split_train = 'trainCitiesInstagram100'
+split_val = 'valCitiesInstagram100'
+num_labels = 100
 batch_size = 256 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
@@ -31,9 +32,9 @@ HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different
 
 
 #Create the net architecture
-net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+net_train = build_AlexNet_2heads(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
 #Prepare validation net
-net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
+net_val = build_AlexNet_2heads(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 
 base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001 #Regression 0.001

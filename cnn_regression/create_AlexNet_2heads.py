@@ -42,7 +42,7 @@ def max_pool(bottom, ks, stride=1):
 def ave_pool(bottom, ks, stride=1):
     return L.Pooling(bottom, pool=P.Pooling.AVE, kernel_size=ks, stride=stride)
 
-def build_AlexNet(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True, deploy=False):
+def build_AlexNet_2heads(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, crop_h=0, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=True, deploy=False):
     weight_param = dict(lr_mult=1, decay_mult=1)
     bias_param = dict(lr_mult=2, decay_mult=0)
     learned_param = [weight_param, bias_param]
@@ -67,14 +67,10 @@ def build_AlexNet(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, 
     pydata_params['HSV_jitter'] = HSV_jitter
     pydata_params['num_classes'] = num_classes
 
-    pylayer = 'customDataLayer'
+    pylayer = 'twoHeadsDataLayer'
 
-    n.data, n.label = L.Python(module='layers', layer=pylayer,
-                               ntop=2, param_str=str(pydata_params))
-
-    pylayer = 'addClassificationLabels'
-    n.label_class = L.Python(module='layers', layer=pylayer,
-                               ntop=1, param_str=str(pydata_params))
+    n.data, n.label, n.label_class = L.Python(module='layers_2heads', layer=pylayer,
+                               ntop=3, param_str=str(pydata_params))
 
 
     # Convs
@@ -127,7 +123,7 @@ def build_AlexNet(split, num_classes, batch_size, resize_w, resize_h, crop_w=0, 
     
     # Classification loss and acc
     if not deploy:
-        n.loss_class = L.SoftMaxWithLoss(n.fc8_class, n.label_class, loss_weight = 0.3)
+        n.loss_class = L.SoftmaxWithLoss(n.fc8_class, n.label_class, loss_weight = 0.3)
         n.acc_class = L.Accuracy(n.fc8_class, n.label_class)
 
     # Deploy output processing

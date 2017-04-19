@@ -3,10 +3,11 @@ layer {
   type: "Python"
   top: "data"
   top: "label"
+  top: "label_class"
   python_param {
-    module: "layers"
-    layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 227, \'batch_size\': 256, \'HSV_prob\': 0, \'crop_w\': 227, \'train\': True, \'split\': \'trainCitiesInstagram40\', \'mirror\': True, \'num_classes\': 40, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
+    module: "layers_2heads"
+    layer: "twoHeadsDataLayer"
+    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 227, \'batch_size\': 256, \'HSV_prob\': 0, \'crop_w\': 227, \'train\': True, \'split\': \'trainCitiesInstagram100\', \'mirror\': True, \'num_classes\': 100, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (104.00699, 116.66877, 122.67892)}"
   }
 }
 layer {
@@ -333,7 +334,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 40
+    num_output: 100
     weight_filler {
       type: "gaussian"
       std: 0.01
@@ -350,4 +351,125 @@ layer {
   bottom: "fc8C"
   bottom: "label"
   top: "loss"
+  loss_weight: 1
+}
+layer {
+  name: "fc6_class"
+  type: "InnerProduct"
+  bottom: "pool5"
+  top: "fc6_class"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu6_class"
+  type: "ReLU"
+  bottom: "fc6_class"
+  top: "fc6_class"
+}
+layer {
+  name: "drop6_class"
+  type: "Dropout"
+  bottom: "fc6_class"
+  top: "fc6_class"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc7_class"
+  type: "InnerProduct"
+  bottom: "fc6_class"
+  top: "fc7_class"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 4096
+    weight_filler {
+      type: "gaussian"
+      std: 0.005
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "relu7_class"
+  type: "ReLU"
+  bottom: "fc7_class"
+  top: "fc7_class"
+}
+layer {
+  name: "drop7_class"
+  type: "Dropout"
+  bottom: "fc7_class"
+  top: "fc7_class"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+layer {
+  name: "fc8_class"
+  type: "InnerProduct"
+  bottom: "fc7_class"
+  top: "fc8_class"
+  param {
+    lr_mult: 1
+    decay_mult: 1
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 10
+    weight_filler {
+      type: "gaussian"
+      std: 0.01
+    }
+    bias_filler {
+      type: "constant"
+      value: 0.1
+    }
+  }
+}
+layer {
+  name: "loss_class"
+  type: "SoftmaxWithLoss"
+  bottom: "fc8_class"
+  bottom: "label_class"
+  top: "loss_class"
+  loss_weight: 0.3
+}
+layer {
+  name: "acc_class"
+  type: "Accuracy"
+  bottom: "fc8_class"
+  bottom: "label_class"
+  top: "acc_class"
 }

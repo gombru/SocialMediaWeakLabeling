@@ -6,6 +6,9 @@ import caffe
 import numpy as np
 from PIL import Image
 from pylab import plt
+from matplotlib import cm
+from PIL import ImageFont
+from PIL import ImageDraw
 
 # Run in GPU
 caffe.set_device(0)
@@ -14,15 +17,16 @@ caffe.set_mode_gpu()
 windowSize = 40
 stepSize = 10
 # load net
-net = caffe.Net('CaffeNet_deploy.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_CaffeNet_iter_40000.caffemodel', caffe.TEST)
+net = caffe.Net('../cnn/deploy.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_VGG16__iter_21600.caffemodel', caffe.TEST)
 
-test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram40.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/testCitiesClassification.txt', dtype=str)
 
-def preprocess(filename):
+cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
+
+
+def preprocess(im):
     # load image
     # filename = '../../../datasets/SocialMedia/img_resized/cities_instagram/' + idx.split(',')[0] + '.jpg'
-    im = Image.open(filename)
-    im = im.resize((227, 227), Image.ANTIALIAS)
 
     # Turn grayscale images to 3 channels
     if (im.size.__len__() == 2):
@@ -77,32 +81,56 @@ for idx in test:
 
     filename = '../../../datasets/SocialMedia/img_resized/cities_instagram/' + idx.split(',')[0] + '.jpg'
 # filename = '../../../datasets/SocialMedia/img_resized/cities_instagram/london/1481113621266466265.jpg'
-    img = preprocess(filename)
-    out_img = np.zeros(img.shape)
-    out_img[1,:,:] = (img[0,:,:] + img[1,:,:] + img[2,:,:]) / 3
-    out_img[0,:,:] = (img[0,:,:] + img[1,:,:] + img[2,:,:]) / 3
+    gt = idx.split('/')[0]
+
+    im = Image.open(filename)
+    im = im.resize((224, 224), Image.ANTIALIAS)
+    im_o = im.copy()
+
+    im = preprocess(im)
+    out_img = np.zeros(im[0,:,:].shape)
 
     # Infer whole image
-    probs = infer(img)
+    probs = infer(im)
     top_topic = probs.argmax()
 
-    for (x, y, window) in sliding_window(img,stepSize=stepSize,windowSize=(windowSize,windowSize)):
-        occluded = np.zeros(img.shape)
-        occluded[:,y:y+windowSize,x:x+windowSize] = window
-        # plt.imshow(deprocess_net_image(occluded))
+    for (x, y, window) in sliding_window(im,stepSize=stepSize,windowSize=(windowSize,windowSize)):
+        # occluded = np.zeros(im.shape)
+        # occluded[:,y:y+windowSize,x:x+windowSize] = window
+
+        occluded = im.copy()
+        occluded[:, y:y + windowSize, x:x + windowSize] = 0
 
         probs = infer(occluded)
         value = probs[top_topic]
-        if value > float(1) / 40:
-            out_img[2, y:y + windowSize, x:x + windowSize] =  np.maximum(out_img[2, y:y + windowSize, x:x + windowSize], out_img[1, y:y + windowSize, x:x + windowSize] + value * 254 * 10)
-            plt.imshow(deprocess_net_image(occluded))
-            print value
-        plt.imshow(deprocess_net_image(out_img))
+        # if value > 0.2:
+        # print value
+        out_img[y:y + windowSize, x:x + windowSize] =  np.maximum(out_img[y:y + windowSize, x:x + windowSize], value)
+        # plt.imshow(np.array(im_o, dtype=np.uint8)[y:y + windowSize, x:x + windowSize])
+        # plt.imshow(out_img)
 
-    heatmap = Image.fromarray(deprocess_net_image(out_img))
-    heatmap.save('../../../datasets/SocialMedia/heatmaps/' + filename.split('/')[-1])
+
+    image = out_img.astype(np.float32)  # convert to float
+    image -= image.min()  # ensure the minimal value is 0.0
+    image /= image.max()
+    image = Image.fromarray(np.uint8(cm.rainbow(image) * 255))
+    colormap = np.array(image, dtype=np.uint8)
+    im_o = np.array(im_o, dtype=np.uint8)
+
+    # Stack images horitzontaly and save
+    imgs_comb = np.hstack([im_o,colormap[:,:,0:3]])
+    imgs_comb = Image.fromarray(imgs_comb)
+
+    #Draw GT class
+    draw = ImageDraw.Draw(imgs_comb)
+    # font = ImageFont.truetype(<font-file>, <font-size>)
+    font = ImageFont.truetype("/usr/share/fonts/truetype/droid/DroidSans-Bold.ttf", 20)
+    draw.text((0, 0), 'GT: ' + gt, (10, 255, 10), font=font)
+    draw.text((0, 20), 'OUT: ' + cities[top_topic], (10, 255, 10), font=font)
+
+
+    imgs_comb.save('../../../datasets/SocialMedia/heatmaps/' + filename.split('/')[-1])
     print filename
-
 
 
 
