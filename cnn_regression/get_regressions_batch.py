@@ -11,11 +11,11 @@ caffe.set_mode_gpu()
 test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram100.txt', dtype=str)
 
 #Output file
-output_file_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_CaffeNet_100_iter_40000/testCitiesClassification.txt'
+output_file_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_Inception_100_iter_115000/testCitiesClassification.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/deploy.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_CaffeNet_100_iter_40000.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/deploy100.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_Inception_100_iter_115000.caffemodel', caffe.TEST)
 
 size = 227
 
