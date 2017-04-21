@@ -11,7 +11,7 @@ from gensim import corpora, models
 
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_Inception_100_iter_115000/testCitiesClassification.txt'
+database_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_VGG16_100_iter_21600/testCitiesClassification.txt'
 LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 

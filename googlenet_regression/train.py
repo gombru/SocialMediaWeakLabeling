@@ -17,11 +17,11 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 40
+display_interval = 100
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 200
-test_iters = 25
+test_interval = 1000
+test_iters = 40
 
 #Set solver configuration
 solver_filename = create_solver('train_frozen_100_reduced.prototxt', 'val_frozen_100_reduced.prototxt', base_lr=base_lr)

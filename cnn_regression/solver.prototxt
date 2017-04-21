@@ -10,7 +10,7 @@ gamma: 0.1
 momentum: 0.9
 weight_decay: 0.0005
 stepsize: 50000
-snapshot: 10000
+snapshot: 1
 snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_40"
 solver_mode: GPU
 iter_size: 1

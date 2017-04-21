@@ -2,7 +2,7 @@ import sys
 import caffe
 import numpy as np
 from PIL import Image
-
+import os
 
 # Run in GPU
 caffe.set_device(0)
@@ -11,16 +11,20 @@ caffe.set_mode_gpu()
 test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram100.txt', dtype=str)
 
 #Output file
-output_file_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_Inception_100_iter_115000/testCitiesClassification.txt'
+output_file_dir = '../../../datasets/SocialMedia/regression_output/intagram_cities_VGG16_100_iter_21600'
+if not os.path.exists(output_file_dir):
+    os.makedirs(output_file_dir)
+output_file_path = output_file_dir + '/testCitiesClassification.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/deploy100.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_Inception_100_iter_115000.caffemodel', caffe.TEST)
+net = caffe.Net('../cnn_regression/VGG16_deploy.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_VGG16_100_iter_21600.caffemodel', caffe.TEST)
 
-size = 227
+
+size = 224
 
 # Reshape net
-batch_size = 300
+batch_size = 100
 net.blobs['data'].reshape(batch_size, 3, size, size)
 
 print 'Computing  ...'
@@ -71,7 +75,7 @@ while i < len(test):
         for t in topic_probs:
             topic_probs_str = topic_probs_str + ',' + str(t)
 
-        output_file.write( indices[x] + topic_probs_str + '\n')
+        output_file.write(indices[x].split(',')[0] + topic_probs_str + '\n')
 
 output_file.close()
 

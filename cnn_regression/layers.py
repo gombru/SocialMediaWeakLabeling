@@ -79,9 +79,9 @@ class customDataLayer(caffe.Layer):
         self.labels = np.zeros((len(self.indices), self.num_classes))
 
         for c,i in enumerate(self.indices):
-            for l in range(1,self.num_classes):
-                self.labels[c,l] = float(i.split(',')[l])
-
+            data = i.split(',')
+            for l in range(0,self.num_classes):
+                self.labels[c,l] = float(data[l+1])
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
@@ -115,7 +115,6 @@ class customDataLayer(caffe.Layer):
         for x in range(0,self.batch_size):
             self.data[x,] = self.load_image(self.indices[self.idx[x]])
             self.label[x,] = self.labels[self.idx[x],]
-
 
 
     def forward(self, bottom, top):

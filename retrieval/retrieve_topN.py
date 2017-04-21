@@ -14,9 +14,10 @@ database_path = '../../../datasets/SocialMedia/regression_output/intagram_cities
 LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
 
 num_topics = 100 # Num LDA model topics
-num_results = 5 # Num retrival results we want save
+num_results = 4 # Num retrival results we want save
 
-text = "train travel" # Query text
+# text = "palmtre crew gift chicago" # Query text
+text= 'bass rock'
 results_path = "../../../datasets/SocialMedia/retrieval_results/" + text.replace(' ','_') + '/'
 
 if not os.path.exists(results_path):

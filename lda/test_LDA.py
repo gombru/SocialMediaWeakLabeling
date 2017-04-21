@@ -14,19 +14,19 @@ import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_40.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram40.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram40.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram40.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram--.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram--.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram--.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 40
+num_topics = 100
 
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 

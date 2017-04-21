@@ -79,9 +79,10 @@ class twoHeadsDataLayer(caffe.Layer):
         self.labels_class = np.zeros((len(self.indices), 1))
 
         for c,i in enumerate(self.indices):
+            data = i.split(',')
             #Load regression labels
-            for l in range(1,self.num_classes):
-                self.labels[c,l] = float(i.split(',')[l])
+            for l in range(0,self.num_classes):
+                self.labels[c,l] = float(data[l+1])
             #Load classification labels
                 self.labels_class[c] = self.cities.index(i.split('/')[0])
 

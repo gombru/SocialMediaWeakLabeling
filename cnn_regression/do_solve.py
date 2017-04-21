@@ -70,7 +70,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters):
             plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../datasets/SocialMedia/models/training/training-instagram_cities_CaffeNet_RMSProp_40' + str(it) + '.png'  # Save graph to disk
+            title = '../../../datasets/SocialMedia/models/training/training-instagram_cities_CaffeNet_100' + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 

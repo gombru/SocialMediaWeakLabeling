@@ -14,8 +14,8 @@ def load_regressions_from_txt(path, num_topics):
     for line in file:
         d = line.split(',')
         regression_values = np.zeros(num_topics)
-        for t in range(0,num_topics-1):
-            regression_values[t] = d[t+1]
+        for t in range(0,num_topics):
+            regression_values[t-1] = d[t+1]  #TODO -1 in regression values should not be there. So I'm skipping using topic 0 somewhere
         database[d[0]] = regression_values
 
     return database

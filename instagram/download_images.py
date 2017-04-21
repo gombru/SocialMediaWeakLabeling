@@ -22,11 +22,11 @@ login2 = 'lazarpitas'
 password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
 
-cities = ['losangeles','chicago','melbourne','miami','sanfrancisco','sydney','toronto','singapore','london','newyork']
-
+# cities = ['losangeles','chicago','melbourne','miami','sanfrancisco','sydney','toronto','singapore','london','newyork']
+cities = ['singapore']
 jobs = 16
 num_2_query= 200000 #Num of images to build the looter
-num_2_download = 100000 #Num of images we want to end up having
+num_2_download = 150000 #Num of images we want to end up having
 
 sleep_seconds = 60*30
 

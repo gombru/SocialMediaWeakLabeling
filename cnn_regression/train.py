@@ -19,7 +19,7 @@ assert os.path.exists(weights)
 split_train = 'trainCitiesInstagram100'
 split_val = 'valCitiesInstagram100'
 num_labels = 100
-batch_size = 256 #AlexNet 100, VGG 40
+batch_size = 10 #AlexNet 100, VGG 40
 resize_w = 300
 resize_h = 300
 crop_w = 227 #227 AlexNet, 224 VGG16
@@ -32,9 +32,9 @@ HSV_jitter = 0 #0.1,0.05 #Saturation and value will be multiplied by 2 different
 
 
 #Create the net architecture
-net_train = build_AlexNet_2heads(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
+net_train = build_AlexNet(split_train, num_labels, batch_size, resize_w, resize_h, crop_w, crop_h, crop_margin, mirror, rotate, HSV_prob, HSV_jitter, train=True)
 #Prepare validation net
-net_val = build_AlexNet_2heads(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
+net_val = build_AlexNet(split_val, num_labels, batch_size, crop_w, crop_h, crop_h, crop_h, 0, 0, 0, 0, 0, train=False)
 
 
 base_lr = 0.001 #VGG 0.0001  #AlexNet 0.0001 #Regression 0.001

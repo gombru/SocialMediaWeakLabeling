@@ -45,7 +45,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
 
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
-    s.snapshot = 10000 #1000
+    s.snapshot = 1000 #1000
     s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_CaffeNet_40'
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.

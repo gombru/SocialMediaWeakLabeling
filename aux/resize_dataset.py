@@ -13,7 +13,8 @@ cap_dest_path = "/home/imatge/datasets/SocialMedia/captions_resized_1M/cities_in
 aux_captions_path =  "/home/imatge/datasets/SocialMedia/captions_resized/cities_instagram/"
 # cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 # cities = ['london', 'newyork', 'losangeles','melbourne','sydney','toronto']
-cities = ['chicago','miami','sanfrancisco']
+# cities = ['chicago','miami','sanfrancisco']
+cities = ['singapore']
 desired_num = 100000
 
 # c = 0

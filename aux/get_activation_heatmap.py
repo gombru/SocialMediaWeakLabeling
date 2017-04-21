@@ -132,6 +132,7 @@ for idx in test:
     imgs_comb.save('../../../datasets/SocialMedia/heatmaps/' + filename.split('/')[-1])
     print filename
 
+print 'DONE'
 
 
 

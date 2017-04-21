@@ -7,7 +7,7 @@ from pylab import *
 import time
 
 #Load weights of model to be evaluated
-weights = '../../../datasets/SocialMedia/models/saved/intagram_cities_CaffeNet_100_iter_40000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/saved/intagram_cities_VGG16_iter_21600.caffemodel'
 # weights = 'models/bvlc_reference_caffenet.caffemodel'
 
 
@@ -40,7 +40,7 @@ def disp_preds(net, image, batch_index):
 
 
 
-test_net = caffe.Net(build_AlexNet(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False, deploy = True), weights, caffe.TEST)
+test_net = caffe.Net(build_VGG16Net(split_val, num_labels, batch_size, resize_w, resize_h, resize_h, resize_h, crop_margin=0, mirror=0, rotate=0, HSV_prob=0, HSV_jitter=0, train=False, deploy = True), weights, caffe.TEST)
 # test_net = caffe.Net('deploy.prototxt', weights , caffe.TEST)
 
 loss = 0
