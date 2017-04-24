@@ -23,7 +23,9 @@ desired_num = 100000
 def resize(file):
 
     # Check num of resized images. If we reach the desired number, stop
-    if len(os.listdir(im_dest_path + file.split('/')[-2] + '/')) >= desired_num: return
+    num_files = len(os.listdir(im_dest_path + file.split('/')[-2] + '/'))
+    print num_files
+    if num_files >= desired_num: return
     # print len(os.listdir(im_dest_path + file.split('/')[-2] + '/'))
     #Check if resized file already exists
     if os.path.exists( cap_dest_path + file.split('/')[-1].replace('.jpg', '.txt')): return

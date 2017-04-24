@@ -14,19 +14,19 @@ import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_200.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram--.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram--.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram--.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram200.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram200.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram200.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 100
+num_topics = 200
 
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
@@ -146,13 +146,20 @@ for city in cities:
 
         for s in strings:
             # Create splits
-            split = randint(0,9)
-            if split < 8:
-                train_file.write(s[0] + '\n')
-            elif split == 8: val_file.write(s[0] + '\n')
-            else: test_file.write(s[0] + '\n')
+            try:
+                split = randint(0,9)
+                if split < 8:
+                    train_file.write(s[0] + '\n')
+                elif split == 8: val_file.write(s[0] + '\n')
+                else: test_file.write(s[0] + '\n')
+            except:
+                print "Error writing to file: "
+                print s[0]
+                continue
 
 
 train_file.close()
 val_file.close()
 test_file.close()
+
+print "Done"

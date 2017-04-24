@@ -8,20 +8,20 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram100.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram200.txt', dtype=str)
 
 #Output file
-output_file_dir = '../../../datasets/SocialMedia/regression_output/intagram_cities_VGG16_100_iter_21600'
+output_file_dir = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_200_iter_40000'
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
 output_file_path = output_file_dir + '/testCitiesClassification.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../cnn_regression/VGG16_deploy.prototxt', '../../../datasets/SocialMedia/models/saved/intagram_cities_VGG16_100_iter_21600.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/deploy200.prototxt', '../../../datasets/SocialMedia/models/saved/instagram_cities_Inception_200_iter_40000.caffemodel', caffe.TEST)
 
 
-size = 224
+size = 227
 
 # Reshape net
 batch_size = 100
