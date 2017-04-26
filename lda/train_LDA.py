@@ -11,15 +11,15 @@ import string
 whitelist = string.letters + string.digits + ' '
 
 # tweets_text_data_path = '../../../datasets/SocialMedia/text/text_cities_1day.txt'
-instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized/cities_instagram/'
+instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 
-model_path = '../../../datasets/SocialMedia/models/lda_model_cities_instagram.model'
+model_path = '../../../datasets/SocialMedia/models/lda_model_cities_instagram_1M_200.model'
 
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 100
+num_topics = 200
 threads = 6
 passes = 20
 
@@ -112,12 +112,14 @@ texts = []
 
 # Generate an LDA model
 print "Creating LDA model"
-#ldamodel = models.ldamodel.LdaModel(corpus, num_topics=3, id2word = dictionary, passes=20)
-ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
+ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=20)
+# ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
 ldamodel.save(model_path)
 # Our LDA model is now stored as ldamodel
 
 print(ldamodel.print_topics(num_topics=8, num_words=10))
+
+print "DONE"
 
 
 

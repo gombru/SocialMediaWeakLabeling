@@ -28,6 +28,10 @@ cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami'
 
 num_topics = 200
 
+num_images = 1e6
+num_val = 1e6 * 0.05
+num_test = 1e6 *0.15
+
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 # create English stop words list
@@ -138,6 +142,7 @@ def infer_LDA(file_name):
 
 
 for city in cities:
+        count = 0
         parallelizer = Parallel(n_jobs=4)
         tasks_iterator = (delayed(infer_LDA)(file_name) for file_name in glob.glob(text_data_path + city + "/*.txt"))
         r = parallelizer(tasks_iterator)
@@ -145,13 +150,27 @@ for city in cities:
         strings = np.vstack(r)
 
         for s in strings:
-            # Create splits
+        #     # Create splits random
+        #     try:
+        #         split = randint(0,9)
+        #         if split < 8:
+        #             train_file.write(s[0] + '\n')
+        #         elif split == 8: val_file.write(s[0] + '\n')
+        #         else: test_file.write(s[0] + '\n')
+        #     except:
+        #         print "Error writing to file: "
+        #         print s[0]
+        #         continue
+
+            # Create splits same number of images per class in each split
             try:
-                split = randint(0,9)
-                if split < 8:
+                if count < num_test:
+                    test_file.write(s[0] + '\n')
+                elif count < num_test + num_val:
+                    val_file.write(s[0] + '\n')
+                else:
                     train_file.write(s[0] + '\n')
-                elif split == 8: val_file.write(s[0] + '\n')
-                else: test_file.write(s[0] + '\n')
+                count += 1
             except:
                 print "Error writing to file: "
                 print s[0]

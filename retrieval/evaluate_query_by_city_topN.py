@@ -11,11 +11,11 @@ from gensim import corpora, models
 
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_100_iter_150000_corrected/testCitiesClassification.txt'
-LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
+database_path = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_200_iter_180000/testCitiesClassification.txt'
+LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_200.model'
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 100 # Num LDA model topics
+num_topics = 200 # Num LDA model topics
 num_results = 100 # Num retrival results we want to take into account
 
 precisions = {}

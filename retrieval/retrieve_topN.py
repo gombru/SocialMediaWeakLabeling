@@ -10,15 +10,15 @@ from shutil import copyfile
 from gensim import corpora, models
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/intagram_cities_CaffeNet2Heads_100_iter_70000/testCitiesClassification.txt'
+database_path = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_200_iter_180000/testCitiesClassification.txt'
 # intagram_cities_CaffeNet_100_iter_40000  intagram_cities_CaffeNet2Heads_100_iter_70000
-LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram.model'
+LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_200.model'
 
-num_topics = 100 # Num LDA model topics
-num_results = 8 # Num retrival results we want save
+num_topics = 200 # Num LDA model topics
+num_results = 4 # Num retrival results we want save
 
 # text = "palmtre crew gift chicago" # Query text
-text= 'snow winter white'
+text= 'basketball nba jazz'
 results_path = "../../../datasets/SocialMedia/retrieval_results/" + text.replace(' ','_') + '/'
 
 if not os.path.exists(results_path):
