@@ -21,10 +21,10 @@ display_interval = 100
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
-test_iters = 40
+test_iters = 80
 
 #Set solver configuration
-solver_filename = create_solver('train_frozen_100_reduced.prototxt', 'val_frozen_100_reduced.prototxt', base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_200_reduced.prototxt', 'prototxt/val_frozen_200_reduced.prototxt', base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

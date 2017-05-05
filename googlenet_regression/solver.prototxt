@@ -1,5 +1,5 @@
-train_net: "train_frozen_100_reduced.prototxt"
-test_net: "val_frozen_100_reduced.prototxt"
+train_net: "prototxt/train_frozen_200_reduced.prototxt"
+test_net: "prototxt/val_frozen_200_reduced.prototxt"
 test_iter: 10
 test_interval: 100000
 base_lr: 0.001
@@ -9,8 +9,8 @@ lr_policy: "poly"
 power: 0.5
 momentum: 0.9
 weight_decay: 0.0002
-snapshot: 5000
-snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/intagram_cities_Inception_100"
+snapshot: 10000
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_200"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

@@ -93,6 +93,7 @@ class customDataLayer(caffe.Layer):
         self.idx = np.arange(self.batch_size)
         # randomization: seed and pick
         if self.random:
+            print "Randomizing image order"
             random.seed(self.seed)
             for x in range(0,self.batch_size):
                 self.idx[x] = random.randint(0, len(self.indices) - 1)
@@ -154,7 +155,7 @@ class customDataLayer(caffe.Layer):
         """
         # print '{}/img/trump/{}.jpg'.format(self.dir, idx)
         # start = time.time()
-        im = Image.open('{}/img_resized/cities_instagram/{}.jpg'.format(self.dir, idx))
+        im = Image.open('{}/img_resized_1M/cities_instagram/{}.jpg'.format(self.dir, idx))
         # To resize try im = scipy.misc.imresize(im, self.im_shape)
         #.resize((self.resize_w, self.resize_h), Image.ANTIALIAS) # --> No longer suing this resizing, no if below
         # end = time.time()

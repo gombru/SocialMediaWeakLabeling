@@ -6,22 +6,20 @@ from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import glob
 import string
+import random
+import numpy as np
 
 
 whitelist = string.letters + string.digits + ' '
-
-# tweets_text_data_path = '../../../datasets/SocialMedia/text/text_cities_1day.txt'
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-
-model_path = '../../../datasets/SocialMedia/models/lda_model_cities_instagram_1M_200.model'
-
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 200
+num_topics = 500
 threads = 6
-passes = 20
+passes = 1
 
 #Initialize Tokenizer
 tokenizer = RegexpTokenizer(r'\w+')
@@ -33,24 +31,10 @@ for w in words2filter:
 # Create p_stemmer of class PorterStemmer
 p_stemmer = PorterStemmer()
 
-#ids = []
 posts_text = []
 texts = [] #List of lists of tokens
 
-# -- LOAD DATA FROM TWITTER --
-# posts_text_file = open(tweets_text_data_path, "r")
-
-# print "Loading data ..."
-# for line in tweets_text_file:
-#     info = line.split(',')
-#     #ids.append(info[0])
-#     tweets_text.append(info[1].decode('utf-8'))
-#
-# tweets_text_file.close()
-
-
 # -- LOAD DATA FROM INSTAGRAM --
-
 for city in cities:
     print "Loading data from " + city
     for file_name in glob.glob(instagram_text_data_path + city + "/*.txt"):
@@ -69,8 +53,6 @@ for city in cities:
 
         posts_text.append(filtered_caption.decode('utf-8').lower())
         # print filtered_caption.decode('utf-8')
-
-
 
 
 print "Number of posts: " + str(len(posts_text))
@@ -110,10 +92,14 @@ corpus = [dictionary.doc2bow(text) for text in texts]
 
 texts = []
 
+#Randomize training elements
+corpus = np.random.permutation(corpus)
+
+
 # Generate an LDA model
 print "Creating LDA model"
-ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=20)
-# ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
+ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=passes)
+#ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
 ldamodel.save(model_path)
 # Our LDA model is now stored as ldamodel
 

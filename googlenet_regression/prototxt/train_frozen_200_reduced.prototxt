@@ -6,7 +6,7 @@ layer {
   python_param {
     module: "layers"
     layer: "customDataLayer"
-    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 120, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': True, \'split\': \'trainCitiesInstagram200\', \'mirror\': True, \'num_classes\': 200, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
+    param_str: "{\'rotate\': 0, \'resize_h\': 300, \'HSV_jitter\': 0, \'crop_h\': 224, \'batch_size\': 120, \'HSV_prob\': 0, \'crop_w\': 224, \'train\': True, \'split\': \'trainCitiesInstagram_1M_200\', \'mirror\': True, \'num_classes\': 200, \'resize_w\': 300, \'crop_margin\': 10, \'dir\': \'../../../datasets/SocialMedia\', \'mean\': (103.939, 116.779, 123.68)}"
   }
 }
 layer {

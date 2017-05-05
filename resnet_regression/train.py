@@ -20,7 +20,7 @@ assert os.path.exists(weights)
 net_folder = 'resnet_regression'
 
 niter = 10001111
-base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
+base_lr = 0.01 #Starting from 0.01 (from quick solver) -- Working 0.001
 display_interval = 300
 
 #number of validating images  is  test_iters * batchSize
