@@ -21,6 +21,8 @@ num_topics = 500
 threads = 6
 passes = 1
 
+repetition_threshold = 20
+
 #Initialize Tokenizer
 tokenizer = RegexpTokenizer(r'\w+')
 # create English stop words list
@@ -79,12 +81,21 @@ for t in posts_text:
         continue
     #Remove element from list if memory limitation TODO
     #del tweets_text[0]
-
 posts_text = []
+
+# Remove words that appear less than N times
+from collections import defaultdict
+frequency = defaultdict(int)
+for text in texts:
+    for token in text:
+        frequency[token] += 1
+texts = [[token for token in text if frequency[token] > repetition_threshold] for text in texts]
+
 # Construct a document-term matrix to understand how frewuently each term occurs within each document
 # The Dictionary() function traverses texts, assigning a unique integer id to each unique token while also collecting word counts and relevant statistics.
 # To see each token unique integer id, try print(dictionary.token2id)
 dictionary = corpora.Dictionary(texts)
+print(dictionary)
 
 # Convert dictionary to a BoW
 # The result is a list of vectors equal to the number of documents. Each document containts tumples (term ID, term frequency)
