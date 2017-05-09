@@ -12,14 +12,17 @@ import numpy as np
 
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 500
+num_topics = 200
 threads = 6
-passes = 1
+passes = 1 #Passes over the whole corpus
+chunksize = 10000 #Update the model every 10000 documents
+# See https://radimrehurek.com/gensim/wiki.html
+update_every = 1
 
 repetition_threshold = 20
 
@@ -84,6 +87,7 @@ for t in posts_text:
 posts_text = []
 
 # Remove words that appear less than N times
+print "Removing words appearing less than: " + str(repetition_threshold)
 from collections import defaultdict
 frequency = defaultdict(int)
 for text in texts:
@@ -109,8 +113,8 @@ corpus = np.random.permutation(corpus)
 
 # Generate an LDA model
 print "Creating LDA model"
-ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=passes)
-#ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, workers=threads)
+#ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=passes)
+ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, update_every=update_every, chunksize=chunksize, passes=passes, workers=threads)
 ldamodel.save(model_path)
 # Our LDA model is now stored as ldamodel
 
