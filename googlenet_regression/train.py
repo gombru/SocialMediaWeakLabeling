@@ -17,14 +17,17 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 100
+display_interval = 1
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
 test_iters = 80
 
+#Name for training plot and snapshots
+training_id = 'instagram_cities_1M_Inception_frozen_200_chunck'
+
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_200_reduced.prototxt', 'prototxt/val_frozen_200_reduced.prototxt', base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_200_reduced.prototxt', 'prototxt/val_frozen_200_reduced.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
@@ -37,6 +40,6 @@ solver.net.copy_from(weights)
 
 print 'Running solvers for %d iterations...' % niter
 solvers = [('my_solver', solver)]
-_, _, _ = do_solve(niter, solvers, display_interval, test_interval, test_iters)
+_, _, _ = do_solve(niter, solvers, display_interval, test_interval, test_iters, training_id)
 print 'Done.'
 

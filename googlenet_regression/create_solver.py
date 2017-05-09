@@ -1,4 +1,4 @@
-def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
+def create_solver(train_net_path, test_net_path=None, training_id='training', base_lr=0.001):
 
     import sys
     from caffe.proto import caffe_pb2
@@ -43,7 +43,7 @@ def create_solver(train_net_path, test_net_path=None, base_lr=0.001):
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 10000
-    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_200'
+    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNRegression/'+ training_id
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU

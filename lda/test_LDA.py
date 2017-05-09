@@ -14,12 +14,12 @@ import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200_chunck.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_200.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_200.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200_chunck.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_200_chunck.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_200_chunck.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
@@ -27,6 +27,7 @@ test_file = open(gt_path_test, "w")
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 num_topics = 200
+threads = 6
 
 num_images_per_city = 100000
 num_val = num_images_per_city * 0.05
@@ -144,7 +145,7 @@ def infer_LDA(file_name):
 for city in cities:
         print city
         count = 0
-        parallelizer = Parallel(n_jobs=4)
+        parallelizer = Parallel(n_jobs=threads)
         tasks_iterator = (delayed(infer_LDA)(file_name) for file_name in glob.glob(text_data_path + city + "/*.txt"))
         r = parallelizer(tasks_iterator)
         # merging the output of the jobs
