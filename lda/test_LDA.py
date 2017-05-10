@@ -14,12 +14,12 @@ import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200_chunck.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200_20passes.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200_chunck.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_200_chunck.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_200_chunck.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200_20passes.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_200_20passes.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_200_20passes.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")

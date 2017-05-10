@@ -17,7 +17,7 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1
+display_interval = 200
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
