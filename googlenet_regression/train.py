@@ -24,10 +24,10 @@ test_interval = 1000
 test_iters = 80
 
 #Name for training plot and snapshots
-training_id = 'instagram_cities_1M_Inception_frozen_200_chunck'
+training_id = 'instagram_cities_1M_Inception_frozen_500_chunck'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_200_reduced.prototxt', 'prototxt/val_frozen_200_reduced.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_500.prototxt', 'prototxt/val_frozen_500.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
