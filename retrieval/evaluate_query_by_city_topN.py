@@ -9,23 +9,20 @@ import os
 from shutil import copyfile
 from gensim import corpora, models
 
-
-# Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_200_iter_180000/testCitiesClassification.txt'
-LDA_model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_200.model'
-cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
-
+data = 'instagram_cities_1M_Inception_frozen_200_20passes_iter_170000'
+lda_model = 'lda_model_cities_instagram_1M_200_20passes.model'
 num_topics = 200 # Num LDA model topics
 num_results = 100 # Num retrival results we want to take into account
 
+
+
+# Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
+database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
+LDA_model_path = '../../../datasets/SocialMedia/models/LDA/' + lda_model
+cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
+
+
 precisions = {}
-
-
-# Compute distances parallel
-# def compute_distances(id):
-#     dist = np.linalg.norm(database[id]-topics)
-#     return dist, id
-
 
 # Load LDA model
 print "Loading LDA model ..."
@@ -36,7 +33,7 @@ database = load_regressions_from_txt(database_path, num_topics)
 
 for city in cities:
 
-    results_path = "../../../datasets/SocialMedia/retrieval_results/" + city + '/'
+    results_path = '../../../datasets/SocialMedia/retrieval_results/' + data + '/' + city + '/'
     if not os.path.exists(results_path):
         os.makedirs(results_path)
 
@@ -49,32 +46,18 @@ for city in cities:
     # Compute distances)
     for id in database:    distances[id] = np.linalg.norm(database[id]-topics)
 
-    # Compute distances in parallel SLOWER!
-    # parallelizer = Parallel(n_jobs=4)
-    # tasks_iterator = (delayed(compute_distances)(id) for id in database)
-    # r = parallelizer(tasks_iterator)
-    # # merging the output of the jobs
-    # distances = np.vstack(r)
+    #Sort dictionary
+    distances = sorted(distances.items(), key=operator.itemgetter(1))
 
     # Get elements with min distances
     correct = 0
-    for n in range(0,num_results):
-        # If dictionrary
-        id = min(distances.iteritems(), key=operator.itemgetter(1))[0]
-        # print id + " -- " + str(distances[id])
-        distances.pop(id)
+    for idx,id in enumerate(distances):
 
-        # If array (parallel) SLOWER! and different results..
-        # el = np.argmin(distances[:, 0])
-        # dist = distances[el, 0]
-        # id = distances[el, 1]
-        # distances[el, 0] = 1000
-
-        # Compute retrieval precision
-        if id.split('/')[0] == city:
+        if id[0].split('/')[0] == city:
             correct += 1
         # Copy resulting images
-        copyfile('../../../datasets/SocialMedia/img_resized/cities_instagram/' + id + '.jpg', results_path + id.replace('/','_') + '.jpg')
+        copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/','_') + '.jpg')
+        if idx == num_results - 1: break
 
     precisions[city] = (float(correct) / num_results) * 100
     print city + ' --> ' + str(precisions[city])
