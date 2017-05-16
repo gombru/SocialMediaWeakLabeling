@@ -8,23 +8,26 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/SocialMedia/testCitiesInstagram200.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia//lda_gt/cities_instagram/testCitiesInstagram_1M_200_chunck.txt', dtype=str)
+
+#Model name
+model = 'instagram_cities_1M_Inception_frozen_200_chunck_iter_800000'
 
 #Output file
-output_file_dir = '../../../datasets/SocialMedia/regression_output/instagram_cities_Inception_200_iter_180000'
+output_file_dir = '../../../datasets/SocialMedia/regression_output/' + model
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
-output_file_path = output_file_dir + '/testCitiesClassification.txt'
+output_file_path = output_file_dir + '/test.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/deploy200.prototxt', '../../../datasets/SocialMedia/models/saved/instagram_cities_Inception_200_iter_180000.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/prototxt/deploy200.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/'+ model + '.caffemodel', caffe.TEST)
 
 
 size = 227
 
 # Reshape net
-batch_size = 100
+batch_size = 300
 net.blobs['data'].reshape(batch_size, 3, size, size)
 
 print 'Computing  ...'
@@ -42,7 +45,7 @@ while i < len(test):
         if i > len(test) - 1: break
 
         # load image
-        filename = '../../../datasets/SocialMedia/img_resized/cities_instagram/' + test[i].split(',')[0] + '.jpg'
+        filename = '../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + test[i].split(',')[0] + '.jpg'
         im = Image.open(filename)
         im_o = im
         im = im.resize((size, size), Image.ANTIALIAS)
@@ -80,6 +83,5 @@ while i < len(test):
 output_file.close()
 
 print "DONE"
-
 
 

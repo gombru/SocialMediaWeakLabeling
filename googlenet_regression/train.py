@@ -12,7 +12,8 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
+#weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
+weights = '../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.caffemodel'
 assert os.path.exists(weights)
 
 niter = 10001111
@@ -32,7 +33,8 @@ solver_filename = create_solver('prototxt/train_frozen_500.prototxt', 'prototxt/
 solver = caffe.get_solver(solver_filename)
 
 #Copy init weights
-solver.net.copy_from(weights)
+#solver.net.copy_from(weights)
+solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
 
 #Restore solverstate
 #solver.restore('models/IIT5K/cifar10/IIT5K_iter_15000.caffemodel')
