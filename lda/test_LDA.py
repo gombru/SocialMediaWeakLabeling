@@ -14,7 +14,7 @@ import numpy as np
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_200_chunck.model'
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500_5000chunck.model'
 
 # Create output files
 gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200_test.txt'
@@ -26,7 +26,7 @@ test_file = open(gt_path_test, "w")
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-num_topics = 200
+num_topics = 500
 threads = 6
 
 num_images_per_city = 100000
@@ -77,7 +77,7 @@ def infer_LDA(file_name):
             caption = caption + line
 
         # Replace hashtags with spaces
-        capion = caption.replace('#',' ')
+        caption = caption.replace('#',' ')
 
         # Keep only letters and numbers
         for char in caption:

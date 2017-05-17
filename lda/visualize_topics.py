@@ -19,9 +19,10 @@ instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/ci
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
+cities = ['test']
 
 num_topics = 500
-repetition_threshold = 20
+repetition_threshold = 0
 
 #Initialize Tokenizer
 tokenizer = RegexpTokenizer(r'\w+')
@@ -48,7 +49,7 @@ for city in cities:
             caption =  caption + line
 
         # Replace hashtags with spaces
-        capion = caption.replace('#', ' ')
+        caption = caption.replace('#', ' ')
         # Keep only letters and numbers
         for char in caption:
             if char in whitelist:
@@ -58,7 +59,6 @@ for city in cities:
         # print filtered_caption.decode('utf-8')
         if c == 50: break
         c+=1
-
 
 print "Number of posts: " + str(len(posts_text))
 
@@ -94,7 +94,7 @@ for text in texts:
     for token in text:
         frequency[token] += 1
 texts = [[token for token in text if frequency[token] > repetition_threshold] for text in texts]
-
+print texts
 # Construct a document-term matrix to understand how frewuently each term occurs within each document
 # The Dictionary() function traverses texts, assigning a unique integer id to each unique token while also collecting word counts and relevant statistics.
 # To see each token unique integer id, try print(dictionary.token2id)
@@ -114,7 +114,6 @@ gensim.corpora.MmCorpus.serialize('corpus.mm', corpus)
 
 # Create csc matrix of corpus (speed up if calling multiple times prepare)
 #corpus_csc = gensim.matutils.corpus2csc(corpus)
-
 
 dictionary = gensim.corpora.Dictionary.load('dict.dict')
 corpus = gensim.corpora.MmCorpus('corpus.mm')

@@ -50,7 +50,7 @@ for city in cities:
             caption =  caption + line
 
         # Replace hashtags with spaces
-        capion = caption.replace('#', ' ')
+        caption = caption.replace('#', ' ')
         # Keep only letters and numbers
         for char in caption:
             if char in whitelist:
