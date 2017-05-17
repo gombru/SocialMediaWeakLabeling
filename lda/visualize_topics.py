@@ -1,29 +1,26 @@
-# Trains and saves an LDA model with the given text files.
-
+import gensim
+from pyLDAvis.gensim import prepare
+import pyLDAvis
 from nltk.tokenize import RegexpTokenizer
 from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 from gensim import corpora, models
 import glob
 import string
-import random
 import numpy as np
+import pandas as pd
 
 
+model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500_5000chunck.model'
+
+# Create training corpus again (it is needed)
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500_5000chunck.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 num_topics = 500
-threads = 8
-passes = 1 #Passes over the whole corpus
-chunksize = 5000 #Update the model every 10000 documents
-# See https://radimrehurek.com/gensim/wiki.html
-update_every = 1
-
 repetition_threshold = 20
 
 #Initialize Tokenizer
@@ -41,6 +38,7 @@ texts = [] #List of lists of tokens
 
 # -- LOAD DATA FROM INSTAGRAM --
 for city in cities:
+    c=0
     print "Loading data from " + city
     for file_name in glob.glob(instagram_text_data_path + city + "/*.txt"):
         caption = ""
@@ -58,6 +56,8 @@ for city in cities:
 
         posts_text.append(filtered_caption.decode('utf-8').lower())
         # print filtered_caption.decode('utf-8')
+        if c == 50: break
+        c+=1
 
 
 print "Number of posts: " + str(len(posts_text))
@@ -99,15 +99,8 @@ texts = [[token for token in text if frequency[token] > repetition_threshold] fo
 # The Dictionary() function traverses texts, assigning a unique integer id to each unique token while also collecting word counts and relevant statistics.
 # To see each token unique integer id, try print(dictionary.token2id)
 dictionary = corpora.Dictionary(texts)
-print(dictionary)
-
-
-# TODO check this
-# dictionary.compactify()
-# Filter out tokens that appear in less than no_below documents (absolute number) or more than no_above documents (fraction of total corpus size, not absolute number).
-# after (1) and (2), keep only the first keep_n most frequent tokens (or keep all if None).
-# dictionary.filter_extremes(no_below=no_below, no_above=no_above, keep_n=None)
-# dictionary.compactify()  # remove gaps in id sequence after words that were removed
+dictionary.compactify()
+dictionary.save('dict.dict')
 
 # Convert dictionary to a BoW
 # The result is a list of vectors equal to the number of documents. Each document containts tumples (term ID, term frequency)
@@ -117,31 +110,17 @@ texts = []
 
 #Randomize training elements
 corpus = np.random.permutation(corpus)
+gensim.corpora.MmCorpus.serialize('corpus.mm', corpus)
+
+# Create csc matrix of corpus (speed up if calling multiple times prepare)
+#corpus_csc = gensim.matutils.corpus2csc(corpus)
 
 
-# Generate an LDA model
-print "Creating LDA model"
- # the minimum_probability=0 argument is necessary in order for
-# gensim to return the full document-topic-distribution matrix.  If
-# this argument is omitted and left to the gensim default of 0.01,
-# then all document-topic weights below that threshold will be
-# returned as NaN, violating the subsequent LDAvis assumption that
-# all rows (documents) in the document-topic-distribution matrix sum
-# to 1.
+dictionary = gensim.corpora.Dictionary.load('dict.dict')
+corpus = gensim.corpora.MmCorpus('corpus.mm')
+lda = gensim.models.ldamodel.LdaModel.load(model_path)
 
-#ldamodel = models.ldamodel.LdaModel(corpus, num_topics=num_topics, id2word = dictionary, passes=passes, minimum_probability=0)
-ldamodel = models.LdaMulticore(corpus, num_topics=num_topics, id2word = dictionary, chunksize=chunksize, passes=passes, workers=threads, minimum_probability=0)
-ldamodel.save(model_path)
-# Our LDA model is now stored as ldamodel
-
-print(ldamodel.print_topics(num_topics=8, num_words=10))
-
-print "DONE"
-
-
-
-
-
-
-
+vis_data = prepare(lda, corpus, dictionary)
+pyLDAvis.save_html(vis_data,'visualization.html')
+pyLDAvis.display(vis_data)
 

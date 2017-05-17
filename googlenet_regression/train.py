@@ -33,11 +33,10 @@ solver_filename = create_solver('prototxt/train_frozen_500.prototxt', 'prototxt/
 solver = caffe.get_solver(solver_filename)
 
 #Copy init weights
-#solver.net.copy_from(weights)
-solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
+solver.net.copy_from(weights)
 
 #Restore solverstate
-#solver.restore('models/IIT5K/cifar10/IIT5K_iter_15000.caffemodel')
+solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
 
 
 print 'Running solvers for %d iterations...' % niter
