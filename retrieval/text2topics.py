@@ -42,9 +42,15 @@ def text2topics(text, ldamodel, num_topics):
         print "aed error"
 
     text = [p_stemmer.stem(i) for i in stopped_tokens]
-    bow = ldamodel.id2word.doc2bow(text)
-    r = ldamodel[bow]
 
+
+    # bow = ldamodel.id2word.doc2bow(text)
+    # r = ldamodel[bow]    # Warning, this uses a threshold of 0.01 on tropic probs, and usually returns only 1 max 2...
+
+    print text
+    if len(text) > 1:
+        print "Warning: only using first word"
+    r = ldamodel.get_term_topics(text[0].__str__(),0) # #This 0 is changed to 1e-8 inside
     # Add zeros to topics without score
     topic_probs = np.zeros(num_topics)
     for t in range(0, num_topics):

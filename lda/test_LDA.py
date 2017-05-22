@@ -17,9 +17,9 @@ text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_insta
 model_path = '../../../datasets/SocialMedia/models/LDA/lda_model_cities_instagram_1M_500_5000chunck.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_200_test.txt'
-gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_200_test.txt'
-gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_200_test.txt'
+gt_path_train = '../../../datasets/SocialMedia/lda_gt/cities_instagram/trainCitiesInstagram_1M_500_chunck_th0.txt'
+gt_path_val = '../../../datasets/SocialMedia/lda_gt/cities_instagram/valCitiesInstagram_1M_500_chunck_th0.txt'
+gt_path_test = '../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_500_chunck_th0.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
@@ -27,7 +27,7 @@ test_file = open(gt_path_test, "w")
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 num_topics = 500
-threads = 6
+threads = 12
 
 num_images_per_city = 100000
 num_val = num_images_per_city * 0.05
@@ -50,7 +50,7 @@ tokenizer = RegexpTokenizer(r'\w+')
 # Create p_stemmer of class PorterStemmer
 p_stemmer = PorterStemmer()
 
-topics = ldamodel.print_topics(num_topics=num_topics, num_words=20)
+topics = ldamodel.print_topics(num_topics=num_topics, num_words=50)
 
 print topics
 
@@ -99,8 +99,9 @@ def infer_LDA(file_name):
         try:
             text = [p_stemmer.stem(i) for i in stopped_tokens]
             bow = ldamodel.id2word.doc2bow(text)
-            r = ldamodel[bow]
-            # print r
+            #r = ldamodel[bow] # Warning, this uses a threshold of 0.01 on tropic probs, and usually returns only 1 max 2...
+            r = ldamodel.get_document_topics(bow,  minimum_probability=0) #This 0 is changed to 1e-8 inside
+            print len(r)
         except:
             print "Tokenizer error"
             print stopped_tokens

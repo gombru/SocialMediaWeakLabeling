@@ -11,9 +11,9 @@ from gensim import corpora, models
 import time
 import operator
 
-data = 'instagram_cities_1M_Inception_frozen_200_20passes_iter_240000'
-lda_model = 'lda_model_cities_instagram_1M_200_20passes.model'
-num_topics = 200 # Num LDA model topics
+data = 'instagram_cities_1M_Inception_frozen_500_chunck_multiGPU_iter_500000'
+lda_model = 'lda_model_cities_instagram_1M_500_5000chunck.model'
+num_topics = 500 # Num LDA model topics
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
