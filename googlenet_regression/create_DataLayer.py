@@ -12,7 +12,7 @@ split_train = 'lda_gt/train_500_chunck80000'
 split_val = 'lda_gt/myval_500_chunck80000'
 dir = '../../../datasets/WebVision'
 
-num_labels = 200
+num_labels = 500
 batch_size = 100 #AlexNet 100, VGG 40
 resize = False #Resize the image to the given size before cropping
 resize_w = 224

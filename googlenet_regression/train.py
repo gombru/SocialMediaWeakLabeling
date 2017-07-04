@@ -12,8 +12,7 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-#weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
-weights = '../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.caffemodel'
+weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
 assert os.path.exists(weights)
 
 niter = 10001111
