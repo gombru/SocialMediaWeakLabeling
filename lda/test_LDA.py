@@ -101,7 +101,7 @@ def infer_LDA(file_name):
             bow = ldamodel.id2word.doc2bow(text)
             #r = ldamodel[bow] # Warning, this uses a threshold of 0.01 on tropic probs, and usually returns only 1 max 2...
             r = ldamodel.get_document_topics(bow,  minimum_probability=0) #This 0 is changed to 1e-8 inside
-            print len(r)
+            #print len(r)
         except:
             print "Tokenizer error"
             print stopped_tokens

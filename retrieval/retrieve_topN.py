@@ -9,7 +9,7 @@ import os
 from shutil import copyfile
 from gensim import corpora, models
 
-data = 'instagram_cities_1M_Inception_frozen_500_chunck_multiGPU_iter_500000'
+data = 'instagram_cities_1M_Inception_frozen_500_chunck_th0_multiGPU_iter_490000'
 lda_model = 'lda_model_cities_instagram_1M_500_5000chunck.model'
 num_topics = 500 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
@@ -36,10 +36,12 @@ def get_results(database, topics, num_results, results_path):
     distances = {}
 
     #Compute distances
-    for id in database:    distances[id] = np.linalg.norm(database[id] - topics)
+    for id in database:
+        #distances[id] = np.linalg.norm(database[id] - topics)
+        distances[id] = np.dot(database[id],topics)
 
     #Sort dictionary
-    distances = sorted(distances.items(), key=operator.itemgetter(1))
+    distances = sorted(distances.items(), key=operator.itemgetter(1), reverse=True)
 
     # Get elements with min distances
     for idx,id in enumerate(distances):
@@ -56,10 +58,10 @@ def get_results_complex(database, text, num_results, results_path):
     for w in words:
         w_topics = text2topics(w, ldamodel, num_topics)
         # print w_topics
-        for i,t in enumerate(w_topics):
-            if t > 0:
-                topics[i] = topics[i] + t
-        topics = topics / len(words)
+        topics = topics + w_topics
+        # for i,t in enumerate(w_topics):
+        #     if t > 0:
+        #         topics[i] = topics[i] + t
 
     #topics = topics / len(words)
 
@@ -67,10 +69,12 @@ def get_results_complex(database, text, num_results, results_path):
     distances = {}
 
     # Compute distances
-    for id in database:    distances[id] = np.linalg.norm(database[id] - topics)
+    for id in database:
+        # distances[id] = np.linalg.norm(database[id] - topics)
+        distances[id] = np.dot(database[id], topics)
 
     # Sort dictionary
-    distances = sorted(distances.items(), key=operator.itemgetter(1))
+    distances = sorted(distances.items(), key=operator.itemgetter(1), reverse=True)
 
     # Get elements with min distances
     for idx, id in enumerate(distances):

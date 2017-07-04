@@ -8,10 +8,10 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/SocialMedia//lda_gt/cities_instagram/testCitiesInstagram_1M_200_chunck.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/lda_gt/cities_instagram/testCitiesInstagram_1M_500_chunck_th0.txt', dtype=str)
 
 #Model name
-model = 'instagram_cities_1M_Inception_frozen_200_chunck_iter_800000'
+model = 'instagram_cities_1M_Inception_frozen_500_chunck_th0_multiGPU_iter_310000'
 
 #Output file
 output_file_dir = '../../../datasets/SocialMedia/regression_output/' + model
@@ -21,7 +21,7 @@ output_file_path = output_file_dir + '/test.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/prototxt/deploy200.prototxt', '../../../datasets/SocialMedia/models/CNNRegression/'+ model + '.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/prototxt/deploy500.prototxt', '../../../datasets/SocialMedia/models/saved/'+ model + '.caffemodel', caffe.TEST)
 
 
 size = 227
