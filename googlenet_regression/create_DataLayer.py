@@ -8,8 +8,8 @@ TODO: Check how Caffe interacts with the class of the created layer
 import caffe
 from caffe import layers as L
 
-split_train = '/home/Imaatge/WebVision/lda_gt/train_500_chunck80000.txt'
-split_val = '/home/Imaatge/WebVision/lda_gt/myval_500_chunck80000.txt'
+split_train = 'lda_gt/train_500_chunck80000'
+split_val = 'lda_gt/myval_500_chunck80000'
 dir = '../../../datasets/WebVision'
 
 num_labels = 200
