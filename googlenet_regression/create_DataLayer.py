@@ -8,11 +8,11 @@ TODO: Check how Caffe interacts with the class of the created layer
 import caffe
 from caffe import layers as L
 
-split_train = 'lda_gt/trainCitiesInstagram_1M_500_chunck_th0'
-split_val = 'lda_gt/valCitiesInstagram_1M_500_chunck_th0'
-dir = '../../../datasets/SocialMedia'
+split_train = '/home/Imaatge/WebVision/lda_gt/train_500_chunck80000.txt'
+split_val = '/home/Imaatge/WebVision/lda_gt/myval_500_chunck80000.txt'
+dir = '../../../datasets/WebVision'
 
-num_labels = 500
+num_labels = 200
 batch_size = 100 #AlexNet 100, VGG 40
 resize = False #Resize the image to the given size before cropping
 resize_w = 224
