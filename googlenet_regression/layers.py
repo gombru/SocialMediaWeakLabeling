@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 from PIL import ImageOps
 import time
+import sys
+sys.path.append('/usr/src/opencv-3.0.0-compiled/lib/')
 import cv2
 
 import random
