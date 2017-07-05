@@ -8,9 +8,9 @@ TODO: Check how Caffe interacts with the class of the created layer
 import caffe
 from caffe import layers as L
 
-split_train = 'lda_gt/train_500_chunck80000'
-split_val = 'lda_gt/myval_500_chunck80000'
-dir = '../../../datasets/WebVision'
+split_train = 'lda_gt/trainCitiesInstagram_1M_500_chunck_th0'
+split_val = 'lda_gt/valCitiesInstagram_1M_500_chunck_th0'
+dir = '../../../datasets/SocialMedia'
 
 num_labels = 500
 batch_size = 100 #AlexNet 100, VGG 40
@@ -53,16 +53,17 @@ pydata_params['color_casting_prob'] = color_casting_prob
 pydata_params['color_casting_jitter'] = color_casting_jitter
 pydata_params['scaling_prob'] = scaling_prob
 pydata_params['scaling_factor'] = scaling_factor
-
-
-
-
-
 pylayer = 'customDataLayer'
 
 n.data, n.label = L.Python(module='layers', layer=pylayer,
                                           ntop=2, param_str=str(pydata_params))
-with open('prototxt/data_layer.prototxt', 'w') as f:
+with open('prototxt/train_data_layer.prototxt', 'w') as f:
         f.write(str(n.to_proto()))
+
+pydata_params['split'] = split_val
+pydata_params['train'] = False
+pydata_params['resize'] = True
+with open('prototxt/val_data_layer.prototxt', 'w') as f:
+    f.write(str(n.to_proto()))
 
 

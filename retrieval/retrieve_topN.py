@@ -12,7 +12,7 @@ from gensim import corpora, models
 data = 'instagram_cities_1M_Inception_frozen_500_chunck_th0_multiGPU_iter_490000'
 lda_model = 'lda_model_cities_instagram_1M_500_5000chunck.model'
 num_topics = 500 # Num LDA model topics
-num_results = 5 # Num retrival results we want to take into accountnt
+num_results = 15 # Num retrival results we want to take into accountnt
 
 
 
@@ -96,7 +96,7 @@ def get_results_complex(database, text, num_results, results_path):
 q = []
 
 # Simple
-q.append('car')
+q.append('night')
 q.append('skyline')
 q.append('bike')
 

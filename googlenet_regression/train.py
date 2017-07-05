@@ -17,7 +17,7 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 200
+display_interval = 1
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
@@ -35,7 +35,7 @@ solver = caffe.get_solver(solver_filename)
 solver.net.copy_from(weights)
 
 #Restore solverstate
-solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
+#solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
 
 
 print 'Running solvers for %d iterations...' % niter
