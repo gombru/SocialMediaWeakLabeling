@@ -4,6 +4,7 @@ import gensim
 import string
 import glob
 import multiprocessing
+import json
 
 cores = multiprocessing.cpu_count()
 assert gensim.models.doc2vec.FAST_VERSION > -1, "this will be painfully slow otherwise"
@@ -11,12 +12,13 @@ assert gensim.models.doc2vec.FAST_VERSION > -1, "this will be painfully slow oth
 
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/doc2vec/doc2vec_model_instacities1M.model'
-words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog']
+webvision_text_data_path = '../../../datasets/WebVision/'
+model_path = '../../../datasets/SocialMedia/models/doc2vec/doc2vec_model_webvision.model'
+words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-size = 400 # vector size with x words
+size = 400 # vector size
 min_count = 25 # minimum word count to 2 in order to give higher frequency words more weighting
 iter = 10 # iterating over the training corpus x times
 window = 8
@@ -30,19 +32,60 @@ for w in words2filter:
     en_stop.append(w)
 # Create p_stemmer of class PorterStemmer
 # p_stemmer = PorterStemmer()
-
-posts_text = []
 texts = [] #List of lists of tokens
 
-# -- LOAD DATA FROM INSTAGRAM --
-for city in cities:
-    print "Loading data from " + city
-    for i,file_name in enumerate(glob.glob(instagram_text_data_path + city + "/*.txt")):
-        caption = ""
-        filtered_caption = ""
-        file = open(file_name, "r")
-        for line in file:
-            caption =  caption + line
+
+def get_instacities1m():
+    # -- LOAD DATA FROM INSTAGRAM --
+    posts_text = []
+    for city in cities:
+        print "Loading InstaCities1M data from " + city
+        for i, file_name in enumerate(glob.glob(instagram_text_data_path + city + "/*.txt")):
+            caption = ""
+            filtered_caption = ""
+            file = open(file_name, "r")
+            for line in file:
+                caption = caption + line
+            # Replace hashtags with spaces
+            caption = caption.replace('#', ' ')
+            # Keep only letters and numbers
+            for char in caption:
+                if char in whitelist:
+                    filtered_caption += char
+
+            posts_text.append(filtered_caption.decode('utf-8').lower())
+
+    return posts_text
+
+
+def get_webvision():
+    # -- LOAD DATA FROM WEBVISION --
+    former_filename = ' '
+    print "Loading WebVision data"
+    file = open(webvision_text_data_path + 'info/train_meta_list_all.txt', "r")
+
+    for line in file:
+
+        filename = line.split(' ')[0]
+        filename.replace('google', 'google_json')
+        filename.replace('flickr', 'flickr_json')
+        idx = int(line.split(' ')[1])
+
+        if filename != former_filename:
+            print filename
+            json_data = open(webvision_text_data_path + filename)
+            d = json.load(json_data)
+            former_filename = filename
+
+        caption = ''
+        filtered_caption = ''
+
+        if d[idx - 1].has_key('description'): caption = caption + d[idx - 1]['description'] + ' '
+        if d[idx - 1].has_key('title'): caption = caption + d[idx - 1]['title'] + ' '
+        if d[idx - 1].has_key('tags'):
+            for tag in d[idx - 1]['tags']:
+                caption = caption + tag + ' '
+
         # Replace hashtags with spaces
         caption = caption.replace('#', ' ')
         # Keep only letters and numbers
@@ -51,8 +94,10 @@ for city in cities:
                 filtered_caption += char
 
         posts_text.append(filtered_caption.decode('utf-8').lower())
-        # print filtered_caption.decode('utf-8')
 
+    return posts_text
+
+posts_text = get_webvision()
 
 print "Number of posts: " + str(len(posts_text))
 
@@ -89,7 +134,7 @@ for i in range(0,len(texts)):
 print "Training ..."
 model = gensim.models.doc2vec.Doc2Vec(size=size, min_count=min_count, iter=iter, window=window, workers=cores)
 model.build_vocab(texts)
-model.train(texts, total_examples=model.corpus_count) # use BLAS if you value your time
+model.train(texts, total_examples=model.corpus_count, epochs=model.iter) # use BLAS if you value your time
 print "Training DONE"
 model.save(model_path)
 
