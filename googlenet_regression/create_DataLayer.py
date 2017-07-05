@@ -13,7 +13,7 @@ split_val = 'lda_gt/valCitiesInstagram_1M_500_chunck_th0'
 dir = '../../../datasets/SocialMedia'
 
 num_labels = 500
-batch_size = 100 #AlexNet 100, VGG 40
+batch_size = 120 #AlexNet 100, VGG 40
 resize = False #Resize the image to the given size before cropping
 resize_w = 224
 resize_h = 224
