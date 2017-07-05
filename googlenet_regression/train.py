@@ -17,14 +17,14 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1
+display_interval = 200
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
 test_iters = 80
 
 #Name for training plot and snapshots
-training_id = 'instagram_cities_1M_Inception_frozen_500_chunck'
+training_id = 'WebVision_Inception_frozen_LDA500'
 
 #Set solver configuration
 solver_filename = create_solver('prototxt/train_frozen_500.prototxt', 'prototxt/val_frozen_500.prototxt', training_id, base_lr=base_lr)
