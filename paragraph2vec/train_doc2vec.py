@@ -60,6 +60,7 @@ def get_instacities1m():
 
 def get_webvision():
     # -- LOAD DATA FROM WEBVISION --
+    posts_text = []
     former_filename = ' '
     print "Loading WebVision data"
     file = open(webvision_text_data_path + 'info/train_meta_list_all.txt', "r")
@@ -67,8 +68,8 @@ def get_webvision():
     for line in file:
 
         filename = line.split(' ')[0]
-        filename.replace('google', 'google_json')
-        filename.replace('flickr', 'flickr_json')
+        filename = filename.replace('google', 'google_json')
+        filename = filename.replace('flickr', 'flickr_json')
         idx = int(line.split(' ')[1])
 
         if filename != former_filename:

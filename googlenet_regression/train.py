@@ -9,7 +9,7 @@ from pylab import *
 import os
 
 
-caffe.set_device(0)
+caffe.set_device(1)
 caffe.set_mode_gpu()
 
 weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
@@ -17,14 +17,14 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 200
+display_interval = 200 #200
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000
 test_iters = 80
 
 #Name for training plot and snapshots
-training_id = 'WebVision_Inception_frozen_LDA500'
+training_id = 'WebVision_Inception_frozen_doc2vec'
 
 #Set solver configuration
 solver_filename = create_solver('prototxt/train_frozen_500.prototxt', 'prototxt/val_frozen_500.prototxt', training_id, base_lr=base_lr)

@@ -10,7 +10,7 @@ power: 0.5
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 snapshot: 10000
-snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/WebVision_Inception_frozen_LDA500"
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/WebVision_Inception_frozen_doc2vec"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

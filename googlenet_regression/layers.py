@@ -81,10 +81,17 @@ class customDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        #num_lines = 1001
+        #num_lines = 100001
 
         self.indices = np.empty([num_lines], dtype="S50")
         self.labels = np.zeros((num_lines, self.num_classes))
+
+        # Webvision has class id so 2 offset
+        if self.dir == '../../../datasets/SocialMedia':
+            offset = 1
+        else:
+            offset = 2
+        print "Offset: " + str(offset)
 
         print "Reading labels file: " + '{}/{}.txt'.format(self.dir, self.split)
         with open(split_f, 'r') as annsfile:
@@ -94,12 +101,23 @@ class customDataLayer(caffe.Layer):
                 self.indices[c] = data[0]
                 # Load regression labels
                 for l in range(0, self.num_classes):
-                    self.labels[c, l] = float(data[l + 1])
+
+                    if self.split.split('/')[0] == 'doc2vec_gt':
+                        self.labels[c, l] = (float(data[l + offset]) + 1) / (2* self.num_classes)
+                    else:
+                        print "Not adding"
+                        print self.split.split('/')[0]
+                        self.labels[c, l] = float(data[l + offset])
+                    if self.labels[c, l] < 0: 
+                        #print "WARNING: Negative label value. Setting it to 0."
+                        #print self.labels[c, l]
+                        self.labels[c, l] = 0
+
 
                 if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                #if c == 1000:
-                #   print "Stopping at 1000 labels"
-                #   break
+                #if c == 100000:
+                #  print "Stopping at 10000 labels"
+                #  break
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
@@ -200,7 +218,8 @@ class customDataLayer(caffe.Layer):
         # end = time.time()
         # print "Time data aumentation: " + str((end - start))
         in_ = np.array(im, dtype=np.float32)
-        if (in_.shape.__len__() < 3):
+
+        if (in_.shape.__len__() < 3 or in_.shape[2] > 3):
             im_gray = im
             im = Image.new("RGB", im_gray.size)
             im.paste(im_gray)

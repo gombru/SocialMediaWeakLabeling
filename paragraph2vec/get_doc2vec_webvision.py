@@ -28,7 +28,7 @@ val_file = open(val_gt_path, "w")
 model = gensim.models.Doc2Vec.load(model_path)
 
 size = 400 # vector size
-cores = multiprocessing.cpu_count()
+cores = 8#multiprocessing.cpu_count()
 
 whitelist = string.letters + string.digits + ' '
 words2filter = ['wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
