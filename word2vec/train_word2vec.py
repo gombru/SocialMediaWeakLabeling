@@ -14,7 +14,7 @@ cores = multiprocessing.cpu_count()
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/SocialMedia/models/word2vec/word2vec_model_webvision.model'
+model_path = '../../../datasets/SocialMedia/models/word2vec/word2vec_model_InstaCities1M.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
@@ -98,7 +98,7 @@ def get_webvision():
 
     return posts_text
 
-posts_text = get_webvision()
+posts_text = get_instacities1m()
 
 print "Number of posts: " + str(len(posts_text))
 
@@ -128,7 +128,7 @@ posts_text = []
 
 #Train the model
 print "Training ..."
-model = gensim.Word2Vec(texts, size=size, min_count=min_count, workers=cores)
+model = gensim.Word2Vec(texts, size=size, min_count=min_count, workers=cores, iter=iter)
 model.save(model_path)
 model.save(model_path)
 print "DONE"
