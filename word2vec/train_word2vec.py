@@ -128,7 +128,7 @@ posts_text = []
 
 #Train the model
 print "Training ..."
-model = gensim.Word2Vec(texts, size=size, min_count=min_count, workers=cores, iter=iter)
+model = gensim.models.Word2Vec(texts, size=size, min_count=min_count, workers=cores, iter=iter)
 model.save(model_path)
 model.save(model_path)
 print "DONE"
