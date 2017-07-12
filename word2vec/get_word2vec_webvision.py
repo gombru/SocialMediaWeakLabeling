@@ -20,9 +20,9 @@ text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/word2vec/word2vec_model_webvision.model'
 
 # Create output files
-train_gt_path = '../../../datasets/WebVision/doc2vec_mean_gt/' + 'train_webvision.txt'
+train_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'train_webvision.txt'
 train_file = open(train_gt_path, "w")
-val_gt_path = '../../../datasets/WebVision/doc2vec_mean_gt/' + 'myval_webvision.txt'
+val_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'myval_webvision.txt'
 val_file = open(val_gt_path, "w")
 
 model = gensim.models.Doc2Vec.load(model_path)
