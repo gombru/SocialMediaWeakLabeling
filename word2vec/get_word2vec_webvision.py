@@ -54,14 +54,19 @@ def infer_LDA(d):
         tokens = gensim.utils.simple_preprocess(filtered_caption)
         # remove stop words from tokens
         stopped_tokens = [i for i in tokens if not i in en_stop]
-        # stem token
 
-        try:
-            embedding = model.infer_vector(stopped_tokens)
-        except:
-            print "Tokenizer error"
-            print stopped_tokens
-            return
+
+        embedding = np.zeros(size)
+        c = 0
+        for tok in stopped_tokens:
+            try:
+                embedding += model[tok]
+                c += 1
+            except:
+                #print "Word not in model: " + tok
+                continue
+        if c > 0:
+            embedding /= c
 
         # Add zeros to topics without score
         out_string = ''

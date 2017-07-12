@@ -73,8 +73,8 @@ def infer_LDA(file_name):
         #Gensim simple_preproces instead tokenizer
         tokens = gensim.utils.simple_preprocess(filtered_caption)
         stopped_tokens = [i for i in tokens if not i in en_stop]
-        embedding = np.zeros(size)
 
+        embedding = np.zeros(size)
         c = 0
         for tok in stopped_tokens:
             try:
@@ -83,7 +83,6 @@ def infer_LDA(file_name):
             except:
                 #print "Word not in model: " + tok
                 continue
-
         if c > 0:
             embedding /= c
 
