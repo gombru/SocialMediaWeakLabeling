@@ -1,6 +1,6 @@
 # Retrieves nearest images given a text query and saves them in an given folder
 
-from text2topics import text2topics
+import text2topics
 from load_regressions_from_txt import load_regressions_from_txt
 import numpy as np
 from joblib import Parallel, delayed
@@ -9,22 +9,25 @@ import os
 from shutil import copyfile
 from gensim import corpora, models
 
-data = 'instagram_cities_1M_Inception_frozen_500_chunck_th0_multiGPU_iter_490000'
-lda_model = 'lda_model_cities_instagram_1M_500_5000chunck.model'
-num_topics = 500 # Num LDA model topics
-num_results = 15 # Num retrival results we want to take into accountnt
+data = 'InstaCities1M_Inception_frozen_doc2vec_iter_50000'
+model_name = 'doc2vec_model_instacities1M.model'
+num_topics = 400 # Num LDA model topics
+num_results = 5 # Num retrival results we want to take into accountnt
 
 
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
-LDA_model_path = '../../../datasets/SocialMedia/models/LDA/' + lda_model
+database_path = '../../../datasets/SocialMedia/retrieval_results/' + data +'/test.txt'
+model_path = '../../../datasets/SocialMedia/models/doc2vec/' + model_name
+embedding = 'doc2vec' #'word2vec_mean' 'doc2vec'
+test_dataset = 'instacities1m' #'instacities1m'
 
 
 # Load LDA model
-print "Loading LDA model ..."
-ldamodel = models.ldamodel.LdaModel.load(LDA_model_path)
-
+print "Loading " +embedding+ " model ..."
+if embedding == 'LDA': model = models.ldamodel.LdaModel.load(model_path)
+elif embedding == 'word2vec_mean': model = models.Word2Vec.load(model_path)
+elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 
 
 # Load dataset
@@ -37,7 +40,6 @@ def get_results(database, topics, num_results, results_path):
 
     #Compute distances
     for id in database:
-        #distances[id] = np.linalg.norm(database[id] - topics)
         distances[id] = np.dot(database[id],topics)
 
     #Sort dictionary
@@ -46,8 +48,10 @@ def get_results(database, topics, num_results, results_path):
     # Get elements with min distances
     for idx,id in enumerate(distances):
         # Copy image results
-        copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg',
-                 results_path + id[0].replace('/', '_') + '.jpg')
+        if test_dataset == 'webvision':
+            copyfile('../../../datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
+        else:
+            copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
         if idx == num_results - 1: break
 
 def get_results_complex(database, text, num_results, results_path):
@@ -55,15 +59,21 @@ def get_results_complex(database, text, num_results, results_path):
     words = text.split(' ')
     topics = np.zeros(num_topics)
 
-    for w in words:
-        w_topics = text2topics(w, ldamodel, num_topics)
-        # print w_topics
-        topics = topics + w_topics
-        # for i,t in enumerate(w_topics):
-        #     if t > 0:
-        #         topics[i] = topics[i] + t
+    if embedding == 'LDA':
+        for w in words:
+            w_topics = text2topics.LDA(w, model, num_topics)
+            topics = topics + w_topics
+        topics = topics / len(words)
 
-    #topics = topics / len(words)
+    elif embedding == 'word2vec_mean':
+        for w in words:
+            w_topics = text2topics.word2vec_mean(w, model, num_topics)
+            topics = topics + w_topics
+        topics = topics / len(words)
+
+    elif embedding == 'doc2vec':
+        topics = text2topics.doc2vec(text, model, num_topics)
+
 
     # Create empty dict for distances
     distances = {}
@@ -79,8 +89,10 @@ def get_results_complex(database, text, num_results, results_path):
     # Get elements with min distances
     for idx, id in enumerate(distances):
         # Copy image results
-        copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg',
-                 results_path + id[0].replace('/', '_') + '.jpg')
+        if test_dataset == 'webvision':
+            copyfile('../../../datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
+        else:
+            copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
         if idx == num_results - 1: break
 
 # Do one query
@@ -96,7 +108,8 @@ def get_results_complex(database, text, num_results, results_path):
 q = []
 
 # Simple
-q.append('night')
+
+q.append('car')
 q.append('skyline')
 q.append('bike')
 
@@ -137,11 +150,16 @@ q.append('kid dog')
 
 for cur_q in q:
     print cur_q
-    results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '/'
+    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '/'
+    else: results_path = "../../../datasets/SocialMedia/regression_output/" + data + "/" + cur_q.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
+        print "Creating dir: " + results_path
         os.makedirs(results_path)
     if len(cur_q.split(' ')) == 1:
-        topics = text2topics(cur_q, ldamodel, num_topics)
+        if embedding == 'LDA': topics = text2topics.LDA(cur_q, model, num_topics)
+        elif embedding == 'word2vec_mean': topics = text2topics.word2vec_mean(cur_q, model, num_topics)
+        elif embedding == 'doc2vec': topics = text2topics.doc2vec(cur_q, model, num_topics)
+
         get_results(database, topics, num_results,results_path)
 
     else:

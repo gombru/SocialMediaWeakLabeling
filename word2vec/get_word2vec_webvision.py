@@ -116,7 +116,7 @@ for s in sources:
 
     print "Number of elements for " + s + ": " + str(len(data))
     parallelizer = Parallel(n_jobs=cores)
-    print "Infering LDA scores"
+    print "Infering word2vec scores"
     tasks_iterator = (delayed(infer_LDA)(d) for d in data)
     r = parallelizer(tasks_iterator)
     # merging the output of the jobs

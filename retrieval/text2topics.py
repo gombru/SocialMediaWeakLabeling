@@ -6,9 +6,10 @@ from stop_words import get_stop_words
 from nltk.stem.porter import PorterStemmer
 import string
 import numpy as np
+import gensim
 
 
-def text2topics(text, ldamodel, num_topics):
+def LDA(text, ldamodel, num_topics):
 
     # Create English stop words list
     en_stop = get_stop_words('en')
@@ -60,3 +61,62 @@ def text2topics(text, ldamodel, num_topics):
                 break
 
     return topic_probs
+
+
+
+def doc2vec(text, model, num_topics):
+
+    filtered_text = ''
+    # Replace hashtags with spaces
+    text = text.replace('#', ' ')
+
+    en_stop = get_stop_words('en')
+    whitelist = string.letters + string.digits + ' '
+    # Keep only letters and numbers
+    for char in text:
+        if char in whitelist:
+            filtered_text += char
+
+        filtered_text = filtered_text.lower()
+    # Gensim simple_preproces instead tokenizer
+    tokens = gensim.utils.simple_preprocess(filtered_text)
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+
+    embedding = model.infer_vector(stopped_tokens)
+
+    return embedding
+
+
+def word2vec_mean(text, model, num_topics):
+    filtered_text = ''
+    # Replace hashtags with spaces
+    text = text.replace('#', ' ')
+
+    en_stop = get_stop_words('en')
+    whitelist = string.letters + string.digits + ' '
+    # Keep only letters and numbers
+    for char in text:
+        if char in whitelist:
+            filtered_text += char
+
+        filtered_text = filtered_text.lower()
+    # Gensim simple_preproces instead tokenizer
+    tokens = gensim.utils.simple_preprocess(filtered_text)
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+
+    embedding = np.zeros(num_topics)
+    c = 0
+    for tok in stopped_tokens:
+        try:
+            embedding += model[tok]
+            c += 1
+        except:
+            # print "Word not in model: " + tok
+            continue
+    if c > 0:
+        embedding /= c
+
+    return embedding
+
+
+

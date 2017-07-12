@@ -33,7 +33,7 @@ model = gensim.models.Doc2Vec.load(model_path)
 size = 400 # vector size
 cores = multiprocessing.cpu_count()
 
-num_images_per_city = 100000
+num_images_per_city = 20
 num_val = num_images_per_city * 0.05
 num_test = num_images_per_city *0.15
 
