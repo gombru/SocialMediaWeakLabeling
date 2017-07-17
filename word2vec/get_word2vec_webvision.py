@@ -69,7 +69,9 @@ def infer_LDA(d):
             embedding /= c
 
         embedding = embedding - min(embedding)
-        embedding = embedding / sum(embedding)
+        if sum(embedding) > 0:
+            embedding = embedding / sum(embedding)
+
 
         # Add zeros to topics without score
         out_string = ''
