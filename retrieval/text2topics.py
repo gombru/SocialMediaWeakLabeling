@@ -118,6 +118,9 @@ def word2vec_mean(text, model, num_topics):
     if c > 0:
         embedding /= c
 
+    embedding = embedding - min(embedding)
+    embedding = embedding / sum(embedding)
+
     return embedding
 
 
