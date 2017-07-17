@@ -101,18 +101,7 @@ class customDataLayer(caffe.Layer):
                 self.indices[c] = data[0]
                 # Load regression labels
                 for l in range(0, self.num_classes):
-
-                    if self.split.split('/')[0] == 'doc2vec_gt':
-                        self.labels[c, l] = (float(data[l + offset]) + 1) / (2* self.num_classes)
-                    else:
-                        print "Not adding"
-                        print self.split.split('/')[0]
-                        self.labels[c, l] = float(data[l + offset])
-                    if self.labels[c, l] < 0: 
-                        #print "WARNING: Negative label value. Setting it to 0."
-                        #print self.labels[c, l]
-                        self.labels[c, l] = 0
-
+                    self.labels[c, l] = float(data[l + offset])
 
                 if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines)
                 #if c == 100000:

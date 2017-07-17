@@ -83,6 +83,8 @@ def doc2vec(text, model, num_topics):
     stopped_tokens = [i for i in tokens if not i in en_stop]
 
     embedding = model.infer_vector(stopped_tokens)
+    embedding = embedding - min(embedding)
+    embedding = embedding / sum(embedding)
 
     return embedding
 

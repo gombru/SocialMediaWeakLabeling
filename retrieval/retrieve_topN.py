@@ -17,7 +17,7 @@ num_results = 5 # Num retrival results we want to take into accountnt
 
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/retrieval_results/' + data +'/test.txt'
+database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/SocialMedia/models/doc2vec/' + model_name
 embedding = 'doc2vec' #'word2vec_mean' 'doc2vec'
 test_dataset = 'instacities1m' #'instacities1m'
@@ -32,6 +32,8 @@ elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 
 # Load dataset
 database = load_regressions_from_txt(database_path, num_topics)
+for id in database:
+    database[id] = database[id] / sum(database[id])
 
 
 def get_results(database, topics, num_results, results_path):
@@ -151,7 +153,7 @@ q.append('kid dog')
 for cur_q in q:
     print cur_q
     if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '/'
-    else: results_path = "../../../datasets/SocialMedia/regression_output/" + data + "/" + cur_q.replace(' ', '_') + '/'
+    else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
         print "Creating dir: " + results_path
         os.makedirs(results_path)

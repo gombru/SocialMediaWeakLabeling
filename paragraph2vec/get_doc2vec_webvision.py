@@ -63,6 +63,8 @@ def infer_LDA(d):
 
         try:
             embedding = model.infer_vector(stopped_tokens)
+            embedding = embedding - min(embedding)
+            embedding = embedding / sum(embedding)
         except:
             print "Tokenizer error"
             print stopped_tokens
