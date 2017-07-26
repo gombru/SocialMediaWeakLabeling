@@ -8,14 +8,14 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-#test = np.loadtxt('../../../datasets/SocialMedia/doc2vec_gt/test_InstaCities1M.txt', dtype=str)
-test = np.loadtxt('../../../datasets/WebVision/info/test_filelist.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M.txt', dtype=str)
+#test = np.loadtxt('../../../datasets/WebVision/info/test_filelist.txt', dtype=str)
 
 #Model name
-model = 'WebVision_Inception_frozen_LDA200_iter_440000'
+model = 'SocialMedia_Inception_frozen_word2vec_mean_iter_120000'
 
 #Output file
-output_file_dir = '../../../datasets/WebVision/regression_output/' + model
+output_file_dir = '../../../datasets/SocialMedia/regression_output/' + model
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
 output_file_path = output_file_dir + '/test.txt'
@@ -28,7 +28,7 @@ net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../da
 size = 227
 
 # Reshape net
-batch_size = 300
+batch_size = 250 #300
 net.blobs['data'].reshape(batch_size, 3, size, size)
 
 print 'Computing  ...'
@@ -46,8 +46,8 @@ while i < len(test):
         if i > len(test) - 1: break
 
         # load image
-        filename = '../../../datasets/WebVision/test_images_256/' + test[i]
-        #filename = '../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + test[i].split(',')[0] + '.jpg'
+        #filename = '../../../datasets/WebVision/test_images_256/' + test[i]
+        filename = '../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + test[i].split(',')[0] + '.jpg'
         im = Image.open(filename)
         im_o = im
         im = im.resize((size, size), Image.ANTIALIAS)
@@ -85,5 +85,6 @@ while i < len(test):
 output_file.close()
 
 print "DONE"
+print output_file_path
 
 

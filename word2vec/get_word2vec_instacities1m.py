@@ -19,9 +19,9 @@ text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_insta
 model_path = '../../../datasets/SocialMedia/models/word2vec/word2vec_model_InstaCities1M.model'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/word2vec_mean_gt/train_InstaCities1M.txt'
-gt_path_val = '../../../datasets/SocialMedia/word2vec_mean_gt/val_InstaCities1M.txt'
-gt_path_test = '../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M.txt'
+gt_path_train = '../../../datasets/SocialMedia/word2vec_mean_gt/train_InstaCities1M_divbymax.txt'
+gt_path_val = '../../../datasets/SocialMedia/word2vec_mean_gt/val_InstaCities1M_divbymax.txt'
+gt_path_test = '../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M_divbymax.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
@@ -87,8 +87,10 @@ def infer_LDA(file_name):
             embedding /= c
 
         embedding = embedding - min(embedding)
-        if sum(embedding) > 0:
-            embedding = embedding / sum(embedding)
+        # if sum(embedding) > 0:
+        #     embedding = embedding / sum(embedding)
+        if max(embedding) > 0:
+            embedding = embedding / max(embedding)
 
         # Add zeros to topics without score
         out_string = ''

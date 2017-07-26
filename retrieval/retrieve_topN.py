@@ -9,18 +9,18 @@ import os
 from shutil import copyfile
 from gensim import corpora, models
 
-data = 'InstaCities1M_Inception_frozen_doc2vec_iter_50000'
-model_name = 'doc2vec_model_instacities1M.model'
+data = 'SocialMedia_Inception_frozen_word2vec_mean_iter_120000'
+model_name = 'word2vec_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
-num_results = 5 # Num retrival results we want to take into accountnt
+num_results = 20 # Num retrival results we want to take into accountnt
 
 
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/SocialMedia/models/doc2vec/' + model_name
-embedding = 'doc2vec' #'word2vec_mean' 'doc2vec'
-test_dataset = 'instacities1m' #'instacities1m'
+model_path = '../../../datasets/SocialMedia/models/word2vec/' + model_name
+embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec'
+test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
 # Load LDA model
@@ -109,8 +109,19 @@ def get_results_complex(database, text, num_results, results_path):
 # Do default queryes
 q = []
 
-# Simple
 
+
+q.append('london')
+q.append('newyork')
+q.append('red')
+q.append('flower')
+q.append('beach')
+q.append('computer')
+q.append('city')
+q.append('mountain')
+q.append('bridge')
+
+# Simple
 q.append('car')
 q.append('skyline')
 q.append('bike')
@@ -128,23 +139,23 @@ q.append('man')
 q.append('kid')
 
 # Complex
-q.append('yellow car')
-q.append('skyline night')
-q.append('bike park')
-
-q.append('sunrise beach')
-q.append('snow ski')
-q.append('rain umbrella')
-
-q.append('icecream beach')
-q.append('chocolate cake')
-q.append('pizza wine')
-
-q.append('woman bag')
-q.append('man boat')
-q.append('kid dog')
-
-
+# q.append('yellow car')
+# q.append('skyline night')
+# q.append('bike park')
+#
+# q.append('sunrise beach')
+# q.append('snow ski')
+# q.append('rain umbrella')
+#
+# q.append('icecream beach')
+# q.append('chocolate cake')
+# q.append('pizza wine')
+#
+# q.append('woman bag')
+# q.append('man boat')
+# q.append('kid dog')
+#
+#
 
 
 

@@ -77,7 +77,7 @@ def doc2vec(text, model, num_topics):
         if char in whitelist:
             filtered_text += char
 
-        filtered_text = filtered_text.lower()
+    filtered_text = filtered_text.lower()
     # Gensim simple_preproces instead tokenizer
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
@@ -101,7 +101,7 @@ def word2vec_mean(text, model, num_topics):
         if char in whitelist:
             filtered_text += char
 
-        filtered_text = filtered_text.lower()
+    filtered_text = filtered_text.lower()
     # Gensim simple_preproces instead tokenizer
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
