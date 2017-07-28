@@ -126,11 +126,11 @@ posts_text = []
 print "Training ..."
 
 dictionary = gensim.corpora.Dictionary(texts)
-dictionary.save('/tmp/docs.dict')
+dictionary.save(model_path +  'docs.dict')
 raw_corpus = [dictionary.doc2bow(t) for t in texts]
-gensim.corpora.MmCorpus.serialize(model_path + '/docs.mm', raw_corpus)
-dictionary = gensim.corpora.Dictionary.load(model_path + '/docs.dict')
-corpus = gensim.corpora.MmCorpus(model_path + '/docs.mm')
+gensim.corpora.MmCorpus.serialize(model_path + 'docs.mm', raw_corpus)
+dictionary = gensim.corpora.Dictionary.load(model_path + 'docs.dict')
+corpus = gensim.corpora.MmCorpus(model_path + 'docs.mm')
 model = gensim.models.TfidfModel(corpus)
 model.save(model_path + model_name)
 print "DONE"
