@@ -18,6 +18,9 @@ import multiprocessing
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/word2vec/word2vec_model_webvision.model'
+tfidf_weighted = True
+tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_InstaCities1M.model'
+tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
 train_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'train_webvision.txt'
@@ -25,7 +28,9 @@ train_file = open(train_gt_path, "w")
 val_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'myval_webvision.txt'
 val_file = open(val_gt_path, "w")
 
-model = gensim.models.Doc2Vec.load(model_path)
+model = gensim.models.Word2Vec.load(model_path)
+tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 size = 400 # vector size
 cores = 8#multiprocessing.cpu_count()
@@ -57,16 +62,25 @@ def infer_LDA(d):
         tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
 
         embedding = np.zeros(size)
-        c = 0
-        for tok in tokens_filtered:
-            try:
-                embedding += model[tok]
-                c += 1
-            except:
-                #print "Word not in model: " + tok
-                continue
-        if c > 0:
-            embedding /= c
+
+        if not tfidf_weighted:
+            c = 0
+            for tok in tokens_filtered:
+                try:
+                    embedding += model[tok]
+                    c += 1
+                except:
+                    #print "Word not in model: " + tok
+                    continue
+            if c > 0:
+                embedding /= c
+
+        if tfidf_weighted:
+            vec = tfidf_dictionary.doc2bow(tokens_filtered)
+            vec_tfidf = tfidf_model[vec]
+            for tok in vec_tfidf:
+                word_embedding = model[tfidf_dictionary[tok[0]]]
+                embedding += word_embedding * tok[1]
 
         embedding = embedding - min(embedding)
         if max(embedding) > 0:

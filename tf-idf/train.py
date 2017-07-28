@@ -15,7 +15,7 @@ whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
 model_name = 'tfidf_model_instaCities1M.model'
-model_path = '../../../datasets/SocialMedia/models/tfidf/' + model_name
+model_path = '../../../datasets/SocialMedia/models/tfidf/'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
@@ -132,5 +132,5 @@ gensim.corpora.MmCorpus.serialize(model_path + '/docs.mm', raw_corpus)
 dictionary = gensim.corpora.Dictionary.load(model_path + '/docs.dict')
 corpus = gensim.corpora.MmCorpus(model_path + '/docs.mm')
 model = gensim.models.TfidfModel(corpus)
-model.save(model_path)
+model.save(model_path + model_name)
 print "DONE"

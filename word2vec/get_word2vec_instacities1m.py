@@ -17,6 +17,9 @@ import multiprocessing
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/word2vec/word2vec_model_InstaCities1M.model'
+tfidf_weighted = True
+tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_InstaCities1M.model'
+tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
 gt_path_train = '../../../datasets/SocialMedia/word2vec_mean_gt/train_InstaCities1M_divbymax.txt'
@@ -29,6 +32,9 @@ test_file = open(gt_path_test, "w")
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 model = gensim.models.Word2Vec.load(model_path)
+tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+
 
 size = 400 # vector size
 cores = multiprocessing.cpu_count()
@@ -77,16 +83,25 @@ def infer_LDA(file_name):
 
 
         embedding = np.zeros(size)
-        c = 0
-        for tok in tokens_filtered:
-            try:
-                embedding += model[tok]
-                c += 1
-            except:
-                #print "Word not in model: " + tok
-                continue
-        if c > 0:
-            embedding /= c
+
+        if not tfidf_weighted:
+            c = 0
+            for tok in tokens_filtered:
+                try:
+                    embedding += model[tok]
+                    c += 1
+                except:
+                    #print "Word not in model: " + tok
+                    continue
+            if c > 0:
+                embedding /= c
+
+        if tfidf_weighted:
+            vec = tfidf_dictionary.doc2bow(tokens_filtered)
+            vec_tfidf = tfidf_model[vec]
+            for tok in vec_tfidf:
+                word_embedding = model[tfidf_dictionary[tok[0]]]
+                embedding += word_embedding * tok[1]
 
         embedding = embedding - min(embedding)
         # if sum(embedding) > 0:

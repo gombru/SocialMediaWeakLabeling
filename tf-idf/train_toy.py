@@ -11,7 +11,8 @@ corpus = gensim.corpora.MmCorpus('/tmp/docs.mm')
 tfidf = gensim.models.TfidfModel(corpus)
 
 
-doc = "ocean sea ocean oce2an pepe beach"
+doc = "beach sea ocean oce2an pepe"
+dictionary = gensim.corpora.Dictionary.load('/tmp/docs.dict')
 vec = dictionary.doc2bow(doc.lower().split())
 print (vec)
 vec_tfidf=tfidf[vec]
