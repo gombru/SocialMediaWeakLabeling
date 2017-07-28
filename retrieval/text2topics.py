@@ -81,8 +81,9 @@ def doc2vec(text, model, num_topics):
     # Gensim simple_preproces instead tokenizer
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
+    tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
 
-    embedding = model.infer_vector(stopped_tokens)
+    embedding = model.infer_vector(tokens_filtered)
     embedding = embedding - min(embedding)
     embedding = embedding / sum(embedding)
 
@@ -105,10 +106,11 @@ def word2vec_mean(text, model, num_topics):
     # Gensim simple_preproces instead tokenizer
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
+    tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
 
     embedding = np.zeros(num_topics)
     c = 0
-    for tok in stopped_tokens:
+    for tok in tokens_filtered:
         try:
             embedding += model[tok]
             c += 1
@@ -119,7 +121,9 @@ def word2vec_mean(text, model, num_topics):
         embedding /= c
 
     embedding = embedding - min(embedding)
-    embedding = embedding / sum(embedding)
+    embedding = embedding / max(embedding)
+
+    #embedding = embedding / sum(embedding)
 
     return embedding
 

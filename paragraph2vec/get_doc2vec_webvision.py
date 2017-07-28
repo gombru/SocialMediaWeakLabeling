@@ -54,6 +54,8 @@ def infer_LDA(d):
         tokens = gensim.utils.simple_preprocess(filtered_caption)
         # remove stop words from tokens
         stopped_tokens = [i for i in tokens if not i in en_stop]
+
+        #captions_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
         # stem token
 
         # Handle stemmer error

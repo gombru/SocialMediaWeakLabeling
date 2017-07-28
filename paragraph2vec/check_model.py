@@ -7,6 +7,8 @@ model_path = '../../../datasets/SocialMedia/models/doc2vec/' + model_name
 print "Loading model ... "
 model = models.Doc2Vec.load(model_path)
 
+print "Vocabulary size: " + str(len(model.wv))
+
 print model.wv.most_similar(positive=['woman', 'king'], negative=['man'])
 
 print model.wv.most_similar(positive=['sailing'])

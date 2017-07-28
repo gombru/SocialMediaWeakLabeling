@@ -8,11 +8,11 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M_divbymax.txt', dtype=str)
 #test = np.loadtxt('../../../datasets/WebVision/info/test_filelist.txt', dtype=str)
 
 #Model name
-model = 'SocialMedia_Inception_frozen_word2vec_mean_iter_120000'
+model = 'SocialMedia_Inception_frozen_word2vec_mean_divbymax_iter_350000'
 
 #Output file
 output_file_dir = '../../../datasets/SocialMedia/regression_output/' + model
@@ -62,7 +62,7 @@ while i < len(test):
         #switch to BGR and substract mean
         in_ = np.array(im, dtype=np.float32)
         in_ = in_[:,:,::-1]
-        in_ -= np.array((103.939, 116.779, 123.68))
+        in_ -= np.array((104, 117, 123))
         in_ = in_.transpose((2,0,1))
 
         net.blobs['data'].data[x,] = in_

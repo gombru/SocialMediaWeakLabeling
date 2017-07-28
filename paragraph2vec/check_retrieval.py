@@ -16,10 +16,12 @@ database_words = {}
 for n,caption in enumerate(captions):
     tokens = gensim.utils.simple_preprocess(caption)
     stopped_tokens = [i for i in tokens if not i in en_stop]
+    tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+    print tokens_filtered
     model.random.seed(0)
-    embedding = model.infer_vector(stopped_tokens, alpha=0.025, min_alpha=0.0001, steps=20)
+    embedding = model.infer_vector(tokens_filtered, alpha=0.025, min_alpha=0.0001, steps=20)
     database[n] = embedding
-    database_words[n] = stopped_tokens
+    database_words[n] = tokens_filtered
 
 queries = ['i like the ocean and i love to sail', 'we ate pasta with tomato and cheese','i fed the dog and the cat']
 
@@ -31,6 +33,8 @@ for q in queries:
 
     print "Query: " +  q + " ---> \n"
     tokens = gensim.utils.simple_preprocess(q)
+    tokens_filtered = [token for token in tokens if token in model.wv.vocab]
+
     q_embedding = model.infer_vector(tokens)
 
     for id, caption in enumerate(database):
@@ -38,7 +42,7 @@ for q in queries:
         model.random.seed(0)
         # distances2[id] = np.dot((database[id] - min(database[id])) / sum(database[id] - min(database[id])) , (q_embedding - min(q_embedding)) / sum(q_embedding - min(q_embedding)))
         model.random.seed(0)
-        distances3[id] = model.docvecs.similarity_unseen_docs(model, database_words[id], [q], )
+        distances3[id] = model.docvecs.similarity_unseen_docs(model, database_words[id], tokens_filtered, steps=100, alpha=0.025)
 
     # # Sort dictionary
     # distances1 = sorted(distances1.items(), key=operator.itemgetter(1), reverse=True)
@@ -55,6 +59,7 @@ for q in queries:
     #     print captions[id[0]]
     # print '__________________'
     for idx, id in enumerate(distances3):
+        print id
         print captions[id[0]]
     print '__________________ \n'
 
