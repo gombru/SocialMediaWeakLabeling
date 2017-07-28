@@ -73,10 +73,12 @@ def infer_LDA(file_name):
         #Gensim simple_preproces instead tokenizer
         tokens = gensim.utils.simple_preprocess(filtered_caption)
         stopped_tokens = [i for i in tokens if not i in en_stop]
+        tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+
 
         embedding = np.zeros(size)
         c = 0
-        for tok in stopped_tokens:
+        for tok in tokens_filtered:
             try:
                 embedding += model[tok]
                 c += 1
