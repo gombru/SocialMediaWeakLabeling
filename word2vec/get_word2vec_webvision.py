@@ -23,9 +23,12 @@ tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_Insta
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
-train_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'train_webvision.txt'
+dir = "word2vec_mean_gt"
+if tfidf_weighted: dir = "word2vec_tfidf_weighted_gt"
+
+train_gt_path = '../../../datasets/WebVision/' + dir + '/' + 'train_webvision.txt'
 train_file = open(train_gt_path, "w")
-val_gt_path = '../../../datasets/WebVision/word2vec_mean_gt/' + 'myval_webvision.txt'
+val_gt_path = '../../../datasets/WebVision/' + dir + '/' + 'myval_webvision.txt'
 val_file = open(val_gt_path, "w")
 
 model = gensim.models.Word2Vec.load(model_path)

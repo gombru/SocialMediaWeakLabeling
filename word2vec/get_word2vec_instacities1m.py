@@ -22,9 +22,11 @@ tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_Insta
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
-gt_path_train = '../../../datasets/SocialMedia/word2vec_mean_gt/train_InstaCities1M_divbymax.txt'
-gt_path_val = '../../../datasets/SocialMedia/word2vec_mean_gt/val_InstaCities1M_divbymax.txt'
-gt_path_test = '../../../datasets/SocialMedia/word2vec_mean_gt/test_InstaCities1M_divbymax.txt'
+dir = "word2vec_mean_gt"
+if tfidf_weighted: dir = "word2vec_tfidf_weighted_gt"
+gt_path_train = '../../../datasets/SocialMedia/' + dir + '/train_InstaCities1M_divbymax.txt'
+gt_path_val = '../../../datasets/SocialMedia/' + dir + '/val_InstaCities1M_divbymax.txt'
+gt_path_test = '../../../datasets/SocialMedia/' + dir + '/test_InstaCities1M_divbymax.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
