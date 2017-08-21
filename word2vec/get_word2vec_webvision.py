@@ -19,7 +19,7 @@ import multiprocessing
 text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/word2vec/word2vec_model_webvision.model'
 tfidf_weighted = True
-tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_WebVision.model'
+tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
