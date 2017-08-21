@@ -76,8 +76,14 @@ def infer_LDA(file_name):
 
         try:
             embedding = model.infer_vector(stopped_tokens)
+            # embedding = embedding - min(embedding)
+            # embedding = embedding / sum(embedding)
+
             embedding = embedding - min(embedding)
-            embedding = embedding / sum(embedding)
+            if max(embedding) > 0:
+                embedding = embedding / max(embedding)
+
+
         except:
             print "Tokenizer error"
             print stopped_tokens

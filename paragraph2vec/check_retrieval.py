@@ -9,9 +9,13 @@ model_path = '../../../datasets/SocialMedia/models/doc2vec/doc2vec_model_instaci
 model = gensim.models.Doc2Vec.load(model_path)
 en_stop = get_stop_words('en')
 
-captions = ['a man in a boat sailing in the Mediterranean sea','a family having a pizza and wine for dinner', 'a bear and a lion in a zoo']
+captions = ['a boat in the Mediterranean sea','a family having a pizza and wine for dinner', 'a bear and a lion in a zoo','cooking pizza and pasta','a dog and a cat','eating pasta at the restaurant','sailing in the river','dog']
 database = {}
 database_words = {}
+
+alpha = 0.025
+min_alpha = 0.0001
+steps= 20
 
 for n,caption in enumerate(captions):
     tokens = gensim.utils.simple_preprocess(caption)
@@ -19,11 +23,13 @@ for n,caption in enumerate(captions):
     tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
     print tokens_filtered
     model.random.seed(0)
-    embedding = model.infer_vector(tokens_filtered, alpha=0.025, min_alpha=0.0001, steps=20)
+    embedding = model.infer_vector(tokens_filtered, alpha=alpha, min_alpha=min_alpha, steps=steps)
     database[n] = embedding
     database_words[n] = tokens_filtered
 
 queries = ['i like the ocean and i love to sail', 'we ate pasta with tomato and cheese','i fed the dog and the cat']
+# queries = ['a man in a boat sailing in the Mediterranean sea','a family having a pizza and wine for dinner', 'a bear and a lion in a zoo']
+
 
 for q in queries:
     # distances1 = {}
@@ -34,6 +40,12 @@ for q in queries:
     print "Query: " +  q + " ---> \n"
     tokens = gensim.utils.simple_preprocess(q)
     tokens_filtered = [token for token in tokens if token in model.wv.vocab]
+    filtered_query = ""
+    for t in tokens_filtered:
+        filtered_query = filtered_query + t + " "
+    print "Filtered query: " + filtered_query + "\n"
+
+
 
     q_embedding = model.infer_vector(tokens)
 
@@ -42,7 +54,7 @@ for q in queries:
         model.random.seed(0)
         # distances2[id] = np.dot((database[id] - min(database[id])) / sum(database[id] - min(database[id])) , (q_embedding - min(q_embedding)) / sum(q_embedding - min(q_embedding)))
         model.random.seed(0)
-        distances3[id] = model.docvecs.similarity_unseen_docs(model, database_words[id], tokens_filtered, steps=100, alpha=0.025)
+        distances3[id] = model.docvecs.similarity_unseen_docs(model, database_words[id], tokens_filtered, steps=steps, alpha=alpha)
 
     # # Sort dictionary
     # distances1 = sorted(distances1.items(), key=operator.itemgetter(1), reverse=True)
