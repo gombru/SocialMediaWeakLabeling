@@ -7,6 +7,7 @@ import glob
 import gensim
 import json
 import collections
+import cPickle
 
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
@@ -53,7 +54,7 @@ def get_instacities1m():
                     filtered_caption += char
 
             posts_text.append(filtered_caption.decode('utf-8').lower())
-            #if i == 10: break
+            # if i == 2: break
 
     return posts_text
 
@@ -132,11 +133,19 @@ print('Training the GloVe model')
 glove = Glove(no_components=dim, learning_rate=lr)
 glove.fit(corpus.matrix, epochs=epochs, no_threads=threads, verbose=True)
 glove.add_dictionary(corpus.dictionary)
-glove.save(model_path)
+
+
+# glove.save(model_path)
+# Default Pickle fails with large models, so I go with cPickle
+with open(model_path, 'wb') as savefile:
+    cPickle.dump(glove.__dict__,
+                savefile,
+                protocol=cPickle.HIGHEST_PROTOCOL)
+
 
 print(glove.most_similar('man'))
-# print(glove.most_similar('biology'))
-# print(glove.most_similar('dog'))
+print(glove.most_similar('biology'))
+print(glove.most_similar('dog'))
 
 # Get a word embedding
 print(len(glove.word_vectors[corpus.dictionary['london']]))
