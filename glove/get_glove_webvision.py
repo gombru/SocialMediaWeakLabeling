@@ -77,10 +77,10 @@ def infer_LDA(d):
             for tok in tokens_filtered:
                 try:
                     embedding += model.word_vectors[model.dictionary[tok]]
-                    print model.word_vectors[model.dictionary[tok]]
+                    # print model.word_vectors[model.dictionary[tok]]
                     c += 1
                 except:
-                    print "Word not in model: " + tok
+                    # print "Word not in model: " + tok
                     continue
             if c > 0:
                 embedding /= c
@@ -175,4 +175,4 @@ for s in sources:
 train_file.close()
 val_file.close()
 
-print "Done"
+print("Done")
