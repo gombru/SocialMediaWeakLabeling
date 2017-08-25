@@ -135,7 +135,7 @@ for city in cities:
         #     s = infer_LDA(file_name)
 
         parallelizer = Parallel(n_jobs=cores)
-        tasks_iterator = (delayed()(file_name) for file_name in glob.glob(text_data_path + city + "/*.txt"))
+        tasks_iterator = (delayed(infer_glove)(file_name) for file_name in glob.glob(text_data_path + city + "/*.txt"))
         r = parallelizer(tasks_iterator)
         # merging the output of the jobs
         strings = np.vstack(r)
