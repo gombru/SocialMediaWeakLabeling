@@ -18,7 +18,7 @@ import glove
 
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
+model_path = '../../../datasets/WebVision/models/glove/glove_model_WebVision.model'
 # model_path = 'glove.model'
 
 tfidf_weighted = False
