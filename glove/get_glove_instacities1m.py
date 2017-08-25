@@ -20,8 +20,8 @@ text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_insta
 model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
 tfidf_weighted = False
 print("TFIDF weighted: " + str(tfidf_weighted))
-tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_InstaCities1M.model'
-tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
+# tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
+# tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
 dir = "glove_mean_gt"
@@ -36,8 +36,8 @@ test_file = open(gt_path_test, "w")
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
 model = glove.Glove.load(model_path)
-tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
-tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+# tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+# tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 
 size = 400 # vector size

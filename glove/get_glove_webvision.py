@@ -21,8 +21,8 @@ text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
 tfidf_weighted = False
 print("TFIDF weighted: " + str(tfidf_weighted))
-tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
-tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
+# tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
+# tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
 dir = "glove_mean_gt"
@@ -34,8 +34,8 @@ val_gt_path = '../../../datasets/WebVision/' + dir + '/' + 'myval_webvision.txt'
 val_file = open(val_gt_path, "w")
 
 model = glove.Glove.load(model_path)
-tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
-tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+# tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+# tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 size = 400 # vector size
 cores = 8#multiprocessing.cpu_count()
