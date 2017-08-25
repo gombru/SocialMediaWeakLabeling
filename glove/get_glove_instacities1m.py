@@ -19,7 +19,7 @@ import glove
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
 tfidf_weighted = False
-print "TFIDF weighted: " + str(tfidf_weighted)
+print("TFIDF weighted: " + str(tfidf_weighted))
 tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_InstaCities1M.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
@@ -107,7 +107,7 @@ def infer_glove(file_name):
             #     word_embedding = glove.word_vectors[glove.dictionary[tok[0]]]
             #     embedding += word_embedding * tok[1]
 
-            print "Using GLOVE paragraph embedding (similar to tfidf weighting)"
+            print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
             embedding = glove.transform_paragraph(['man', 'woman'], 50, True)
 
 
@@ -127,7 +127,7 @@ def infer_glove(file_name):
 
 
 for city in cities:
-        print city
+        print(city)
         count = 0
 
         # Single core
@@ -163,8 +163,8 @@ for city in cities:
                     train_file.write(s[0] + '\n')
                 count += 1
             except:
-                print "Error writing to file: "
-                print s[0]
+                print("Error writing to file: ")
+                print(s[0])
                 continue
 
 
@@ -172,4 +172,4 @@ train_file.close()
 val_file.close()
 test_file.close()
 
-print "Done"
+print("Done")

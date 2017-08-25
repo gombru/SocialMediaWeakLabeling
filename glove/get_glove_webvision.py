@@ -20,7 +20,7 @@ import glove
 text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
 tfidf_weighted = False
-print "TFIDF weighted: " + str(tfidf_weighted)
+print("TFIDF weighted: " + str(tfidf_weighted))
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
@@ -87,7 +87,7 @@ def infer_LDA(d):
             #     word_embedding = model[tfidf_dictionary[tok[0]]]
             #     embedding += word_embedding * tok[1]
 
-            print "Using GLOVE paragraph embedding (similar to tfidf weighting)"
+            print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
             embedding = glove.transform_paragraph(['man', 'woman'], 50, True)
 
         embedding = embedding - min(embedding)
@@ -109,7 +109,7 @@ sources=['google','flickr']
 former_filename = ' '
 for s in sources:
     data = []
-    print 'Loading data from ' + s
+    print('Loading data from ' + s)
     data_file = open(text_data_path + 'info/train_meta_list_' + s + '.txt', "r")
     img_list_file = open(text_data_path + 'info/train_filelist_' + s + '.txt', "r")
 
@@ -141,17 +141,17 @@ for s in sources:
         data.append([img_names[i],img_classes[i],caption])
 
 
-    print "Number of elements for " + s + ": " + str(len(data))
+    print("Number of elements for " + s + ": " + str(len(data)))
     parallelizer = Parallel(n_jobs=cores)
-    print "Infering word2vec scores"
+    print("Infering word2vec scores")
     tasks_iterator = (delayed(infer_LDA)(d) for d in data)
     r = parallelizer(tasks_iterator)
     # merging the output of the jobs
     strings = np.vstack(r)
 
-    print "Resulting number of elements for " + s + ": " + str(len(strings))
+    print("Resulting number of elements for " + s + ": " + str(len(strings)))
 
-    print "Saving results"
+    print("Saving results")
     for s in strings:
         # Create splits random
         try:
@@ -160,8 +160,8 @@ for s in sources:
                 val_file.write(s[0] + '\n')
             else: train_file.write(s[0] + '\n')
         except:
-            print "Error writing to file: "
-            print s[0]
+            print("Error writing to file: ")
+            print(s[0])
             continue
 
     data_file.close()
