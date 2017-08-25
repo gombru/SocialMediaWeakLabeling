@@ -137,10 +137,10 @@ for s in sources:
 
         caption = ''
 
-        if d[idx - 1].has_key('description'): caption = caption + d[idx - 1]['description'] + ' '
-        if d[idx - 1].has_key('title'): caption = caption + d[idx - 1]['title'] + ' '
-        if d[idx - 1].has_key('tags'):
-            for tag in d[idx-1]['tags']:
+        if 'description' in d[idx - 1]: caption = caption + d[idx - 1]['description'] + ' '
+        if 'title' in d[idx - 1]: caption = caption + d[idx - 1]['title'] + ' '
+        if 'tags' in d[idx - 1]:
+            for tag in d[idx - 1]['tags']:
                 caption = caption + tag + ' '
 
         data.append([img_names[i],img_classes[i],caption])
