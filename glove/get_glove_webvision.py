@@ -40,7 +40,7 @@ model = glove.Glove.load(model_path)
 size = 400 # vector size
 cores = 8#multiprocessing.cpu_count()
 
-whitelist = string.letters + string.digits + ' '
+whitelist = string.ascii_letters + string.digits + ' '
 words2filter = ['wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 # create English stop words list
 en_stop = get_stop_words('en')

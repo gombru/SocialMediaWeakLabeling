@@ -56,7 +56,7 @@ en_stop = get_stop_words('en')
 for w in words2filter:
     en_stop.append(w)
 
-whitelist = string.letters + string.digits + ' '
+whitelist = string.ascii_letters + string.digits + ' '
 
 
 def infer_glove(file_name):
