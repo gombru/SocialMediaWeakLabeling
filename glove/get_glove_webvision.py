@@ -19,6 +19,7 @@ import glove
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
+
 tfidf_weighted = False
 print("TFIDF weighted: " + str(tfidf_weighted))
 # tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -64,7 +65,9 @@ def infer_LDA(d):
         tokens = gensim.utils.simple_preprocess(filtered_caption)
         # remove stop words from tokens
         stopped_tokens = [i for i in tokens if not i in en_stop]
-        tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+        tokens_filtered = stopped_tokens
+        #tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+
 
         embedding = np.zeros(size)
 
