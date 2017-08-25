@@ -18,7 +18,8 @@ import glove
 
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
+#model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
+model_path = 'glove.model'
 
 tfidf_weighted = False
 print("TFIDF weighted: " + str(tfidf_weighted))
@@ -75,10 +76,11 @@ def infer_LDA(d):
             c = 0
             for tok in tokens_filtered:
                 try:
-                    embedding += glove.word_vectors[glove.dictionary[tok]]
+                    embedding += model.word_vectors[model.dictionary[tok]]
+                    print model.word_vectors[model.dictionary[tok]]
                     c += 1
                 except:
-                    #print "Word not in model: " + tok
+                    print "Word not in model: " + tok
                     continue
             if c > 0:
                 embedding /= c
@@ -91,7 +93,7 @@ def infer_LDA(d):
             #     embedding += word_embedding * tok[1]
 
             print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
-            embedding = glove.transform_paragraph(['man', 'woman'], 50, True)
+            embedding = model.transform_paragraph(['man', 'woman'], 50, True)
 
         embedding = embedding - min(embedding)
         if max(embedding) > 0:

@@ -7,7 +7,6 @@ import glob
 import gensim
 import json
 import collections
-import _pickle as cPickle
 
 whitelist = string.ascii_letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
@@ -53,7 +52,6 @@ def get_instacities1m():
                     filtered_caption += char
 
             posts_text.append(filtered_caption.lower()) #.decode('utf-8')
-            #if i == 2: break
 
     return posts_text
 

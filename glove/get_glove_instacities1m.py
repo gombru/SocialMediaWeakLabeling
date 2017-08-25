@@ -93,7 +93,7 @@ def infer_glove(file_name):
             c = 0
             for tok in tokens_filtered:
                 try:
-                    embedding += glove.word_vectors[glove.dictionary[tok]]
+                    embedding += model.word_vectors[model.dictionary[tok]]
                     c += 1
                 except:
                     #print "Word not in model: " + tok
@@ -109,7 +109,7 @@ def infer_glove(file_name):
             #     embedding += word_embedding * tok[1]
 
             print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
-            embedding = glove.transform_paragraph(['man', 'woman'], 50, True)
+            embedding = model.transform_paragraph(['man', 'woman'], 50, True)
 
 
 
