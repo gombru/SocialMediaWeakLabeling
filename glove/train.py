@@ -7,9 +7,9 @@ import glob
 import gensim
 import json
 import collections
-import cPickle
+import _pickle as cPickle
 
-whitelist = string.letters + string.digits + ' '
+whitelist = string.ascii_letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
@@ -18,7 +18,7 @@ cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami'
 en_stop = get_stop_words('en')
 
 dim = 400
-threads = 4
+threads = 8
 epochs = 30
 lr = 0.05
 
@@ -31,7 +31,6 @@ def read_corpus(filename):
 
     with open(filename, 'r') as datafile:
         for line in datafile:
-            print line.lower().translate(None, delchars).split(' ')
             yield line.lower().translate(None, delchars).split(' ')
 
 
@@ -39,7 +38,7 @@ def get_instacities1m():
     # -- LOAD DATA FROM INSTAGRAM --
     posts_text = []
     for city in cities:
-        print "Loading InstaCities1M data from " + city
+        print("Loading InstaCities1M data from " + city)
         for i, file_name in enumerate(glob.glob(instagram_text_data_path + city + "/*.txt")):
             caption = ""
             filtered_caption = ""
@@ -53,8 +52,8 @@ def get_instacities1m():
                 if char in whitelist:
                     filtered_caption += char
 
-            posts_text.append(filtered_caption.decode('utf-8').lower())
-            # if i == 2: break
+            posts_text.append(filtered_caption.lower()) #.decode('utf-8')
+            #if i == 2: break
 
     return posts_text
 
@@ -63,7 +62,7 @@ def get_webvision():
     # -- LOAD DATA FROM WEBVISION --
     posts_text = []
     former_filename = ' '
-    print "Loading WebVision data"
+    print("Loading WebVision data")
     file = open(webvision_text_data_path + 'info/train_meta_list_all.txt', "r")
 
     for line in file:
@@ -74,7 +73,7 @@ def get_webvision():
         idx = int(line.split(' ')[1])
 
         if filename != former_filename:
-            print filename
+            print(filename)
             json_data = open(webvision_text_data_path + filename)
             d = json.load(json_data)
             former_filename = filename
@@ -107,7 +106,7 @@ sentences = []
 for t in posts_text:
     c += 1
     if c % 10000 == 0:
-        print c
+        print(c)
     try:
         t = t.lower()
         #Gensim simple_preproces instead tokenizer
@@ -135,13 +134,18 @@ glove.fit(corpus.matrix, epochs=epochs, no_threads=threads, verbose=True)
 glove.add_dictionary(corpus.dictionary)
 
 
-# glove.save(model_path)
-# Default Pickle fails with large models, so I go with cPickle
-with open(model_path, 'wb') as savefile:
-    cPickle.dump(glove.__dict__,
-                savefile,
-                protocol=cPickle.HIGHEST_PROTOCOL)
+glove.save(model_path)
 
+# Default Pickle fails with large models, so I go with cPickle
+# with open(model_path, 'wb') as savefile:
+#     cPickle.dump(glove.__dict__,
+#                 savefile) #protocol=cPickle.HIGHEST_PROTOCOL
+
+print('Model Saved')
+
+#
+# model = Glove.load(model_path)
+#
 
 print(glove.most_similar('man'))
 print(glove.most_similar('biology'))
