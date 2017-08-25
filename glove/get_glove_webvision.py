@@ -18,8 +18,8 @@ import glove
 
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
-#model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
-model_path = 'glove.model'
+model_path = '../../../datasets/WebVision/models/glove/glove_model_webvision.model'
+# model_path = 'glove.model'
 
 tfidf_weighted = False
 print("TFIDF weighted: " + str(tfidf_weighted))
