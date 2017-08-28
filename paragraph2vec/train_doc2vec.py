@@ -152,5 +152,5 @@ def print_similar(doc_id):
     for label, index in [('MOST2', 1), ('MOST3', 2), ('MOST4', 3)]:
         print(u'%s %s: -%s-\n' % (label, sims[index], ' '.join(texts[sims[index][0]].words)))
 
-docs_id = [1,10000,3000,10000]
+docs_id = [1,2,20,25,30,35,40,150,200,1000,1050,2000,10000,3000,10000]
 for doc_id in docs_id: print_similar(doc_id)
