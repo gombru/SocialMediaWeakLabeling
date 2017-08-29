@@ -133,7 +133,8 @@ for i in range(0,len(texts)):
 
 #Train the model
 print "Training ..."
-model = gensim.models.doc2vec.Doc2Vec(size=size, min_count=min_count, iter=iter, window=window, workers=cores)
+model = gensim.models.doc2vec.Doc2Vec(dm=0, size=size, min_count=min_count, iter=iter, window=window, workers=cores)
+# dm defines the training algorithm. By default (dm=1), ‘distributed memory’ (PV-DM) is used. Otherwise, distributed bag of words (PV-DBOW) is employed.
 model.build_vocab(texts)
 model.train(texts, total_examples=model.corpus_count, epochs=model.iter) # use BLAS if you value your time
 print "Training DONE"
