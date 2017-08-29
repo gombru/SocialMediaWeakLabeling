@@ -148,14 +148,12 @@ for s in sources:
     for d in data:
         vector = infer_glove(d)
         try:
-            print(vector)
             split = randint(0,19)
             if split < 1:
                 val_file.write(vector + '\n')
             else: train_file.write(vector + '\n')
         except:
             print("Error writing to file: ")
-            print(vector)
             continue
 
     data_file.close()
