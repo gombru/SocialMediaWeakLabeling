@@ -13,7 +13,7 @@ assert gensim.models.doc2vec.FAST_VERSION > -1, "this will be painfully slow oth
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/SocialMedia/models/doc2vec/toy_doc2vec_model_webvision.model'
+model_path = '../../../datasets/SocialMedia/models/doc2vec/doc2vec_model_webvision.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
@@ -134,7 +134,6 @@ for i in range(0,len(texts)):
 #Train the model
 print "Training ..."
 model = gensim.models.doc2vec.Doc2Vec(dm=0, size=size, min_count=min_count, iter=iter, window=window, workers=cores)
-# dm defines the training algorithm. By default (dm=1), ‘distributed memory’ (PV-DM) is used. Otherwise, distributed bag of words (PV-DBOW) is employed.
 model.build_vocab(texts)
 model.train(texts, total_examples=model.corpus_count, epochs=model.iter) # use BLAS if you value your time
 print "Training DONE"
