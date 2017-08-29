@@ -98,7 +98,7 @@ def get_webvision():
 
     return posts_text
 
-posts_text = get_instacities1m()
+posts_text = get_webvision()
 
 print "Number of posts: " + str(len(posts_text))
 
