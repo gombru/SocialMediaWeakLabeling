@@ -176,7 +176,7 @@ def glove(text, model, num_topics):
     text = text.replace('#', ' ')
 
     en_stop = get_stop_words('en')
-    whitelist = string.letters + string.digits + ' '
+    whitelist = string.ascii_letters + string.digits + ' '
     # Keep only letters and numbers
     for char in text:
         if char in whitelist:
