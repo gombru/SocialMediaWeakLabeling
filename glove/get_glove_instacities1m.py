@@ -18,7 +18,7 @@ import glove
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
-tfidf_weighted = False
+tfidf_weighted = True
 print("TFIDF weighted: " + str(tfidf_weighted))
 # tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
 # tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
@@ -108,8 +108,8 @@ def infer_glove(file_name):
             #     word_embedding = glove.word_vectors[glove.dictionary[tok[0]]]
             #     embedding += word_embedding * tok[1]
 
-            print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
-            embedding = model.transform_paragraph(['man', 'woman'], 50, True)
+            # print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
+            embedding = model.transform_paragraph(tokens_filtered, 50, True)
 
 
 

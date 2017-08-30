@@ -21,7 +21,7 @@ text_data_path = '../../../datasets/WebVision/'
 model_path = '../../../datasets/WebVision/models/glove/glove_model_WebVision.model'
 # model_path = 'glove.model'
 
-tfidf_weighted = False
+tfidf_weighted = True
 print("TFIDF weighted: " + str(tfidf_weighted))
 # tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
 # tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
@@ -91,8 +91,8 @@ def infer_glove(d):
             #     word_embedding = model[tfidf_dictionary[tok[0]]]
             #     embedding += word_embedding * tok[1]
 
-            print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
-            embedding = model.transform_paragraph(['man', 'woman'], 50, True)
+            # print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
+            embedding = model.transform_paragraph(tokens_filtered, 50, True)
 
         embedding = embedding - min(embedding)
         if max(embedding) > 0:
