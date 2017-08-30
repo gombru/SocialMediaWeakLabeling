@@ -8,8 +8,8 @@ def load_regressions_from_txt(path, num_topics):
 
     file = open(path, "r")
 
-    print "Loading data ..."
-    print path
+    print("Loading data ...")
+    print(path)
 
     for line in file:
         d = line.split(',')

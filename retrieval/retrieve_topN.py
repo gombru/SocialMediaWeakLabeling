@@ -8,26 +8,33 @@ import operator
 import os
 from shutil import copyfile
 from gensim import corpora, models
+import gensim
+import glove
 
-data = 'SocialMedia_Inception_frozen_word2vec_mean_divbymax_iter_350000'
-model_name = 'word2vec_model_InstaCities1M.model'
+data = 'SocialMedia_Inception_frozen_glove_mean_iter_300000'
+model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
 
-
+#if tfidf
+# tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
+# tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
+# tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+# tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/SocialMedia/models/word2vec/' + model_name
-embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA'
-test_dataset = 'webvision' #'instacities1m' #webvision
+database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf'
+test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
 # Load LDA model
-print "Loading " +embedding+ " model ..."
+print("Loading " +embedding+ " model ...")
 if embedding == 'LDA': model = models.ldamodel.LdaModel.load(model_path)
-elif embedding == 'word2vec_mean': model = models.Word2Vec.load(model_path)
+elif embedding == 'word2vec_mean' or embedding == 'word2vec_tfidf': model = models.Word2Vec.load(model_path)
 elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
+elif embedding == 'glove': model = glove.Glove.load(model_path)
 
 
 # Load dataset
@@ -73,8 +80,17 @@ def get_results_complex(database, text, num_results, results_path):
             topics = topics + w_topics
         topics = topics / len(words)
 
+    elif embedding == 'word2vec_tfidf':
+        topics = text2topics.word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary)
+        # topics = topics + w_topics
+        # topics = topics / len(words)
+
     elif embedding == 'doc2vec':
         topics = text2topics.doc2vec(text, model, num_topics)
+
+
+    elif embedding == 'glove':
+        topics = text2topics.glove(text, model, num_topics)
 
 
     # Create empty dict for distances
@@ -108,18 +124,6 @@ def get_results_complex(database, text, num_results, results_path):
 
 # Do default queryes
 q = []
-
-
-
-# q.append('london')
-# q.append('newyork')
-# q.append('red')
-# q.append('flower')
-# q.append('beach')
-# q.append('computer')
-# q.append('city')
-# q.append('mountain')
-# q.append('bridge')
 
 # Simple
 q.append('car')
@@ -155,23 +159,25 @@ q.append('woman bag')
 q.append('man boat')
 q.append('kid dog')
 
-#
-
-
-
 
 
 for cur_q in q:
-    print cur_q
+    print(cur_q)
     if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '/'
     else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
-        print "Creating dir: " + results_path
+        print("Creating dir: " + results_path)
         os.makedirs(results_path)
+
+
     if len(cur_q.split(' ')) == 1:
+
         if embedding == 'LDA': topics = text2topics.LDA(cur_q, model, num_topics)
         elif embedding == 'word2vec_mean': topics = text2topics.word2vec_mean(cur_q, model, num_topics)
         elif embedding == 'doc2vec': topics = text2topics.doc2vec(cur_q, model, num_topics)
+        elif embedding == 'word2vec_tfidf': topics = text2topics.word2vec_tfidf(cur_q, model, num_topics, tfidf_model, tfidf_dictionary)
+        elif embedding == 'glove': topics = text2topics.glove(cur_q, model, num_topics)
+
 
         get_results(database, topics, num_results,results_path)
 

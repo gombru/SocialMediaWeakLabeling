@@ -40,7 +40,7 @@ def LDA(text, ldamodel, num_topics):
     # Handle stemmer error
     while "aed" in stopped_tokens:
         stopped_tokens.remove("aed")
-        print "aed error"
+        print("aed error")
 
     text = [p_stemmer.stem(i) for i in stopped_tokens]
 
@@ -48,9 +48,9 @@ def LDA(text, ldamodel, num_topics):
     # bow = ldamodel.id2word.doc2bow(text)
     # r = ldamodel[bow]    # Warning, this uses a threshold of 0.01 on tropic probs, and usually returns only 1 max 2...
 
-    print text
+    print(text)
     if len(text) > 1:
-        print "Warning: only using first word"
+        print("Warning: only using first word")
     r = ldamodel.get_term_topics(text[0].__str__(),0) # #This 0 is changed to 1e-8 inside
     # Add zeros to topics without score
     topic_probs = np.zeros(num_topics)
@@ -117,6 +117,7 @@ def word2vec_mean(text, model, num_topics):
         except:
             # print "Word not in model: " + tok
             continue
+
     if c > 0:
         embedding /= c
 
@@ -129,3 +130,77 @@ def word2vec_mean(text, model, num_topics):
 
 
 
+
+def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
+
+    whitelist = string.letters + string.digits + ' '
+    # Keep only letters and numbers
+    filtered_text = ''
+    text = text.replace('#', ' ')
+    for char in text:
+        if char in whitelist:
+            filtered_text += char
+    filtered_text = filtered_text.lower()
+
+    # Gensim simple_preproces instead tokenizer
+    en_stop = get_stop_words('en')
+    tokens = gensim.utils.simple_preprocess(filtered_text)
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+    tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+
+    embedding = np.zeros(num_topics)
+    c = 0
+
+    vec = tfidf_dictionary.doc2bow(tokens_filtered)
+    vec_tfidf = tfidf_model[vec]
+    for tok in vec_tfidf:
+        word_embedding = model[tfidf_dictionary[tok[0]]]
+        embedding += word_embedding * tok[1]
+
+    # if c > 0:
+    #     embedding /= c
+
+    embedding = embedding - min(embedding)
+    embedding = embedding / max(embedding)
+
+    #embedding = embedding / sum(embedding)
+
+    return embedding
+
+
+
+def glove(text, model, num_topics):
+
+    filtered_text = ''
+    # Replace hashtags with spaces
+    text = text.replace('#', ' ')
+
+    en_stop = get_stop_words('en')
+    whitelist = string.letters + string.digits + ' '
+    # Keep only letters and numbers
+    for char in text:
+        if char in whitelist:
+            filtered_text += char
+
+    filtered_text = filtered_text.lower()
+    # Gensim simple_preproces instead tokenizer
+    tokens = gensim.utils.simple_preprocess(filtered_text)
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+    embedding = np.zeros(num_topics)
+    c = 0
+    for tok in stopped_tokens:
+        try:
+            embedding += model.word_vectors[model.dictionary[tok]]
+            # print model.word_vectors[model.dictionary[tok]]
+            c += 1
+        except:
+            # print "Word not in model: " + tok
+            continue
+    if c > 0:
+        embedding /= c
+
+
+    embedding = embedding - min(embedding)
+    embedding = embedding / sum(embedding)
+
+    return embedding
