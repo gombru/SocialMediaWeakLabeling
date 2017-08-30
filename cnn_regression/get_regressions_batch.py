@@ -5,7 +5,7 @@ from PIL import Image
 import os
 
 # Run in GPU
-caffe.set_device(0)
+caffe.set_device(3)
 caffe.set_mode_gpu()
 
 # test = np.loadtxt('../../../datasets/SocialMedia/word2vec_tfidf_weighted_gt/test_InstaCities1M_divbymax.txt', dtype=str)
