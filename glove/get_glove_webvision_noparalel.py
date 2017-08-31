@@ -92,6 +92,7 @@ def infer_glove(d):
             #     embedding += word_embedding * tok[1]
 
             # print("Using GLOVE paragraph embedding (similar to tfidf weighting)")
+            # print(tokens_filtered)
             embedding = model.transform_paragraph(tokens_filtered, 50, True)
 
         embedding = embedding - min(embedding)
@@ -119,11 +120,13 @@ for s in sources:
 
     img_names = []
     img_classes = []
-    for line in img_list_file:
+    for i,line in enumerate(img_list_file):
         img_names.append(line.split(' ')[0])
         img_classes.append(int(line.split(' ')[1]))
+         #if i == 5: break
 
     for i,line in enumerate(data_file):
+        #if i ==5: break
         filename = line.split(' ')[0].replace(s,s+'_json')
         idx = int(line.split(' ')[1])
 
