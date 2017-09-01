@@ -99,6 +99,8 @@ def infer_glove(d):
         if max(embedding) > 0:
             embedding = embedding / max(embedding)
 
+        if np.isnan(embedding).any():
+            embedding = np.zeros(size)
 
         # Add zeros to topics without score
         out_string = ''

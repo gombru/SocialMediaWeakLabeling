@@ -112,17 +112,20 @@ def infer_glove(file_name):
             embedding = model.transform_paragraph(tokens_filtered, 50, True)
 
 
-
         embedding = embedding - min(embedding)
         # if sum(embedding) > 0:
         #     embedding = embedding / sum(embedding)
         if max(embedding) > 0:
             embedding = embedding / max(embedding)
 
+        if np.isnan(embedding).any():
+            embedding = np.zeros(size)
+
         # Add zeros to topics without score
         out_string = ''
         for t in range(0,size):
             out_string = out_string + ',' + str(embedding[t])
+
 
         return city + '/' + id + out_string
 
