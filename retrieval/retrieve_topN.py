@@ -23,10 +23,10 @@ tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
+database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/WebVision/models/glove/' + model_name
 embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove'
-test_dataset = 'webvision' #'instacities1m' #webvision
+test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
 # Load LDA model
