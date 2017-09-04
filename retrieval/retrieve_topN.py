@@ -11,22 +11,22 @@ from gensim import corpora, models
 import gensim
 import glove
 
-data = 'SocialMedia_Inception_frozen_glove_mean_iter_300000'
-model_name = 'glove_model_InstaCities1M.model'
+data = 'WebVision_Inception_frozen_glove_iter_520000'
+model_name = 'glove_model_WebVision.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
 
-#if tfidf
-# tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
-# tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
-# tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
-# tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+#-----------> if tfidf
+tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
+tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
+tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
-embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf'
-test_dataset = 'instacities1m' #'instacities1m' #webvision
+database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
+model_path = '../../../datasets/WebVision/models/glove/' + model_name
+embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove'
+test_dataset = 'webvision' #'instacities1m' #webvision
 
 
 # Load LDA model
