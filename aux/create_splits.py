@@ -30,7 +30,7 @@ for city in cities:
         if not os.path.exists(dest_path_captions + s + city):
             os.makedirs(dest_path_captions + s + city)
         if not os.path.exists(dest_path_img + s + city):
-            os.makedirs(dest_path_img + city)
+            os.makedirs(dest_path_img + s + city)
     print city
 
     names = []
