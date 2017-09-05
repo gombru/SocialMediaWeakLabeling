@@ -204,3 +204,28 @@ def glove(text, model, num_topics):
     embedding = embedding / sum(embedding)
 
     return embedding
+
+
+def glove_tfidf(text, model, num_topics):
+
+    filtered_text = ''
+    # Replace hashtags with spaces
+    text = text.replace('#', ' ')
+
+    en_stop = get_stop_words('en')
+    whitelist = string.ascii_letters + string.digits + ' '
+    # Keep only letters and numbers
+    for char in text:
+        if char in whitelist:
+            filtered_text += char
+
+    filtered_text = filtered_text.lower()
+    # Gensim simple_preproces instead tokenizer
+    tokens = gensim.utils.simple_preprocess(filtered_text)
+    stopped_tokens = [i for i in tokens if not i in en_stop]
+    embedding = model.transform_paragraph(stopped_tokens, 50, True)
+    embedding /= len(stopped_tokens)
+    embedding = embedding - min(embedding)
+    embedding = embedding / sum(embedding)
+
+    return embedding

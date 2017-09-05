@@ -25,7 +25,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/WebVision/models/glove/' + model_name
-embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove'
+embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
 test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
@@ -34,7 +34,8 @@ print("Loading " +embedding+ " model ...")
 if embedding == 'LDA': model = models.ldamodel.LdaModel.load(model_path)
 elif embedding == 'word2vec_mean' or embedding == 'word2vec_tfidf': model = models.Word2Vec.load(model_path)
 elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
-elif embedding == 'glove': model = glove.Glove.load(model_path)
+elif embedding == 'glove' or embedding == 'glove_tfidf': model = glove.Glove.load(model_path)
+
 
 
 # Load dataset
@@ -91,6 +92,9 @@ def get_results_complex(database, text, num_results, results_path):
 
     elif embedding == 'glove':
         topics = text2topics.glove(text, model, num_topics)
+
+    elif embedding == 'glove_tfidf':
+        topics = text2topics.glove_tfidf(text, model, num_topics)
 
 
     # Create empty dict for distances
@@ -177,6 +181,7 @@ for cur_q in q:
         elif embedding == 'doc2vec': topics = text2topics.doc2vec(cur_q, model, num_topics)
         elif embedding == 'word2vec_tfidf': topics = text2topics.word2vec_tfidf(cur_q, model, num_topics, tfidf_model, tfidf_dictionary)
         elif embedding == 'glove': topics = text2topics.glove(cur_q, model, num_topics)
+        elif embedding == 'glove_tfidf': topics = text2topics.glove_tfidf(cur_q, model, num_topics)
 
 
         get_results(database, topics, num_results,results_path)
