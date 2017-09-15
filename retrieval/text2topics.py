@@ -161,7 +161,8 @@ def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
     #     embedding /= c
 
     embedding = embedding - min(embedding)
-    embedding = embedding / max(embedding)
+    if max(embedding) > 0:
+        embedding = embedding / max(embedding)
 
     #embedding = embedding / sum(embedding)
 
