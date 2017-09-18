@@ -6,11 +6,31 @@ import operator
 from gensim import corpora, models
 import gensim
 import glove
-from load_regressions_from_txt import load_regressions_from_txt
 from shutil import copyfile
 
 
-data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
+def load_regressions_from_txt(path, num_topics):
+
+    database = {}
+
+    file = open(path, "r")
+
+    print("Loading data ...")
+    print(path)
+
+    for line in file:
+        d = line.split(',')
+        regression_values = np.zeros(num_topics)
+        for t in range(0,num_topics):
+            # regression_values[t-1] = d[t+1]  #-1 in regression values should not be there. So I'm skipping using topic 0 somewhere
+            regression_values[t] = d[t + 1]
+        database[d[0]] = regression_values
+
+    return database
+
+
+
+data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -18,10 +38,10 @@ database_path = '../../../datasets/PascalVOC2007/regression_output/' + data +'/t
 test_labels_fname = '../../../datasets/PascalVOC2007/labels.txt'
 test_captions_fname = '../../../datasets/PascalVOC2007/tags.txt'
 
-model_name = 'glove_model_InstaCities1M.model'
+model_name = 'word2vec_model_webvision.model'
 num_topics = 400 # Num LDA model topics
-embedding = 'glove_tfidf'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+embedding = 'word2vec_tfidf'
+model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -70,7 +90,7 @@ for l in test_captions:
     caption = l.split()[1:]
     all_caption = ""
     for w in caption:
-        all_caption = all_caption + w
+        all_caption = all_caption + ' ' + w
     test_img_captions[l.split()[0]] = all_caption
 
 print("Num images per category")
@@ -136,9 +156,14 @@ for q in test_indices:
 
         query_labels =  test_img_cats[q]
 
-        # print test_img_cats[id[0]]
         # print query_labels
-        # print "\n---------\n"
+        # print test_img_cats[id[0]]
+        # print "-------\n"
+
+        # print text_query
+        #
+        # if idx < 6:
+        #     copyfile('../../../datasets/PascalVOC2007/JPEGImages/' + id[0], '../../../datasets/PascalVOC2007/rr/' + id[0])
 
         for label in query_labels:
 
