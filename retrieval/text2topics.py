@@ -133,7 +133,7 @@ def word2vec_mean(text, model, num_topics):
 
 def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
 
-    whitelist = string.letters + string.digits + ' '
+    whitelist = string.ascii_letters + string.digits + ' '
     # Keep only letters and numbers
     filtered_text = ''
     text = text.replace('#', ' ')

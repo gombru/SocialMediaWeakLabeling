@@ -89,6 +89,8 @@ class customDataLayer(caffe.Layer):
         # Webvision has class id so 2 offset
         if self.dir == '../../../datasets/SocialMedia':
             offset = 1
+        elif self.dir == '../../../datasets/Wikipedia':
+            offset = 1
         else:
             offset = 2
         print "Offset: " + str(offset)
@@ -176,6 +178,8 @@ class customDataLayer(caffe.Layer):
 
         elif self.split == '/info/val_filelist':
             im = Image.open('{}/{}/{}'.format(self.dir, 'val_images_256', idx))
+        elif self.dir == '../../../datasets/Wikipedia':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'images', idx + '.jpg'))
 
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
@@ -224,6 +228,7 @@ class customDataLayer(caffe.Layer):
     def random_crop(self, im):
         # Crops a random region of the image that will be used for training. Margin won't be included in crop.
         width, height = im.size
+        print im.size
         margin = self.crop_margin
         left = random.randint(margin, width - self.crop_w - 1 - margin)
         top = random.randint(margin, height - self.crop_h - 1 - margin)

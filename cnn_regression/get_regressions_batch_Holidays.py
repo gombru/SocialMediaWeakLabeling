@@ -9,8 +9,8 @@ caffe.set_device(0)
 caffe.set_mode_gpu()
 
 # test = np.loadtxt('../../../datasets/Wikipedia/testset_txt_img_cat.list', dtype=str)
-# with open('../../../datasets/Wikipedia/testset_txt_img_cat.list') as f:
-with open('../../../datasets/PascalVOC2007/labels.txt') as f:
+with open('../../../datasets/Wikipedia/testset_txt_img_cat.list') as f:
+#with open('../../../datasets/PascalVOC2007/labels.txt') as f:
     test = f.readlines()
 
 
@@ -18,15 +18,15 @@ with open('../../../datasets/PascalVOC2007/labels.txt') as f:
 model = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
 
 #Output file
-output_file_dir = '../../../datasets/PascalVOC2007/regression_output/' + model
+output_file_dir = '../../../datasets/Wikipedia/regression_output/' + model
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
 output_file_path = output_file_dir + '/test.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/WebVision/models/saved/'+ model + '.caffemodel', caffe.TEST)
-# cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
+net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/SocialMedia/models/saved/'+ model + '.caffemodel', caffe.TEST)
+cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
 
 size = 227
 
@@ -49,11 +49,11 @@ while i < len(test):
         if i > len(test) - 1: break
 
         # load image
-        filename = '../../../datasets/PascalVOC2007/JPEGImages/' + test[x].split()[0]
+        filename = '../../../datasets/Wikipedia/images/' + cats[int(test[x].split('\t')[2])-1] + '/' + test[x].split()[1] + '.jpg'
         im = Image.open(filename)
         im_o = im
         im = im.resize((size, size), Image.ANTIALIAS)
-        indices.append(test[x].split()[0])
+        indices.append(test[x].split()[1])
 
         # Turn grayscale images to 3 channels
         if (im.size.__len__() == 2):

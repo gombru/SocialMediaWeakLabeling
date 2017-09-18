@@ -48,7 +48,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
             ax1.plot(it_axes[0:it/disp_interval], train_loss[0:it/disp_interval], 'r')
             # if it > test_interval:
             #     ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g') #Val always on top
-            ax1.set_ylim([0,6])
+            #ax1.set_ylim([0,6])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
@@ -68,13 +68,13 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
 
             val_loss[it/test_interval - 1] = loss_val
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
-            ax1.set_ylim([0,6])
+            #ax1.set_ylim([0,6])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../datasets/SocialMedia/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
+            title = '../../../datasets/Wikipedia/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 
