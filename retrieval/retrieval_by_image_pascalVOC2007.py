@@ -30,7 +30,7 @@ def load_regressions_from_txt(path, num_topics):
 
 
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -38,10 +38,10 @@ database_path = '../../../datasets/PascalVOC2007/regression_output/' + data +'/t
 test_labels_fname = '../../../datasets/PascalVOC2007/labels.txt'
 test_captions_fname = '../../../datasets/PascalVOC2007/tags.txt'
 
-model_name = 'word2vec_model_webvision.model'
+model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
-embedding = 'word2vec_tfidf'
-model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+embedding = 'glove_tfidf'
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
