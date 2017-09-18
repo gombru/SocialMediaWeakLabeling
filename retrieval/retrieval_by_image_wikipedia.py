@@ -9,9 +9,30 @@ import glove
 from load_regressions_from_txt import load_regressions_from_txt
 from shutil import copyfile
 
+
+def load_regressions_from_txt(path, num_topics):
+
+    database = {}
+
+    file = open(path, "r")
+
+    print("Loading data ...")
+    print(path)
+
+    for line in file:
+        d = line.split(',')
+        regression_values = np.zeros(num_topics)
+        for t in range(0,num_topics):
+            # regression_values[t-1] = d[t+1]  #-1 in regression values should not be there. So I'm skipping using topic 0 somewhere
+            regression_values[t] = d[t + 1]
+        database[d[0]] = regression_values
+
+    return database
+
+
 cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
 
-data = 'WebVision_Inception_frozen_glove_tfidf_weighted_iter_630000'
+data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -19,10 +40,10 @@ database_path = '../../../datasets/Wikipedia/regression_output/' + data +'/test.
 test_indices_fname = '../../../datasets/Wikipedia/testset_txt_img_cat.list'
 
 
-model_name = 'glove_model_WebVision.model'
+model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 embedding = 'glove_tfidf'
-model_path = '../../../datasets/WebVision/models/glove/' + model_name
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -44,6 +65,8 @@ map = {}
 
 # Load dataset
 database = load_regressions_from_txt(database_path, num_topics)
+for id in database:
+    database[id] = database[id] / sum(database[id])
 # queries = load_regressions_from_txt(queries_embedding_path, num_topics + 1)
 
 
@@ -80,6 +103,9 @@ for q in test_indices:
     # text_query = "cat"
     words = text_query.split(' ')
     topics = np.zeros(num_topics)
+
+    #text_query = cats[q_cat-1]
+    # print text_query
 
     if embedding == 'LDA':
         for w in words:
@@ -128,12 +154,12 @@ for q in test_indices:
     #Sort dictionary
     distances = sorted(distances.items(), key=operator.itemgetter(1))
 
-    print q_cat
-    print text_query
+    # print q_cat
+    # print text_query
     for idx,id in enumerate(distances):
-        if idx < 6:
-            copyfile('../../../datasets/Wikipedia/images/' + cats[test_img_cats[id[0]] - 1] + '/' + id[0] + '.jpg', '../../../datasets/Wikipedia/rr/' + id[0] + '.jpg')
-        print test_img_cats[id[0]]
+        # if idx < 6:
+        #     copyfile('../../../datasets/Wikipedia/images/' + cats[test_img_cats[id[0]] - 1] + '/' + id[0] + '.jpg', '../../../datasets/Wikipedia/rr/' + id[0] + '.jpg')
+        # print test_img_cats[id[0]]
         if test_img_cats[id[0]] == q_cat:
             correct += 1
             precisions.append(float(correct)/(idx + 1))

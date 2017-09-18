@@ -28,7 +28,7 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
-
+classes = ['person','bird','cat','cow','dog','horse','sheep','aeroplane','bicycle','boat','bus','car','motorbike','train','bottle','chair','diningtable','pottedplant','sofa','tvmonitor']
 
 data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
 num_topics = 400
@@ -65,6 +65,8 @@ map = {}
 
 # Load dataset
 database = load_regressions_from_txt(database_path, num_topics)
+for id in database:
+    database[id] = database[id] / sum(database[id])
 # queries = load_regressions_from_txt(queries_embedding_path, num_topics + 1)
 
 
@@ -90,7 +92,9 @@ for l in test_captions:
     caption = l.split()[1:]
     all_caption = ""
     for w in caption:
+        #if w in classes:
         all_caption = all_caption + ' ' + w
+
     test_img_captions[l.split()[0]] = all_caption
 
 print("Num images per category")
