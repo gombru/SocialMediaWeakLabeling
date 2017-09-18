@@ -73,9 +73,9 @@ for l in test_captions:
         all_caption = all_caption + w
     test_img_captions[l.split()[0]] = all_caption
 
-print "Num images per category"
-print numxcat
-print sum(numxcat)
+print("Num images per category")
+print(numxcat)
+print(sum(numxcat))
 
 for q in test_indices:
 
@@ -153,7 +153,7 @@ for q in test_indices:
     for p in precisions: map_q += p
     map_q /=len(precisions)
     map[q] = map_q * 100
-    print q + ': map --> ' + str(map[q])
+    print(q + ': map --> ' + str(map[q]))
 
 # Compute mean precision
 sum = 0
@@ -161,7 +161,7 @@ for c in map:
     sum = map[c] + sum
 mean_precision = sum / len(test_indices)
 
-print "Mean map: " + str(mean_precision)
+print("Mean map: " + str(mean_precision))
 
 
 
