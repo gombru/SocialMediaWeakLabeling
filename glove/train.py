@@ -13,7 +13,7 @@ instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/ci
 webvision_text_data_path = '../../../datasets/WebVision/'
 wikipedia_text_data_path = '../../../datasets/Wikipedia/train_texts/'
 model_path = '../../../datasets/Wikipedia/models/glove/glove_model_wikipedia.model'
-words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
+words2filter = ['rt','http','https','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 en_stop = get_stop_words('en')
 
