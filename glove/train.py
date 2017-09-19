@@ -100,7 +100,7 @@ def get_webvision():
 def get_wikipedia():
     # -- LOAD DATA FROM WIKI --
     posts_text = []
-    print "Loading Wikipedia data"
+    print("Loading Wikipedia data")
     for i, file_name in enumerate(glob.glob(wikipedia_text_data_path +  "/*.xml")):
         caption = ""
         filtered_caption = ""
@@ -116,8 +116,8 @@ def get_wikipedia():
                 filtered_caption += char
 
         posts_text.append(filtered_caption.decode('utf-8').lower())
-        print filtered_caption.decode('utf-8').lower()
-        print '\n---------------\n'
+        print(filtered_caption.decode('utf-8').lower())
+        print('\n---------------\n')
     return posts_text
 
 print('Creating Corpus')
