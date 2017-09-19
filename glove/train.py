@@ -122,7 +122,7 @@ def get_wikipedia():
 
 print('Creating Corpus')
 #sentences = read_corpus(filename)
-posts_text = get_wikipedia()()
+posts_text = get_wikipedia()
 c=0
 sentences = []
 for t in posts_text:
