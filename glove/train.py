@@ -11,7 +11,8 @@ import collections
 whitelist = string.ascii_letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
+wikipedia_text_data_path = '../../../datasets/Wikipedia/train_texts/'
+model_path = '../../../datasets/Wikipedia/models/glove/glove_model_wikipedia.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 en_stop = get_stop_words('en')
@@ -96,9 +97,32 @@ def get_webvision():
 
     return posts_text
 
+def get_wikipedia():
+    # -- LOAD DATA FROM WIKI --
+    posts_text = []
+    print "Loading Wikipedia data"
+    for i, file_name in enumerate(glob.glob(wikipedia_text_data_path +  "/*.xml")):
+        caption = ""
+        filtered_caption = ""
+        file = open(file_name, "r")
+        for line in file:
+            caption = caption + line
+        # Replace hashtags with spaces
+        caption = caption.replace('#', ' ')
+        caption = caption.split('text>')[1][:-3]
+        # Keep only letters and numbers
+        for char in caption:
+            if char in whitelist:
+                filtered_caption += char
+
+        posts_text.append(filtered_caption.decode('utf-8').lower())
+        print filtered_caption.decode('utf-8').lower()
+        print '\n---------------\n'
+    return posts_text
+
 print('Creating Corpus')
 #sentences = read_corpus(filename)
-posts_text = get_instacities1m()
+posts_text = get_wikipedia()()
 c=0
 sentences = []
 for t in posts_text:
