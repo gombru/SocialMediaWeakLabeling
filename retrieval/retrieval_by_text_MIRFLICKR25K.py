@@ -30,7 +30,7 @@ def load_regressions_from_txt(path, num_topics):
     return database
 
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -38,10 +38,10 @@ database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/te
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
 
-model_name = 'word2vec_model_webvision.model'
+model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
-embedding = 'word2vec_tfidf'
-model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+embedding = 'glove'
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -82,7 +82,6 @@ for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topic
 # Count number of articles per category
 num_per_cat = {}
 for i, topics in img_topics.iteritems():
-    print topics
     for cat in topics[1]:
         if num_per_cat.has_key(cat):
             num_per_cat[cat] += 1
@@ -94,13 +93,13 @@ print(num_per_cat)
 
 for q in queries_indices:
 
-    topics = img_topics[str(int(q))][0]
+    topics = img_topics[str(int(q))][0] + img_topics[str(int(q))][1]
     text_query = ""
     for l in topics:
         for cat in topics:
             if cat == 'plant_life':
                 cat = 'plant'
-            text_query = text_query + cat
+            text_query = text_query + ' ' + cat
 
     words = text_query.split(' ')
     topics = np.zeros(num_topics)
@@ -152,15 +151,14 @@ for q in queries_indices:
     #Sort dictionary
     distances = sorted(distances.items(), key=operator.itemgetter(1))
 
-    #query_labels = img_topics[str(int(q))][0] + img_topics[str(int(q))][1]
-    query_labels = img_topics[str(int(q))][1]
-    print query_labels
+    query_labels = img_topics[str(int(q))][0] + img_topics[str(int(q))][1]
+    # query_labels = img_topics[str(int(q))][1]
 
     for idx,id in enumerate(distances):
 
         for label in query_labels:
-            #if img_topics[id[0]][0].__contains__(str(label)) or img_topics[id[0]][1].__contains__(str(label)):
-            if img_topics[id[0]][1].__contains__(str(label)):
+            if img_topics[id[0]][0].__contains__(str(label)) or img_topics[id[0]][1].__contains__(str(label)):
+            # if img_topics[id[0]][1].__contains__(str(label)):
                 correct += 1
                 precisions.append(float(correct)/(idx + 1))
                 break
@@ -180,7 +178,6 @@ for c in map:
 mean_precision = sum / len(queries_indices)
 
 print("Mean map: " + str(mean_precision))
-
 
 
 
