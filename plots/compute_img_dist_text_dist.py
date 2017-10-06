@@ -109,7 +109,7 @@ for q in queries_indices:
 
     #text_query = 'car yellow sunset sun'
     words = text_query.split(' ')
-    print words
+    print(words)
     topics = np.zeros(num_topics)
 
     if embedding == 'LDA':
