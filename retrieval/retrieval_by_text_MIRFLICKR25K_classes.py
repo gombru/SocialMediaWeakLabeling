@@ -37,7 +37,7 @@ data = 'WebVision_Inception_frozen_glove_tfidf_weighted_iter_640000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = path_to_dataset+ ' regression_output/' + data +'/test.txt'
+database_path = path_to_dataset+ 'regression_output/' + data +'/test.txt'
 filtered_topics = path_to_dataset+ 'filtered_topics/'
 
 model_name = 'glove_model_InstaCities1M.model'
