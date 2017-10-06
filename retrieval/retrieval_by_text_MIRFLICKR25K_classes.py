@@ -8,6 +8,8 @@ import gensim
 import glove
 import glob
 from shutil import copyfile
+from scipy.misc import imshow, imread
+
 
 
 def load_regressions_from_txt(path, num_topics):
@@ -29,18 +31,18 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
+path_to_dataset = "/home/Imatge/hd/datasets/MIRFLICKR25K/"
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+data = 'WebVision_Inception_frozen_glove_tfidf_weighted_iter_640000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/test.txt'
-filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
+database_path = path_to_dataset+ ' regression_output/' + data +'/test.txt'
+filtered_topics = path_to_dataset+ 'filtered_topics/'
 
-model_name = 'word2vec_model_webvision.model'
-num_topics = 400 # Num LDA model topics
-embedding = 'word2vec_tfidf'
-model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+model_name = 'glove_model_InstaCities1M.model'
+embedding = 'glove'
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -56,10 +58,16 @@ tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 queries = ['animals','baby','bird','car','female','lake','sea','tree','clouds','dog','sky','structures','sunset','transport','water','flower','food','indoor','plant_life','portrait','river','male','night','people']
+strong_topics_names = ['baby','bird','car','clouds','dog','female','flower','male','night','people','portrait','river','sea','tree']
 
 map_classes = {}
 for q in queries:
     map_classes[q] = []
+
+map_strong_classes = {}
+for q in strong_topics_names:
+    map_strong_classes[q] = []
+
 
 # Load dataset
 database = load_regressions_from_txt(database_path, num_topics)
@@ -70,7 +78,7 @@ for id in database:
 
 img_topics = {}
 # Load topics of all images
-for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+for file_name in glob.glob(path_to_dataset+ "filtered_topics/*.txt"):
     file = open(file_name, "r")
     lines = []
     for line in file:
@@ -78,6 +86,20 @@ for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topic
         lines.append(line)
     img_topics[file_name.split('/')[-1][:-4]] = lines[0].split(','), lines[1].split(',')
     file.close()
+
+
+strong_topics = {}
+# Load indices or string topics
+for file_name in glob.glob(path_to_dataset+ "annotations_r/*.txt"):
+    file = open(file_name, "r")
+    class_name = file_name.split('/')[-1][:-7]
+    lines = []
+    for line in file:
+        lines.append(str(int(line)))
+    strong_topics[class_name] = lines
+    file.close()
+
+
 
 
 for q in queries:
@@ -89,10 +111,14 @@ for q in queries:
     topics = np.zeros(num_topics)
 
     if embedding == 'LDA':
+        used_words = 0
         for w in words:
+            if w == '' or w == []: continue
             w_topics = text2topics.LDA(w, model, num_topics)
-            topics = topics + w_topics
-        topics = topics / len(words)
+            if sum(w_topics) > 0:
+                topics = topics + w_topics
+                used_words += 1
+        topics = topics / used_words
 
     elif embedding == 'word2vec_mean':
         num = 0
@@ -130,16 +156,25 @@ for q in queries:
 
     # Get elements with min distances
     correct = 0
+    strong_correct = 0
 
     #Sort dictionary
     distances = sorted(distances.items(), key=operator.itemgetter(1))
 
     for idx,id in enumerate(distances):
 
+        # if idx < 2:
+        #     img_path = "/home/raulgomez/datasets/MIRFLICKR25K/img/im" + str(id[0]) + ".jpg"
+        #     imshow(imread(img_path))
+
         if img_topics[id[0]][0].__contains__(str(q)) or img_topics[id[0]][1].__contains__(str(q)):
             correct += 1
             map_classes[q].append(float(correct)/(idx + 1))
 
+        if strong_topics_names.__contains__(str(q)):
+            if strong_topics[str(q)].__contains__(str(int(id[0]))):
+                strong_correct += 1
+                map_strong_classes[q].append(float(correct)/(idx + 1))
         # if correct == (numxcat[q_cat-1]): break
 
     map_q = 0
@@ -148,11 +183,27 @@ for q in queries:
     print(q + ': map --> ' + str(map_q))
     map_classes[q] = map_q
 
+    if strong_topics_names.__contains__(str(q)):
+        map_q = 0
+        for p in map_strong_classes[q]: map_q += p
+        map_q /= len(map_strong_classes[q])
+        print(q + ': map strong --> ' + str(map_q))
+        map_strong_classes[q] = map_q
+
 map = 0
 for q,v in map_classes.iteritems():
     map = map + v
 map = map / len(queries)
-print "Mean map: " + str(map)
+print "Mean map all topics toguether: " + str(map)
+
+map = 0
+for q,v in map_classes.iteritems():
+    map = map + v
+for q,v in map_strong_classes.iteritems():
+    map = map + v
+map = map / (len(queries) + len(strong_topics_names))
+print "Mean considering separate topics: " + str(map)
+
 
 
 

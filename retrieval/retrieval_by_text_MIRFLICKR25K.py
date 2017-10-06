@@ -8,6 +8,8 @@ import gensim
 import glove
 import glob
 from shutil import copyfile
+from scipy.misc import imshow, imread
+
 
 
 def load_regressions_from_txt(path, num_topics):
@@ -26,11 +28,10 @@ def load_regressions_from_txt(path, num_topics):
             # regression_values[t-1] = d[t+1]  #-1 in regression values should not be there. So I'm skipping using topic 0 somewhere
             regression_values[t] = d[t + 1]
         database[d[0]] = regression_values
-
     return database
 
 
-data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
+data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -38,10 +39,9 @@ database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/te
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
 
-model_name = 'glove_model_InstaCities1M.model'
-num_topics = 400 # Num LDA model topics
-embedding = 'glove'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+model_name = 'word2vec_model_webvision.model'
+embedding = 'word2vec_tfidf'
+model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -55,6 +55,11 @@ tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvisi
 tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+
+# tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
+# tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
+# tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
+# tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 with open(queries_fname) as f:
     queries_indices = f.readlines()
@@ -101,14 +106,20 @@ for q in queries_indices:
                 cat = 'plant'
             text_query = text_query + ' ' + cat
 
+    # text_query = 'car'
     words = text_query.split(' ')
     topics = np.zeros(num_topics)
 
+
     if embedding == 'LDA':
+        used_words = 0
         for w in words:
+            if w == '' or w == []: continue
             w_topics = text2topics.LDA(w, model, num_topics)
-            topics = topics + w_topics
-        topics = topics / len(words)
+            if sum(w_topics) > 0:
+                topics = topics + w_topics
+                used_words += 1
+        topics = topics / used_words
 
     elif embedding == 'word2vec_mean':
         num = 0
@@ -135,10 +146,15 @@ for q in queries_indices:
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text_query, model, num_topics)
 
-
+    else:
+        print("Select a correct embedding")
+        raise SystemExit(0)
+    #
+    #
     # Create empty dict for ditances
     distances = {}
 
+    # print topics
     # Compute distances)
     for id in database:
         distances[id] = np.linalg.norm(database[id]-topics)
@@ -153,8 +169,11 @@ for q in queries_indices:
 
     query_labels = img_topics[str(int(q))][0] + img_topics[str(int(q))][1]
     # query_labels = img_topics[str(int(q))][1]
-
     for idx,id in enumerate(distances):
+
+        # if idx < 2:
+        #     img_path = "/home/raulgomez/datasets/MIRFLICKR25K/img/im" + str(id[0]) + ".jpg"
+        #     imshow(imread(img_path))
 
         for label in query_labels:
             if img_topics[id[0]][0].__contains__(str(label)) or img_topics[id[0]][1].__contains__(str(label)):
