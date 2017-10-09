@@ -26,7 +26,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
 embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
-test_dataset = 'webvision' #'instacities1m' #webvision
+test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
 # Load LDA model
@@ -162,61 +162,51 @@ w = [] # Weights per word (can be negative)
 # q.append('man boat')
 # q.append('kid dog')
 
-q.append('snow ski')
+q.append('sun nature')
 w.append('1 1')
 
-q.append('snow mountain')
+q.append('sun city')
 w.append('1 1')
 
-q.append('snow forest')
+q.append('sun beach')
 w.append('1 1')
 
-q.append('snow everest')
+q.append('dog small')
+w.append('1 1')
+
+q.append('dog big')
+w.append('1 1')
+
+q.append('dog home')
+w.append('1 1')
+
+q.append('dog city')
+w.append('1 1')
+
+q.append('food home')
+w.append('1 1')
+
+q.append('food restaurant')
+w.append('1 1')
+
+q.append('dinner home')
+w.append('1 1')
+
+q.append('dinner restaurant')
+w.append('1 1')
+
+q.append('food fast')
+w.append('1 1')
+
+q.append('food healthy')
 w.append('1 1')
 
 
-q.append('sunrise beach')
+q.append('sport nature')
 w.append('1 1')
 
-q.append('sunrise city')
+q.append('sport gym')
 w.append('1 1')
-
-q.append('sunrise forest')
-w.append('1 1')
-
-
-q.append('sea boat')
-w.append('1 1')
-
-q.append('boat sea')
-w.append('1 -1')
-
-q.append('river boat')
-w.append('1 1')
-
-q.append('face angry')
-w.append('1 1')
-
-q.append('face happy')
-w.append('1 1')
-
-q.append('face crying')
-w.append('1 1')
-
-q.append('face man')
-w.append('1 1')
-
-q.append('face girl')
-w.append('1 1')
-
-q.append('face woman')
-w.append('1 1')
-
-q.append('face girl')
-w.append('1 -1')
-
-q.append('face man')
-w.append('1 -1')
 
 
 
