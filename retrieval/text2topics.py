@@ -48,9 +48,11 @@ def LDA(text, ldamodel, num_topics):
     # bow = ldamodel.id2word.doc2bow(text)
     # r = ldamodel[bow]    # Warning, this uses a threshold of 0.01 on tropic probs, and usually returns only 1 max 2...
 
-    print(text)
     if len(text) > 1:
         print("Warning: only using first word")
+    if len(text) == 0:
+        print("Not valid word")
+        return np.zeros(num_topics)
     r = ldamodel.get_term_topics(text[0].__str__(),0) # #This 0 is changed to 1e-8 inside
     # Add zeros to topics without score
     topic_probs = np.zeros(num_topics)
@@ -59,6 +61,9 @@ def LDA(text, ldamodel, num_topics):
             if topic[0] == t:
                 topic_probs[t] = topic[1]
                 break
+
+    topic_probs = topic_probs - min(topic_probs)
+    topic_probs = topic_probs / sum(topic_probs)
 
     return topic_probs
 
@@ -90,7 +95,7 @@ def doc2vec(text, model, num_topics):
     return embedding
 
 
-def word2vec_mean(text, model, num_topics):
+def word2vec_mean(text, word_weights, model, num_topics):
     filtered_text = ''
     # Replace hashtags with spaces
     text = text.replace('#', ' ')
@@ -107,19 +112,22 @@ def word2vec_mean(text, model, num_topics):
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
     tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
+    word_weights = [float(x) for x in word_weights.split()]
+    print word_weights
 
     embedding = np.zeros(num_topics)
     c = 0
-    for tok in tokens_filtered:
+    for e,tok in enumerate(tokens_filtered):
         try:
-            embedding += model[tok]
+
+            embedding += model[tok] * word_weights[e]
             c += 1
         except:
             # print "Word not in model: " + tok
             continue
 
-    if c > 0:
-        embedding /= c
+    if sum(word_weights) > 0:
+        embedding /= sum(word_weights)
 
     embedding = embedding - min(embedding)
     embedding = embedding / max(embedding)
@@ -170,7 +178,7 @@ def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
 
 
 
-def glove(text, model, num_topics):
+def glove(text, word_weights, model, num_topics):
 
     filtered_text = ''
     # Replace hashtags with spaces
@@ -188,17 +196,19 @@ def glove(text, model, num_topics):
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
     embedding = np.zeros(num_topics)
+    word_weights = [float(x) for x in word_weights.split()]
+
     c = 0
-    for tok in stopped_tokens:
+    for e,tok in enumerate(stopped_tokens):
         try:
-            embedding += model.word_vectors[model.dictionary[tok]]
+            embedding += model.word_vectors[model.dictionary[tok]] * word_weights[e]
             # print model.word_vectors[model.dictionary[tok]]
             c += 1
         except:
             # print "Word not in model: " + tok
             continue
-    if c > 0:
-        embedding /= c
+    if sum(word_weights) > 0:
+        embedding /= sum(word_weights)
 
 
     embedding = embedding - min(embedding)
@@ -207,7 +217,7 @@ def glove(text, model, num_topics):
     return embedding
 
 
-def glove_tfidf(text, model, num_topics):
+def glove_tfidf(text,  model, num_topics):
 
     filtered_text = ''
     # Replace hashtags with spaces

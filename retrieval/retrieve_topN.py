@@ -11,8 +11,8 @@ from gensim import corpora, models
 import gensim
 import glove
 
-data = 'WebVision_Inception_frozen_glove_iter_520000'
-model_name = 'glove_model_WebVision.model'
+data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+model_name = 'word2vec_model_webvision.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
 
@@ -23,10 +23,10 @@ tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/WebVision/models/glove/' + model_name
-embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
-test_dataset = 'instacities1m' #'instacities1m' #webvision
+database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
+model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
+test_dataset = 'webvision' #'instacities1m' #webvision
 
 
 # Load LDA model
@@ -64,7 +64,7 @@ def get_results(database, topics, num_results, results_path):
             copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
         if idx == num_results - 1: break
 
-def get_results_complex(database, text, num_results, results_path):
+def get_results_complex(database, text, word_weights, num_results, results_path):
 
     words = text.split(' ')
     topics = np.zeros(num_topics)
@@ -76,10 +76,8 @@ def get_results_complex(database, text, num_results, results_path):
         topics = topics / len(words)
 
     elif embedding == 'word2vec_mean':
-        for w in words:
-            w_topics = text2topics.word2vec_mean(w, model, num_topics)
-            topics = topics + w_topics
-        topics = topics / len(words)
+        topics = text2topics.word2vec_mean(text, word_weights, model, num_topics)
+
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary)
@@ -91,7 +89,7 @@ def get_results_complex(database, text, num_results, results_path):
 
 
     elif embedding == 'glove':
-        topics = text2topics.glove(text, model, num_topics)
+        topics = text2topics.glove(text, word_weights, model, num_topics)
 
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text, model, num_topics)
@@ -128,47 +126,107 @@ def get_results_complex(database, text, num_results, results_path):
 
 # Do default queryes
 q = []
+w = [] # Weights per word (can be negative)
 
-# Simple
-q.append('car')
-q.append('skyline')
-q.append('bike')
+# # Simple
+# q.append('car')
+# q.append('skyline')
+# q.append('bike')
+#
+# q.append('sunrise')
+# q.append('snow')
+# q.append('rain')
+#
+# q.append('icecream')
+# q.append('cake')
+# q.append('pizza')
+#
+# q.append('woman')
+# q.append('man')
+# q.append('kid')
+#
+# # Complex
+# q.append('yellow car')
+# q.append('skyline night')
+# q.append('bike park')
+#
+# q.append('sunrise beach')
+# q.append('snow ski')
+# q.append('rain umbrella')
+#
+# q.append('icecream beach')
+# q.append('chocolate cake')
+# q.append('pizza wine')
+#
+# q.append('woman bag')
+# q.append('man boat')
+# q.append('kid dog')
 
-q.append('sunrise')
-q.append('snow')
-q.append('rain')
+q.append('snow ski')
+w.append('1 1')
 
-q.append('icecream')
-q.append('cake')
-q.append('pizza')
+q.append('snow mountain')
+w.append('1 1')
 
-q.append('woman')
-q.append('man')
-q.append('kid')
+q.append('snow forest')
+w.append('1 1')
 
-# Complex
-q.append('yellow car')
-q.append('skyline night')
-q.append('bike park')
+q.append('snow everest')
+w.append('1 1')
+
 
 q.append('sunrise beach')
-q.append('snow ski')
-q.append('rain umbrella')
+w.append('1 1')
 
-q.append('icecream beach')
-q.append('chocolate cake')
-q.append('pizza wine')
+q.append('sunrise city')
+w.append('1 1')
 
-q.append('woman bag')
-q.append('man boat')
-q.append('kid dog')
+q.append('sunrise forest')
+w.append('1 1')
 
 
+q.append('sea boat')
+w.append('1 1')
 
-for cur_q in q:
+q.append('boat sea')
+w.append('1 -1')
+
+q.append('river boat')
+w.append('1 1')
+
+q.append('face angry')
+w.append('1 1')
+
+q.append('face happy')
+w.append('1 1')
+
+q.append('face crying')
+w.append('1 1')
+
+q.append('face man')
+w.append('1 1')
+
+q.append('face girl')
+w.append('1 1')
+
+q.append('face woman')
+w.append('1 1')
+
+q.append('face girl')
+w.append('1 -1')
+
+q.append('face man')
+w.append('1 -1')
+
+
+
+
+
+for e,cur_q in enumerate(q):
     print(cur_q)
-    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '/'
-    else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '/'
+    cur_w = w[e]
+    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '-' + cur_w.replace(' ', '_') + '/'
+    else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '-' + cur_w.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
         print("Creating dir: " + results_path)
         os.makedirs(results_path)
@@ -176,18 +234,18 @@ for cur_q in q:
 
     if len(cur_q.split(' ')) == 1:
 
-        if embedding == 'LDA': topics = text2topics.LDA(cur_q, model, num_topics)
-        elif embedding == 'word2vec_mean': topics = text2topics.word2vec_mean(cur_q, model, num_topics)
+        if embedding == 'LDA': topics = text2topics.LDA(cur_q,  model, num_topics)
+        elif embedding == 'word2vec_mean': topics = text2topics.word2vec_mean(cur_q, cur_w, model, num_topics)
         elif embedding == 'doc2vec': topics = text2topics.doc2vec(cur_q, model, num_topics)
         elif embedding == 'word2vec_tfidf': topics = text2topics.word2vec_tfidf(cur_q, model, num_topics, tfidf_model, tfidf_dictionary)
-        elif embedding == 'glove': topics = text2topics.glove(cur_q, model, num_topics)
+        elif embedding == 'glove': topics = text2topics.glove(cur_q, cur_w, model, num_topics)
         elif embedding == 'glove_tfidf': topics = text2topics.glove_tfidf(cur_q, model, num_topics)
 
 
         get_results(database, topics, num_results,results_path)
 
     else:
-        get_results_complex(database, cur_q, num_results, results_path)
+        get_results_complex(database, cur_q, cur_w, num_results, results_path)
 
 
 
