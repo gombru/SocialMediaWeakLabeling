@@ -12,6 +12,7 @@ import datetime
 import os
 import re
 import timeit
+import json
 
 try:
     import PIL.Image
@@ -95,31 +96,38 @@ class InstaDownloader(threading.Thread):
 
         #RAUL: Create also a text file with the image caption and the city it belongs to
         # print media['caption']
-        caption_name = os.path.join(self.directory, self.owner._make_filename(media)).replace('img','captions').replace('.jpg','.txt')
+        # caption_name = os.path.join(self.directory, self.owner._make_filename(media)).replace('img','captions').replace('.jpg','.txt')
+        # try:
+        #     caption_text = media['caption'].replace('\n', ' ').replace('\r', ' ').encode('utf-8','ignore')
+        # except:
+        #     # if media.has_key('caption'):
+        #     #     print 'Continuing: Failed parsing caption: ' + media['caption']
+        #     # else:
+        #     #     print 'Continuing: Image has not caption.'
+        #
+        #     save = False
+
+        # if save:
         try:
-            caption_text = media['caption'].replace('\n', ' ').replace('\r', ' ').encode('utf-8','ignore')
+            # save full-resolution photo
+            self._dl(photo_url, photo_name)
+
+            # print caption_name
+            # with open(caption_name, "w") as text_file:
+            #     text_file.write(caption_text)
+
+            # save image metadata (caption, owner, likes, etc) as json
+            caption_name = os.path.join(self.directory, self.owner._make_filename(media)).replace('img','json').replace('.jpg', '.json')
+            with open(caption_name, 'w') as fp:
+                json.dump(media, fp)
+
+            # put info from Instagram post into image metadata
+            if self.add_metadata:
+                self._add_metadata(photo_name, media)
+
         except:
-            # if media.has_key('caption'):
-            #     print 'Continuing: Failed parsing caption: ' + media['caption']
-            # else:
-            #     print 'Continuing: Image has not caption.'
-
-            save = False
-
-        if save:
-            try:
-                # save full-resolution photo
-                self._dl(photo_url, photo_name)
-                # print caption_name
-                with open(caption_name, "w") as text_file:
-                    text_file.write(caption_text)
-                # put info from Instagram post into image metadata
-                if self.add_metadata:
-                    self._add_metadata(photo_name, media)
-
-            except:
-                print "Download image failed"
-                return
+            print "Download image failed"
+            return
 
 
     def _download_video(self, media):
