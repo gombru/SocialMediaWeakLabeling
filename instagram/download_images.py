@@ -13,7 +13,7 @@ from core import InstaLooter
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 
-directory = '/home/raulgomez/datasets/instaBarcelona/img/'
+directory = '/home/Imatge/hd/datasets/instaBarcelona/img/'
 get_videos = False
 first = True
 login1 = login = 'raulgombru'
