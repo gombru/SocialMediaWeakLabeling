@@ -11,11 +11,17 @@ logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=lo
 
 cores = multiprocessing.cpu_count()
 
+finetune = True
+if finetune:
+    pretrained_model_path = '../../../datasets/WebVision/models/word2vec/word2vec_model_webvision.model'
+    model = gensim.models.Word2Vec.load(pretrained_model_path)
+
+
 whitelist = string.letters + string.digits + ' '
 instagram_text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 webvision_text_data_path = '../../../datasets/WebVision/'
 wikipedia_text_data_path = '../../../datasets/Wikipedia/train_texts/'
-model_path = '../../../datasets/Wikipedia/models/word2vec/word2vec_model_wikipedia.model'
+model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/word2vec_model_MIRFlickr_finetuned_half.model'
 words2filter = ['rt','http','t','gt','co','s','https','http','tweet','markars_','photo','pictur','picture','say','photo','much','tweet','now','blog','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube','wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
@@ -56,6 +62,31 @@ def get_instacities1m():
 
             posts_text.append(filtered_caption.decode('utf-8').lower())
 
+    return posts_text
+
+
+def get_mirflickr():
+    # -- LOAD DATA FROM MIRFlickr --
+    print "Loading MIRFlickr data"
+    posts_text = []
+    train_half_indices_ints = []
+    # Read topics for only retrieval images
+    train_half = '../../../datasets/MIRFLICKR25K/train_half.txt'
+    with open(train_half) as f:
+        train_half_indices = f.readlines()
+    for q in train_half_indices:
+        train_half_indices_ints.append(int(q))
+    for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+        if int(file_name.split('/')[-1][:-4]) not in train_half_indices_ints:
+            continue
+        file = open(file_name, "r")
+        lines = []
+        for line in file:
+            line = line.replace('\n', '').replace('\t', '').replace('\r', '')
+            line = line.replace('plant_life','plant')
+            lines.append(line)
+        posts_text.append(lines[0].replace(',',' ') + ' ' + lines[1].replace(',',' '))
+        file.close()
     return posts_text
 
 def get_wikipedia():
@@ -123,7 +154,7 @@ def get_webvision():
 
     return posts_text
 
-posts_text = get_wikipedia()
+posts_text = get_mirflickr()
 
 print "Number of posts: " + str(len(posts_text))
 
@@ -153,7 +184,11 @@ posts_text = []
 
 #Train the model
 print "Training ..."
-model = gensim.models.Word2Vec(texts, size=size, min_count=min_count, workers=cores, iter=iter, window=window)
-model.save(model_path)
+if finetune:
+    print model.iter
+    model.train(texts, total_examples=model.corpus_count, epochs=25, compute_loss=False)
+else:
+    model = gensim.models.Word2Vec(texts, size=size, min_count=min_count, workers=cores, iter=iter, window=window)
+
 model.save(model_path)
 print "DONE"

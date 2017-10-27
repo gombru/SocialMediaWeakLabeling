@@ -16,22 +16,19 @@ import gensim
 import multiprocessing
 
 # Load data and model
-indices_fname = '../../../datasets/Wikipedia/trainset_txt_img_cat.list'
-model_path = '../../../datasets/Wikipedia/models/word2vec/word2vec_model_wikipedia_finetuned.model'
-tfidf_weighted = True
+model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/word2vec_model_MIRFlickr_finetuned_half.model'
+tfidf_weighted = False
 tfidf_model_path = '../../../datasets/Wikipedia/models/tfidf/tfidf_model_wikipedia.model'
 tfidf_dictionary_path = '../../../datasets/Wikipedia/models/tfidf/docs.dict'
 
-cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
-
 
 # Create output files
-dir = "word2vec_finetuned_tfidf_gt"
+dir = "word2vec_finetuned_gt"
 if tfidf_weighted: dir = "word2vec_finetuned_tfidf_weighted_gt"
 
-train_gt_path = '../../../datasets/Wikipedia/' + dir + '/' + 'train_wikipedia.txt'
+train_gt_path = '../../../datasets/MIRFLICKR25K/' + dir + '/' + 'train_half.txt'
 train_file = open(train_gt_path, "w")
-val_gt_path = '../../../datasets/Wikipedia/' + dir + '/' + 'val_wikipedia.txt'
+val_gt_path = '../../../datasets/MIRFLICKR25K/' + dir + '/' + 'val_half.txt'
 val_file = open(val_gt_path, "w")
 
 model = gensim.models.Word2Vec.load(model_path)
@@ -90,28 +87,27 @@ def infer_LDA(d):
         return d[0] + out_string
 
 
-with open(indices_fname) as f:
-    indices = f.readlines()
-
+print "Loading MIRFlickr data"
 strings = []
-for l in indices:
-    file = l.split('\t')[0]
-    text_file = '../../../datasets/Wikipedia/texts/' + l.split('\t')[0] + '.xml'
-
-    caption = ""
-    filtered_caption = ""
-    file = open(text_file, "r")
+retreival_indices_ints = []
+# Read topics for only retrieval images
+retrieval_list_fname = '../../../datasets/MIRFLICKR25K/train_half.txt'
+with open(retrieval_list_fname) as f:
+    retrieval_indices = f.readlines()
+for q in retrieval_indices:
+    retreival_indices_ints.append(int(q))
+for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+    if int(file_name.split('/')[-1][:-4]) not in retreival_indices_ints:
+        continue
+    file = open(file_name, "r")
+    lines = []
     for line in file:
-        caption = caption + line
-    # Replace hashtags with spaces
-    caption = caption.replace('#', ' ')
-    caption = caption.split('text>')[1][:-3]
-    # Keep only letters and numbers
-    for char in caption:
-        if char in whitelist:
-            filtered_caption += char
-    img_name = cats[int(l.split('\t')[2])-1] + '/' + l.split('\t')[1]
-    strings.append(infer_LDA([img_name, filtered_caption]))
+        line = line.replace('\n', '').replace('\t', '').replace('\r', '')
+        line = line.replace('plant_life','plant')
+        lines.append(line)
+
+    filtered_caption = lines[0].replace(',',' ') + ' ' + lines[1].replace(',',' ')
+    strings.append(infer_LDA([file_name.split('/')[-1][:-4], filtered_caption]))
 
 
 # print "Number of elements " + str(len(data))

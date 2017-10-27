@@ -17,9 +17,7 @@ import multiprocessing
 import glove
 
 # Load data and model
-indices_fname = '../../../datasets/Wikipedia/trainset_txt_img_cat.list'
-model_path = '../../../datasets/Wikipedia/models/glove/glove_model_wikipedia.model'
-# model_path = 'glove.model'
+model_path = '../../../datasets/SocialMedia/models/glove/glove_model_InstaCities1M.model'
 
 tfidf_weighted = True
 print("TFIDF weighted: " + str(tfidf_weighted))
@@ -30,9 +28,9 @@ print("TFIDF weighted: " + str(tfidf_weighted))
 dir = "glove_mean_gt"
 if tfidf_weighted: dir = "glove_tfidf_weighted_gt"
 
-train_gt_path = '../../../datasets/Wikipedia/' + dir + '/' + 'train_wikipedia.txt'
+train_gt_path = '../../../datasets/MIRFLICKR25K/' + dir + '/' + 'train.txt'
 train_file = open(train_gt_path, "w")
-val_gt_path = '../../../datasets/Wikipedia/' + dir + '/' + 'val_wikipedia.txt'
+val_gt_path = '../../../datasets/MIRFLICKR25K/' + dir + '/' + 'val.txt'
 val_file = open(val_gt_path, "w")
 
 model = glove.Glove.load(model_path)
@@ -45,8 +43,6 @@ whitelist = string.ascii_letters + string.digits + ' '
 words2filter = ['wikipedia','google', 'flickr', 'figure', 'photo', 'image', 'homepage', 'url', 'youtube', 'images', 'blog', 'pinterest']
 # create English stop words list
 en_stop = get_stop_words('en')
-
-cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
 
 
 def infer_glove(d):
@@ -113,30 +109,37 @@ def infer_glove(d):
         return d[0] + out_string
 
 
-with open(indices_fname) as f:
-    indices = f.readlines()
 
+print("Loading MIRFlickr data")
 strings = []
-for l in indices:
-    file = l.split('\t')[0]
-    text_file = '../../../datasets/Wikipedia/texts/' + l.split('\t')[0] + '.xml'
-
-    caption = ""
-    filtered_caption = ""
-    file = open(text_file, "r")
+retreival_indices_ints = []
+# Read topics for only retrieval images
+retrieval_list_fname = '../../../datasets/MIRFLICKR25K/retrieval_list.txt'
+with open(retrieval_list_fname) as f:
+    retrieval_indices = f.readlines()
+for q in retrieval_indices:
+    retreival_indices_ints.append(int(q))
+for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+    if int(file_name.split('/')[-1][:-4]) not in retreival_indices_ints:
+        continue
+    file = open(file_name, "r")
+    lines = []
     for line in file:
-        caption = caption + line
-    # Replace hashtags with spaces
-    caption = caption.replace('#', ' ')
-    caption = caption.split('text>')[1][:-3]
-    # Keep only letters and numbers
-    for char in caption:
-        if char in whitelist:
-            filtered_caption += char
-    img_name = cats[int(l.split('\t')[2])-1] + '/' + l.split('\t')[1]
-    strings.append(infer_glove([img_name, filtered_caption]))
+        line = line.replace('\n', '').replace('\t', '').replace('\r', '')
+        line = line.replace('plant_life','plant')
+        lines.append(line)
+
+    filtered_caption = lines[0].replace(',',' ') + ' ' + lines[1].replace(',',' ')
+    strings.append(infer_glove([file_name.split('/')[-1][:-4], filtered_caption]))
 
 
+# print "Number of elements " + str(len(data))
+# parallelizer = Parallel(n_jobs=cores)
+# print "Infering word2vec scores"
+# tasks_iterator = (delayed(infer_LDA)(d) for d in data)
+# r = parallelizer(tasks_iterator)
+# # merging the output of the jobs
+# strings = np.vstack(r)
 
 print("Resulting number of elements " + str(len(strings)))
 
@@ -150,8 +153,9 @@ for s in strings:
         else: train_file.write(s + '\n')
     except:
         print("Error writing to file: ")
-        print(s)
+        print s
         continue
+
 
 train_file.close()
 val_file.close()

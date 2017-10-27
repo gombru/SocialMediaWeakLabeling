@@ -23,6 +23,7 @@ def load_regressions_from_txt(path, num_topics):
 
     for line in file:
         d = line.split(',')
+        d = line.split(',')
         regression_values = np.zeros(num_topics)
         for t in range(0,num_topics):
             # regression_values[t-1] = d[t+1]  #-1 in regression values should not be there. So I'm skipping using topic 0 somewhere
@@ -31,18 +32,18 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
-path_to_dataset = "/home/Imatge/hd/datasets/MIRFLICKR25K/"
+path_to_dataset = "/home/raulgomez/datasets/MIRFLICKR25K/"
 
-data = 'WebVision_Inception_frozen_glove_tfidf_weighted_iter_640000'
+data = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half_iter_3000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = path_to_dataset+ 'regression_output/' + data +'/test.txt'
+database_path = path_to_dataset+ 'regression_output/' + data +'/test_half.txt'
 filtered_topics = path_to_dataset+ 'filtered_topics/'
 
-model_name = 'glove_model_InstaCities1M.model'
-embedding = 'glove'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+model_name = 'word2vec_model_MIRFlickr_finetuned_half.model'
+embedding = 'word2vec_mean'
+model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -121,14 +122,8 @@ for q in queries:
         topics = topics / used_words
 
     elif embedding == 'word2vec_mean':
-        num = 0
-        for w in words:
-            w_topics = text2topics.word2vec_mean(w, model, num_topics)
-            if np.isnan(w_topics).any():
-                continue
-            topics = topics + w_topics
-            num += 1
-        topics = topics / num
+        word_weights = 0
+        topics = text2topics.word2vec_mean(text_query, word_weights, model, num_topics)
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text_query, model, num_topics, tfidf_model, tfidf_dictionary)

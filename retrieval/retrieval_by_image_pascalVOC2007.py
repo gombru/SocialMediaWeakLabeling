@@ -157,7 +157,7 @@ for q in test_indices:
     distances = sorted(distances.items(), key=operator.itemgetter(1))
 
     for idx,id in enumerate(distances):
-
+        print idx
         query_labels =  test_img_cats[q]
 
         # print query_labels

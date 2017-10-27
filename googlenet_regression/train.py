@@ -12,22 +12,22 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
+weights = '../../../datasets/WebVision/models/saved/WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000.caffemodel'
 assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 50 #200
+display_interval = 5 #200
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 200 #1000
+test_interval = 100 #1000
 test_iters = 1 #80
 
 #Name for training plot and snapshots
-training_id = 'Wikipedia_Inception_frozen_word2vec_mean'
+training_id = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_word2vec_mean_wikipedia.prototxt', 'prototxt/val_frozen_word2vec_mean_wikipedia.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_word2vec_mean_mirflickr.prototxt', 'prototxt/val_frozen_word2vec_mean_mirflickr.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

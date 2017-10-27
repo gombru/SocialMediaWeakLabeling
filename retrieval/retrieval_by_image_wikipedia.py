@@ -32,7 +32,7 @@ def load_regressions_from_txt(path, num_topics):
 
 cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
 
-data = 'SocialMedia_Inception_frozen_glove_tfidf_iter_460000'
+data = 'Wikipedia_Inception_frozen_word2vec_fientuned_tfidf_2000lrdecrease_iter_3000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -40,10 +40,10 @@ database_path = '../../../datasets/Wikipedia/regression_output/' + data +'/test.
 test_indices_fname = '../../../datasets/Wikipedia/testset_txt_img_cat.list'
 
 
-model_name = 'glove_model_InstaCities1M.model'
+model_name = 'word2vec_model_wikipedia_finetuned.model'
 num_topics = 400 # Num LDA model topics
-embedding = 'glove_tfidf'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+embedding = 'word2vec_tfidf'
+model_path = '../../../datasets/Wikipedia/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -53,8 +53,8 @@ elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 elif embedding == 'glove' or embedding == 'glove_tfidf': model = glove.Glove.load(model_path)
 
 #-----------> if tfidf
-tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
-tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
+tfidf_model_path = '../../../datasets/Wikipedia/models/tfidf/tfidf_model_wikipedia.model'
+tfidf_dictionary_path = '../../../datasets/Wikipedia/models/tfidf/docs.dict'
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
@@ -85,9 +85,6 @@ for l in test_indices:
     numxcat[cat-1] += 1
     test_img_cats[l.split('\t')[1]] = cat
 
-print "Num images per category"
-print numxcat
-print sum(numxcat)
 
 for q in test_indices:
 
@@ -100,12 +97,11 @@ for q in test_indices:
     for line in file:
         text_query = text_query + line
     text_query = text_query.split('text>')[1][:-3]
-    # text_query = "cat"
     words = text_query.split(' ')
     topics = np.zeros(num_topics)
 
     #text_query = cats[q_cat-1]
-    # print text_query
+    #print text_query
 
     if embedding == 'LDA':
         for w in words:
@@ -138,14 +134,14 @@ for q in test_indices:
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text_query, model, num_topics)
 
-
     # Create empty dict for ditances
     distances = {}
 
     # Compute distances)
+    # topics = topics / sum(topics)
     for id in database:
-        distances[id] = np.linalg.norm(database[id]-topics)
-
+        # distances[id] = np.linalg.norm(database[id]-topics)
+        distances[id] = np.sum(np.where(database[id] != 0, (database[id]) * np.log10(database[id] / topics), 0))
 
     # Get elements with min distances
     correct = 0
@@ -170,7 +166,7 @@ for q in test_indices:
     for p in precisions: map_q += p
     map_q /=len(precisions)
     map[q] = map_q * 100
-    print q + ': map --> ' + str(map[q])
+    print(q + ': map --> ' + str(map[q]))
 
 # Compute mean precision
 sum = 0
@@ -178,8 +174,7 @@ for c in map:
     sum = map[c] + sum
 mean_precision = sum / len(test_indices)
 
-print "Mean map: " + str(mean_precision)
-
+print("Mean map: " + str(mean_precision))
 
 
 

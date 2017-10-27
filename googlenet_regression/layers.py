@@ -91,8 +91,11 @@ class customDataLayer(caffe.Layer):
             offset = 1
         elif self.dir == '../../../datasets/Wikipedia':
             offset = 1
+        elif self.dir == '../../../datasets/MIRFLICKR25K':
+            offset = 1
         else:
             offset = 2
+
         print "Offset: " + str(offset)
 
         print "Reading labels file: " + '{}/{}.txt'.format(self.dir, self.split)
@@ -180,6 +183,8 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'val_images_256', idx))
         elif self.dir == '../../../datasets/Wikipedia':
             im = Image.open('{}/{}/{}'.format(self.dir, 'images', idx + '.jpg'))
+        elif self.dir == '../../../datasets/MIRFLICKR25K':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
 
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))

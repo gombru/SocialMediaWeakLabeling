@@ -9,23 +9,23 @@ caffe.set_device(0)
 caffe.set_mode_gpu()
 
 # test = np.loadtxt('../../../datasets/Wikipedia/testset_txt_img_cat.list', dtype=str)
-with open('../../../datasets/MIRFLICKR25K/retrieval_list.txt') as f:
+with open('../../../datasets/MIRFLICKR25K/test_half.txt') as f:
 #with open('../../../datasets/PascalVOC2007/labels.txt') as f:
     test = f.readlines()
 
 
 #Model name
-model = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+model = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half_iter_3000'
 
 #Output file
 output_file_dir = '../../../datasets/MIRFLICKR25K/regression_output/' + model
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
-output_file_path = output_file_dir + '/test.txt'
+output_file_path = output_file_dir + '/test_half.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/WebVision/models/saved/'+ model + '.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/MIRFLICKR25K/models/CNNRegression/'+ model + '.caffemodel', caffe.TEST)
 # cats = ['art','biology','geography','history','literature','media','music','royalty','sport','warfare']
 
 size = 227

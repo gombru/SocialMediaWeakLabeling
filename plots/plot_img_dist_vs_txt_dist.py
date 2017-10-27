@@ -9,7 +9,7 @@ gradient_colors = ['#ff0000','#ff8000','#ffbf00','#ffff00','#00ff00']
 
 num_topics = 400
 
-num_pairs = 200000
+num_pairs = 20000
 
 # Read data
 img_embeddings = {}
@@ -45,10 +45,12 @@ x = 0
 img_distances = np.zeros(num_pairs)
 txt_distances = np.zeros(num_pairs)
 colors = []
+# indices = []
 
 while x < num_pairs:
     id1 = random.choice(img_embeddings.keys())
     id2 = random.choice(img_embeddings.keys())
+    # indices.append(str(id1 + ',' + id2))
     img_dist = np.linalg.norm(img_embeddings[id1]-img_embeddings[id2])
     img_distances[x] = img_dist
     txt_dist = np.linalg.norm(txt_embeddings[id1]-txt_embeddings[id2])
@@ -71,6 +73,12 @@ while x < num_pairs:
 
 txt_distances = txt_distances / max(txt_distances)
 img_distances = img_distances / max(img_distances)
+
+# for i in range(0,len(indices)):
+#     if img_distances[i] > 0.6 and txt_distances[i] < 0.3:
+#         print "Too high image distance: " + str(indices[i])
+#     if img_distances[i] < 0.2 and txt_distances[i] > 0.7:
+#         print "Too small image distance: " + str(indices[i])
 
 # Plot: y axes img dist, x axes txt dist
 print "Img embeddigns: Max distance: " + str(max(img_distances)) + " Min distance: " + str(min(img_distances))

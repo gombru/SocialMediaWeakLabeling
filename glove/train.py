@@ -93,7 +93,7 @@ def get_webvision():
             if char in whitelist:
                 filtered_caption += char
 
-        posts_text.append(filtered_caption.decode('utf-8').lower())
+        posts_text.append(filtered_caption.lower())
 
     return posts_text
 
@@ -115,8 +115,8 @@ def get_wikipedia():
             if char in whitelist:
                 filtered_caption += char
 
-        posts_text.append(filtered_caption.decode('utf-8').lower())
-        print(filtered_caption.decode('utf-8').lower())
+        posts_text.append(filtered_caption.lower())
+        print(filtered_caption.lower())
         print('\n---------------\n')
     return posts_text
 

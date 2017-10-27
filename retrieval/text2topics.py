@@ -112,8 +112,10 @@ def word2vec_mean(text, word_weights, model, num_topics):
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
     tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
-    word_weights = [float(x) for x in word_weights.split()]
-    print word_weights
+    if word_weights == 0:
+        word_weights = [1.0 for x in text.split()]
+    else:
+        word_weights = [float(x) for x in word_weights.split()]
 
     embedding = np.zeros(num_topics)
     c = 0

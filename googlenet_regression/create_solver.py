@@ -17,7 +17,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # affecting memory utilization.
     s.iter_size = 1
 
-    s.max_iter = 10000  # # of times to update the net (training iterations)
+    s.max_iter = 100000  # # of times to update the net (training iterations)
 
     # Solve using the stochastic gradient descent (SGD) algorithm.
     # Other choices include 'Adam' and 'RMSProp'.
@@ -27,8 +27,15 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     s.base_lr = base_lr
 
 
-    s.lr_policy = 'poly'
-    s.power = 0.5
+    # Set `lr_policy` to define how the learning rate changes during training.
+    # Here, we 'step' the learning rate by multiplying it by a factor `gamma`
+    # every `stepsize` iterations.
+    s.lr_policy = 'step'
+    s.gamma = 0.1
+    s.stepsize = 5000
+
+    #s.lr_policy = 'poly'
+    #s.power = 0.5
 
     # Set other SGD hyperparameters. Setting a non-zero `momentum` takes a
     # weighted average of the current gradient and previous gradients to make
@@ -43,7 +50,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 500
-    s.snapshot_prefix = '../../../datasets/Wikipedia/models/CNNRegression/'+ training_id
+    s.snapshot_prefix = '../../../datasets/MIRFLICKR25K/models/CNNRegression/'+ training_id
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU

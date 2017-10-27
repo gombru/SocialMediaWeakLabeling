@@ -14,7 +14,7 @@ import glove
 data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 model_name = 'word2vec_model_webvision.model'
 num_topics = 400 # Num LDA model topics
-num_results = 5 # Num retrival results we want to take into accountnt
+num_results = 4 # Num retrival results we want to take into accountnt
 
 #-----------> if tfidf
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -26,7 +26,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
 embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
-test_dataset = 'instacities1m' #'instacities1m' #webvision
+test_dataset = 'webvision' #'instacities1m' #webvision
 
 
 # Load LDA model
@@ -162,51 +162,55 @@ w = [] # Weights per word (can be negative)
 # q.append('man boat')
 # q.append('kid dog')
 
-q.append('sun nature')
-w.append('1 1')
+word_list = ['beach building','bike car','fish food']
 
-q.append('sun city')
-w.append('1 1')
+for words in word_list:
+    q.append(words)
+    w.append('1 0')
+    q.append(words)
+    w.append('0 1')
+    q.append(words)
+    w.append('0.5 0.5')
+    q.append(words)
+    w.append('0.55 0.45')
+    q.append(words)
+    w.append('0.45 0.55')
+    q.append(words)
+    w.append('0.52 0.48')
+    q.append(words)
+    w.append('0.48 0.52')
+    q.append(words)
+    w.append('0.54 0.46')
+    q.append(words)
+    w.append('0.53 0.47')
+    q.append(words)
+    w.append('0.56 0.44')
+    q.append(words)
+    w.append('0.1 0.9')
+    q.append(words)
+    w.append('0.9 0.1')
+    q.append(words)
+    w.append('0.2 0.8')
+    q.append(words)
+    w.append('0.8 0.2')
+    q.append(words)
+    w.append('0.6 0.4')
+    q.append(words)
+    w.append('0.63 0.37')
+    q.append(words)
+    w.append('0.65 0.35')
+    q.append(words)
+    w.append('0.7 0.4')
+    q.append(words)
+    w.append('0.4 0.6')
+    q.append(words)
+    w.append('0.7 0.3')
+    q.append(words)
+    w.append('0.3 0.7')
 
-q.append('sun beach')
-w.append('1 1')
-
-q.append('dog small')
-w.append('1 1')
-
-q.append('dog big')
-w.append('1 1')
-
-q.append('dog home')
-w.append('1 1')
-
-q.append('dog city')
-w.append('1 1')
-
-q.append('food home')
-w.append('1 1')
-
-q.append('food restaurant')
-w.append('1 1')
-
-q.append('dinner home')
-w.append('1 1')
-
-q.append('dinner restaurant')
-w.append('1 1')
-
-q.append('food fast')
-w.append('1 1')
-
-q.append('food healthy')
-w.append('1 1')
 
 
-q.append('sport nature')
-w.append('1 1')
 
-q.append('sport gym')
-w.append('1 1')
 
 
 

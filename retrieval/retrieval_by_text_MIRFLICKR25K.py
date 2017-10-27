@@ -31,7 +31,7 @@ def load_regressions_from_txt(path, num_topics):
     return database
 
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+data = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_iter_1000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -39,9 +39,9 @@ database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/te
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
 
-model_name = 'word2vec_model_webvision.model'
-embedding = 'word2vec_tfidf'
-model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+model_name = 'word2vec_model_MIRFlickr_finetuned.model'
+embedding = 'word2vec_mean'
+model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -122,14 +122,8 @@ for q in queries_indices:
         topics = topics / used_words
 
     elif embedding == 'word2vec_mean':
-        num = 0
-        for w in words:
-            w_topics = text2topics.word2vec_mean(w, model, num_topics)
-            if np.isnan(w_topics).any():
-                continue
-            topics = topics + w_topics
-            num += 1
-        topics = topics / num
+        word_weights = 0
+        topics = text2topics.word2vec_mean(text_query, word_weights, model, num_topics)
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text_query, model, num_topics, tfidf_model, tfidf_dictionary)
