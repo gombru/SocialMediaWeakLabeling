@@ -86,7 +86,7 @@ for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topic
 
 # Count number of articles per category
 num_per_cat = {}
-for i, topics in img_topics.iteritems():
+for i, topics in img_topics.items():
     for cat in topics[1]:
         if num_per_cat.has_key(cat):
             num_per_cat[cat] += 1
