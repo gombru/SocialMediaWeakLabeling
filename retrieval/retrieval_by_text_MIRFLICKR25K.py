@@ -31,17 +31,17 @@ def load_regressions_from_txt(path, num_topics):
     return database
 
 
-data = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_iter_1000'
+data = 'mirflickr_Inception_frozen_glove_tfidf_finetuned_5000lrdecrease_half_iter_4500'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/test.txt'
+database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/retrieval_list.txt'
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
 
-model_name = 'word2vec_model_MIRFlickr_finetuned.model'
-embedding = 'word2vec_mean'
-model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/' + model_name
+model_name = 'glove_model_InstaCities1M.model'
+embedding = 'glove'
+model_path = '../../../datasets/MIRFLICKR25K/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
