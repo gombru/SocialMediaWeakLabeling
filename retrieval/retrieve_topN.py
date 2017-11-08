@@ -14,7 +14,7 @@ import glove
 data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 model_name = 'word2vec_model_webvision.model'
 num_topics = 400 # Num LDA model topics
-num_results = 4 # Num retrival results we want to take into accountnt
+num_results = 7 # Num retrival results we want to take into accountnt
 
 #-----------> if tfidf
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -43,6 +43,8 @@ database = load_regressions_from_txt(database_path, num_topics)
 for id in database:
     database[id] = database[id] / sum(database[id])
 
+im_query = database['test037193.jpg']
+print "Max im query: " + str(max(im_query))
 
 def get_results(database, topics, num_results, results_path):
     # Create empty dict for distances
@@ -81,8 +83,8 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary)
-        # topics = topics + w_topics
-        # topics = topics / len(words)
+        #topics = topics + w_topics
+        topics = topics / len(words)
 
     elif embedding == 'doc2vec':
         topics = text2topics.doc2vec(text, model, num_topics)
@@ -97,6 +99,12 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
 
     # Create empty dict for distances
     distances = {}
+
+    topics = topics / sum(topics)
+    print "Max text query: " + str(max(topics))
+    topics = 0*topics + im_query
+    topics = topics / sum(topics)
+    print "Max total query: " + str(max(topics))
 
     # Compute distances
     for id in database:
@@ -162,51 +170,30 @@ w = [] # Weights per word (can be negative)
 # q.append('man boat')
 # q.append('kid dog')
 
-word_list = ['beach building','bike car','fish food']
+word_list = ['toy kid','bear polar']
 
 for words in word_list:
+
     q.append(words)
     w.append('1 0')
     q.append(words)
     w.append('0 1')
-    q.append(words)
-    w.append('0.5 0.5')
-    q.append(words)
-    w.append('0.55 0.45')
-    q.append(words)
-    w.append('0.45 0.55')
-    q.append(words)
-    w.append('0.52 0.48')
-    q.append(words)
-    w.append('0.48 0.52')
-    q.append(words)
-    w.append('0.54 0.46')
-    q.append(words)
-    w.append('0.53 0.47')
-    q.append(words)
-    w.append('0.56 0.44')
-    q.append(words)
-    w.append('0.1 0.9')
-    q.append(words)
-    w.append('0.9 0.1')
-    q.append(words)
-    w.append('0.2 0.8')
-    q.append(words)
-    w.append('0.8 0.2')
-    q.append(words)
-    w.append('0.6 0.4')
-    q.append(words)
-    w.append('0.63 0.37')
-    q.append(words)
-    w.append('0.65 0.35')
-    q.append(words)
-    w.append('0.7 0.4')
-    q.append(words)
-    w.append('0.4 0.6')
-    q.append(words)
-    w.append('0.7 0.3')
-    q.append(words)
-    w.append('0.3 0.7')
+    # q.append(words)
+    # w.append('-1 1')
+    # q.append(words)
+    # w.append('-1 -1')
+    # q.append(words)
+    # w.append('-1 -1')
+    # q.append(words)
+    # w.append('-1 0')
+    # q.append(words)
+    # w.append('-0 -1')
+
+
+
+
+
+
 
 
 
@@ -219,8 +206,8 @@ for words in word_list:
 for e,cur_q in enumerate(q):
     print(cur_q)
     cur_w = w[e]
-    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '-' + cur_w.replace(' ', '_') + '/'
-    else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '-' + cur_w.replace(' ', '_') + '/'
+    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
+    else: results_path = "../../../datasets/SocialMedia/retrieval_results/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
         print("Creating dir: " + results_path)
         os.makedirs(results_path)

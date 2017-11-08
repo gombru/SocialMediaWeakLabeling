@@ -8,26 +8,26 @@ TODO: Check how Caffe interacts with the class of the created layer
 import caffe
 from caffe import layers as L
 
-split_train = 'lda_gt/trainCitiesInstagram_1M_500_chunck_th0'
-split_val = 'lda_gt/valCitiesInstagram_1M_500_chunck_th0'
-dir = '../../../datasets/SocialMedia'
+split_train = 'word2vec_tfidf_weighted_gt/train_instaBarcelona_divbymax'
+split_val = 'word2vec_tfidf_weighted_gt/val_instaBarcelona_divbymax'
+dir = '../../../ssd2/InstaBarcelona'
 
-num_labels = 500
+num_labels = 300
 batch_size = 120 #AlexNet 100, VGG 40
 resize = False #Resize the image to the given size before cropping
 resize_w = 224
 resize_h = 224
 crop_w = 224 #Train with a random crop of this size
 crop_h = 224 #227 AlexNet, 224 VGG16, Inception
-crop_margin = 2 #The crop won't include the margin in pixels
+crop_margin = 0 #The crop won't include the margin in pixels
 mirror = True #Mirror images with 50% prob
-rotate_prob = .2 #Rotation probability
+rotate_prob = 0 #Rotation probability
 rotation_angle = 8 #15,8 #Rotate with angle between -a and a
-HSV_prob = .2 #0.3,0.15 #Jitter saturation and vale of the image with this prob
+HSV_prob = 0 #0.3,0.15 #Jitter saturation and vale of the image with this prob
 HSV_jitter = 0.05 #0.1,0.05 #Saturation and value will be multiplied by 2 different random values between 1 +/- jitter
-color_casting_prob = 0.05 #0.1 #Alterates each color channel (with the given prob for each channel) suming jitter
+color_casting_prob = 0 #0.1 #Alterates each color channel (with the given prob for each channel) suming jitter
 color_casting_jitter = 10 #Sum/substract 10 from the color channel
-scaling_prob = .5 #Rescale the image with the factor given before croping
+scaling_prob = 0 #Rescale the image with the factor given before croping
 scaling_factor = 1.3 #Rescaling factor
 
 n = caffe.NetSpec()
@@ -62,7 +62,7 @@ with open('prototxt/train_data_layer.prototxt', 'w') as f:
 
 pydata_params['split'] = split_val
 pydata_params['train'] = False
-pydata_params['resize'] = True
+pydata_params['resize'] = False
 with open('prototxt/val_data_layer.prototxt', 'w') as f:
     f.write(str(n.to_proto()))
 

@@ -1,5 +1,5 @@
-train_net: "prototxt/train_frozen_word2vec_mean_mirflickr.prototxt"
-test_net: "prototxt/val_frozen_word2vec_mean_mirflickr.prototxt"
+train_net: "prototxt/train_frozen_glove_tfidf_mirflickr.prototxt"
+test_net: "prototxt/val_frozen_glove_tfidf_mirflickr.prototxt"
 test_iter: 10
 test_interval: 100000
 base_lr: 0.0010000000475
@@ -11,7 +11,7 @@ momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 5000
 snapshot: 500
-snapshot_prefix: "../../../datasets/MIRFLICKR25K/models/CNNRegression/mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half"
+snapshot_prefix: "../../../datasets/MIRFLICKR25K/models/CNNRegression/mirflickr_Inception_frozen_glove_tfidf_finetuned_5000lrdecrease_half"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

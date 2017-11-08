@@ -9,7 +9,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     s.train_net = train_net_path
     s.test_net.append(test_net_path)
 
-    s.test_interval = 100000  # Test after every 1000 training iterations.
+    s.test_interval = 1000000  # Test after every 1000 training iterations.
     s.test_iter.append(10)  # Test on 100 batches each time we test.
 
     # The number of iterations over which to average the gradient.
@@ -17,7 +17,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # affecting memory utilization.
     s.iter_size = 1
 
-    s.max_iter = 100000  # # of times to update the net (training iterations)
+    s.max_iter = 1000000  # # of times to update the net (training iterations)
 
     # Solve using the stochastic gradient descent (SGD) algorithm.
     # Other choices include 'Adam' and 'RMSProp'.
@@ -32,7 +32,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # every `stepsize` iterations.
     s.lr_policy = 'step'
     s.gamma = 0.1
-    s.stepsize = 5000
+    s.stepsize = 100000
 
     #s.lr_policy = 'poly'
     #s.power = 0.5
@@ -49,8 +49,8 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
 
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
-    s.snapshot = 500
-    s.snapshot_prefix = '../../../datasets/MIRFLICKR25K/models/CNNRegression/'+ training_id
+    s.snapshot = 10000
+    s.snapshot_prefix = '../../../hd/datasets/instaBarcelona/models/CNNRegression/'+ training_id
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU
