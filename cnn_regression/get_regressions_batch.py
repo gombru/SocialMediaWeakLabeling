@@ -23,7 +23,7 @@ output_file_path = output_file_dir + '/test.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/instaBarcelona/models/CNNRegression/'+ model + '.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../hd/datasets/instaBarcelona/models/CNNRegression/'+ model + '.caffemodel', caffe.TEST)
 
 
 size = 227
