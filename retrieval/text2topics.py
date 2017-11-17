@@ -164,11 +164,12 @@ def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
     vec = tfidf_dictionary.doc2bow(tokens_filtered)
     vec_tfidf = tfidf_model[vec]
     for tok in vec_tfidf:
+        c += 1
         word_embedding = model[tfidf_dictionary[tok[0]]]
         embedding += word_embedding * tok[1]
 
-    # if c > 0:
-    #     embedding /= c
+    if c > 0:
+        embedding /= c
 
     embedding = embedding - min(embedding)
     if max(embedding) > 0:
