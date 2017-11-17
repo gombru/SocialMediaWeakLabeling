@@ -25,7 +25,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 
 model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
-embedding = 'glove_tfidf' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
+embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
 
 
 # Load LDA model
@@ -53,8 +53,6 @@ def get_embedding_complex(text, word_weights):
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary)
-        #topics = topics + w_topics
-        # topics = topics / len(words)
 
     elif embedding == 'doc2vec':
         topics = text2topics.doc2vec(text, model, num_topics)
@@ -65,7 +63,6 @@ def get_embedding_complex(text, word_weights):
 
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text, model, num_topics)
-
 
     return topics
 
@@ -123,6 +120,10 @@ for cur_q in q:
 
     else:
         topics = get_embedding_complex(cur_q, cur_w)
+
+    # Normalize by max to compare with net
+    topics = topics - min(topics)
+    topics = topics / max(topics)
 
     f.write('word_images/' + cur_q.replace(' ','_'))
     for t in topics:

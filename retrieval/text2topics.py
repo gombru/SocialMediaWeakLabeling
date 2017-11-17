@@ -62,8 +62,8 @@ def LDA(text, ldamodel, num_topics):
                 topic_probs[t] = topic[1]
                 break
 
-    topic_probs = topic_probs - min(topic_probs)
-    topic_probs = topic_probs / sum(topic_probs)
+    # topic_probs = topic_probs - min(topic_probs)
+    # topic_probs = topic_probs / sum(topic_probs)
 
     return topic_probs
 
@@ -89,8 +89,8 @@ def doc2vec(text, model, num_topics):
     tokens_filtered = [token for token in stopped_tokens if token in model.wv.vocab]
 
     embedding = model.infer_vector(tokens_filtered)
-    embedding = embedding - min(embedding)
-    embedding = embedding / sum(embedding)
+    # embedding = embedding - min(embedding)
+    # embedding = embedding / sum(embedding)
 
     return embedding
 
@@ -131,10 +131,8 @@ def word2vec_mean(text, word_weights, model, num_topics):
     if sum(word_weights) > 0:
         embedding /= sum(word_weights)
 
-    embedding = embedding - min(embedding)
-    embedding = embedding / max(embedding)
-
-    #embedding = embedding / sum(embedding)
+    # embedding = embedding - min(embedding)
+    # embedding = embedding / max(embedding)
 
     return embedding
 
@@ -171,9 +169,9 @@ def word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary):
     if c > 0:
         embedding /= c
 
-    embedding = embedding - min(embedding)
-    if max(embedding) > 0:
-        embedding = embedding / max(embedding)
+    # embedding = embedding - min(embedding)
+    # if max(embedding) > 0:
+    #     embedding = embedding / max(embedding)
 
     #embedding = embedding / sum(embedding)
 
@@ -213,9 +211,9 @@ def glove(text, word_weights, model, num_topics):
     if sum(word_weights) > 0:
         embedding /= sum(word_weights)
 
-
-    embedding = embedding - min(embedding)
-    embedding = embedding / sum(embedding)
+    #
+    # embedding = embedding - min(embedding)
+    # embedding = embedding / sum(embedding)
 
     return embedding
 
@@ -238,8 +236,8 @@ def glove_tfidf(text,  model, num_topics):
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
     embedding = model.transform_paragraph(stopped_tokens, 50, True)
-    embedding /= len(stopped_tokens)
-    embedding = embedding - min(embedding)
-    embedding = embedding / sum(embedding)
+    # embedding /= len(stopped_tokens)
+    # embedding = embedding - min(embedding)
+    # embedding = embedding / sum(embedding)
 
     return embedding
