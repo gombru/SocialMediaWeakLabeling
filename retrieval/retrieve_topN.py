@@ -11,10 +11,10 @@ from gensim import corpora, models
 import gensim
 import glove
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
-model_name = 'word2vec_model_webvision.model'
+data = 'SocialMedia_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_150000'
+model_name = 'word2vec_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
-num_results = 7 # Num retrival results we want to take into accountnt
+num_results = 30 # Num retrival results we want to take into accountnt
 
 #-----------> if tfidf
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -23,10 +23,10 @@ tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/WebVision/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/WebVision/models/word2vec/' + model_name
+database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
+model_path = '../../../datasets/SocialMedia/models/word2vec/' + model_name
 embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
-test_dataset = 'webvision' #'instacities1m' #webvision
+test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 
 # Load LDA model
@@ -43,14 +43,15 @@ database = load_regressions_from_txt(database_path, num_topics)
 for id in database:
     database[id] = database[id] / sum(database[id])
 
-im_query = database['test037193.jpg']
-print "Max im query: " + str(max(im_query))
+# im_query = database['test037193.jpg']
+# print "Max im query: " + str(max(im_query))
 
 def get_results(database, topics, num_results, results_path):
     # Create empty dict for distances
     distances = {}
 
     #Compute distances
+    topics = topics / sum(topics)
     for id in database:
         distances[id] = np.dot(database[id],topics)
 
@@ -100,11 +101,15 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
     # Create empty dict for distances
     distances = {}
 
+    # topics = topics / sum(topics)
+    topics = topics - min(topics)
+    if max(topics) > 0:
+        topics = topics / max(topics)
     topics = topics / sum(topics)
-    print "Max text query: " + str(max(topics))
-    topics = 0*topics + im_query
-    topics = topics / sum(topics)
-    print "Max total query: " + str(max(topics))
+    # print "Max text query: " + str(max(topics))
+    # topics = 0*topics + im_query
+    # topics = topics / sum(topics)
+    # print "Max total query: " + str(max(topics))
 
     # Compute distances
     for id in database:
@@ -170,36 +175,17 @@ w = [] # Weights per word (can be negative)
 # q.append('man boat')
 # q.append('kid dog')
 
-word_list = ['toy kid','bear polar']
+
+word_list = ['boat vacation','boat fish']
 
 for words in word_list:
 
     q.append(words)
-    w.append('1 0')
+    w.append('0.5 0.5')
     q.append(words)
-    w.append('0 1')
-    # q.append(words)
-    # w.append('-1 1')
-    # q.append(words)
-    # w.append('-1 -1')
-    # q.append(words)
-    # w.append('-1 -1')
-    # q.append(words)
-    # w.append('-1 0')
-    # q.append(words)
-    # w.append('-0 -1')
-
-
-
-
-
-
-
-
-
-
-
-
+    w.append('0.3 0.7')
+    q.append(words)
+    w.append('0.7 0.3')
 
 
 
@@ -222,6 +208,9 @@ for e,cur_q in enumerate(q):
         elif embedding == 'glove': topics = text2topics.glove(cur_q, cur_w, model, num_topics)
         elif embedding == 'glove_tfidf': topics = text2topics.glove_tfidf(cur_q, model, num_topics)
 
+        topics = topics - min(topics)
+        if max(topics) > 0:
+            topics = topics / max(topics)
 
         get_results(database, topics, num_results,results_path)
 
