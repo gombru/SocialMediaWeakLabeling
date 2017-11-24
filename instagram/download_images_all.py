@@ -44,11 +44,10 @@ while True:
 
     for query in queries:
 
-        if not first:
-            print "Sleeping for: " + str(60*5 / 60) + " minutes"
-            time.sleep(sleep_seconds)
-            q = query.split('#')[-1].strip('\n')
-            dir = directory + q + '/'
+        print "Sleeping for: " + str(60*5 / 60) + " minutes"
+        time.sleep(sleep_seconds)
+        q = query.split('#')[-1].strip('\n')
+        dir = directory + q + '/'
 
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -85,3 +84,8 @@ while True:
                 looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
             except:
                 print "Error while downloading, continuing ... "
+
+        print "Sleeping for: " + str(60*5 / 60) + " minutes"
+        time.sleep(sleep_seconds)
+        q = query.split('#')[-1].strip('\n')
+        dir = directory + q + '/'
