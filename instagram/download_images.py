@@ -16,8 +16,8 @@ requests.packages.urllib3.disable_warnings()
 directory = '/home/Imatge/hd/datasets/instaBarcelona/img/'
 get_videos = False
 first = True
-login1 = login = 'raulgombru'
-password1 = password ='Girasoles19'
+login1 = login = 'lazarpitas'
+password1 = password ='Gata20'
 login2 = 'lazarpitas'
 password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
@@ -29,7 +29,7 @@ num_2_query_first = 2500000 #Num of images to build the looter the first time (w
 num_2_query_next = 50000 #Num of images to build the looter affter (will download new updated images)
 num_2_download = 5000000 #Num of images we want to end up having
 
-sleep_seconds = 60*30
+sleep_seconds = 60*300
 
 
 num_2_query = num_2_query_first
