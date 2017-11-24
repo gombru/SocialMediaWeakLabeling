@@ -44,10 +44,11 @@ while True:
 
     for query in queries:
 
-        print "Sleeping for: " + str(60*5 / 60) + " minutes"
-        time.sleep(sleep_seconds)
-        q = query.split('#')[-1].strip('\n')
-        dir = directory + q + '/'
+        if not first:
+            print "Sleeping for: " + str(60*5 / 60) + " minutes"
+            time.sleep(sleep_seconds)
+            q = query.split('#')[-1].strip('\n')
+            dir = directory + q + '/'
 
         if not os.path.exists(dir):
             os.makedirs(dir)
