@@ -44,8 +44,6 @@ while True:
 
     for query in queries:
 
-        print "Sleeping for: " + str(60*5 / 60) + " minutes"
-        time.sleep(sleep_seconds)
         q = query.split('#')[-1].strip('\n')
         dir = directory + q + '/'
 
