@@ -7,12 +7,8 @@
 """The data layer used during training a VGG_FACE network by triplet loss.
 """
 import caffe
-import numpy as np
 from numpy import *
-import yaml
-from multiprocessing import Process, Queue
-from caffe._caffe import RawBlobVec
-from sklearn import preprocessing
+
 
 
 class TripletLossLayer(caffe.Layer):
