@@ -7,6 +7,7 @@
 """The data layer used during training a VGG_FACE network by triplet loss.
 """
 import caffe
+import numpy as np
 from numpy import *
 
 
