@@ -24,10 +24,10 @@ test_interval = 1000 #1000
 test_iters = 100 #80
 
 #Name for training plot and snapshots
-training_id = 'triplet_frozen_word2vec_tfidf'
+training_id = 'triplet_withFC_frozen_glove_tfidf_SM'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_triplet_frozen_word2vec_tfidf_WV.prototxt', 'prototxt/val_triplet_frozen_word2vec_tfidf_WV.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt', 'prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

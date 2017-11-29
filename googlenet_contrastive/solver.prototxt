@@ -1,5 +1,5 @@
-train_net: "prototxt/train_triplet_frozen_word2vec_tfidf_WV.prototxt"
-test_net: "prototxt/val_triplet_frozen_word2vec_tfidf_WV.prototxt"
+train_net: "prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt"
+test_net: "prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt"
 test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475
@@ -10,8 +10,8 @@ gamma: 0.10000000149
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
-snapshot: 10000
-snapshot_prefix: "../../../datasets/SocialMedia/models/CNNContrastive/triplet_frozen_word2vec_tfidf"
+snapshot: 25000
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

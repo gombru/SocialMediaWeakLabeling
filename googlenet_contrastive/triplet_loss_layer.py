@@ -37,11 +37,11 @@ class TripletLossLayer(caffe.Layer):
         positive_minibatch_db = []
         negative_minibatch_db = []
         for i in range((bottom[0]).num):
-            anchor_minibatch_db.append(bottom[0].data[i])
+            anchor_minibatch_db.append(self.l2_normalize(bottom[0].data[i]))
 
-            positive_minibatch_db.append(bottom[1].data[i])
+            positive_minibatch_db.append(self.l2_normalize(bottom[1].data[i]))
 
-            negative_minibatch_db.append(bottom[2].data[i])
+            negative_minibatch_db.append(self.l2_normalize(bottom[2].data[i]))
 
         loss = float(0)
         self.no_residual_list = []
@@ -64,6 +64,7 @@ class TripletLossLayer(caffe.Layer):
         loss = (loss / (2 * (bottom[0]).num))
         top[0].data[...] = loss
 
+
     def backward(self, top, propagate_down, bottom):
         count = 0
         if propagate_down[0]:
@@ -72,6 +73,10 @@ class TripletLossLayer(caffe.Layer):
                     x_a = bottom[0].data[i]
                     x_p = bottom[1].data[i]
                     x_n = bottom[2].data[i]
+
+                    # L2 normalization
+                    x_p = self.l2_normalize(x_p)
+                    x_n = self.l2_normalize(x_n)
 
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
@@ -91,3 +96,8 @@ class TripletLossLayer(caffe.Layer):
     def reshape(self, bottom, top):
         """Reshaping happens during the call to forward."""
         pass
+
+    def l2_normalize(self, v):
+        l2_norm = np.linalg.norm(v,2)
+        if l2_norm == 0: return v
+        return v / l2_norm

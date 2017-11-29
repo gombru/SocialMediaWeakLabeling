@@ -121,19 +121,19 @@ class tripletDataLayer(caffe.Layer):
         # As a toy example, we choose 10 random labels and select as negative example the one having more cosine distance
         # Notice labels here are word2vec tfidf representations
         # We save the index of the negative label
-        print "Computing negative labels"
-        self.indices_negative = np.zeros(len(self.indices), dtype=int)
-        for x in range(0,len(self.indices)-1):
-            dist = 0
-            neg_idx = 0
-            for c in range(0,9):
-                cur_idx = random.randint(0, len(self.indices) - 1)
-                cur_dist = self.labels[x,] - self.labels[cur_idx,]
-                cur_dist = np.dot(cur_dist,cur_dist)
-                if cur_dist > dist:
-                    dist = cur_dist
-                    neg_idx = cur_idx
-            self.indices_negative[x] = neg_idx
+        # print "Computing negative labels"
+        # self.indices_negative = np.zeros(len(self.indices), dtype=int)
+        # for x in range(0,len(self.indices)-1):
+        #     dist = 0
+        #     neg_idx = 0
+        #     for c in range(0,9):
+        #         cur_idx = random.randint(0, len(self.indices) - 1)
+        #         cur_dist = self.labels[x,] - self.labels[cur_idx,]
+        #         cur_dist = np.dot(cur_dist,cur_dist)
+        #         if cur_dist > dist:
+        #             dist = cur_dist
+        #             neg_idx = cur_idx
+        #     self.indices_negative[x] = neg_idx
 
         self.idx = np.arange(self.batch_size)
 
@@ -167,7 +167,19 @@ class tripletDataLayer(caffe.Layer):
         for x in range(0, self.batch_size):
             self.data[x,] = self.load_image(self.indices[self.idx[x]])
             self.label[x,] = self.labels[self.idx[x],]
-            self.label_negative[x,] = self.labels[self.indices_negative[self.idx[x]],]
+            # self.label_negative[x,] = self.labels[self.indices_negative[self.idx[x]],]
+
+        # For each image of the batch select a negative txt. Use the text in the batch with higher distance
+        for x in range(0, self.batch_size):
+            dist = 0
+            neg_idx = 0
+            for y in range(0, self.batch_size):
+                cur_dist = self.label[x,]  - self.label[y,]
+                cur_dist = np.dot(cur_dist, cur_dist)
+                if cur_dist > dist:
+                    dist = cur_dist
+                    neg_idx = y
+            self.label_negative[x,] = self.labels[neg_idx,]
 
 
     def forward(self, bottom, top):
