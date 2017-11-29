@@ -13,7 +13,8 @@ from core import InstaLooter
 import requests.packages.urllib3
 requests.packages.urllib3.disable_warnings()
 
-directory = '/home/Imatge/hd/datasets/instaAll/img/'
+directory = '/home/Imatge/hd/datasets/instaFashion/img/'
+# directory = '/home/raulgomez/datasets/instaFashion/img/'
 get_videos = False
 first = True
 login1 = login = 'bruballa_gomez'
@@ -22,11 +23,11 @@ login2 = 'bruballa_gomez'
 password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
 
-queries = open('queries.txt')
-jobs = 1
+queries = open('queries_fashion.txt')
+jobs = 16
 num_2_query_first = 50000 #2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 50000 #50000 #Num of images to build the looter affter (will download new updated images)
-num_2_download = 100000 #5000000 #Num of images we want to end up having
+num_2_download = 50000 #5000000 #Num of images we want to end up having
 
 sleep_seconds = 60*30
 
