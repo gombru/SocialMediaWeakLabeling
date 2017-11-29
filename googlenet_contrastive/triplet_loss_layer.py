@@ -72,20 +72,21 @@ class TripletLossLayer(caffe.Layer):
                     x_n = bottom[2].data[i]
 
                     # L2 normalization
+                    x_a = self.l2_normalize(x_a)
                     x_p = self.l2_normalize(x_p)
                     x_n = self.l2_normalize(x_n)
 
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
                     bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
-                    # bottom[1].diff[i] = self.a * ((x_p - x_a) / ((bottom[0]).num))
-                    # bottom[2].diff[i] = self.a * ((x_a - x_n) / ((bottom[0]).num))
+                    bottom[1].diff[i] = self.a * ((x_p - x_a) / ((bottom[0]).num))
+                    bottom[2].diff[i] = self.a * ((x_a - x_n) / ((bottom[0]).num))
 
                     count += 1
                 else:
                     bottom[0].diff[i] = np.zeros(shape(bottom[0].data)[1])
-                    # bottom[1].diff[i] = np.zeros(shape(bottom[0].data)[1])
-                    # bottom[2].diff[i] = np.zeros(shape(bottom[0].data)[1])
+                    bottom[1].diff[i] = np.zeros(shape(bottom[0].data)[1])
+                    bottom[2].diff[i] = np.zeros(shape(bottom[0].data)[1])
 
                     # print 'select gradient_loss:',bottom[0].diff[0][0]
                     # print shape(bottom[0].diff),shape(bottom[1].diff),shape(bottom[2].diff)
