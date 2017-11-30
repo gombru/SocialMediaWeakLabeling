@@ -34,11 +34,12 @@ class TripletLossLayer(caffe.Layer):
         positive_minibatch_db = []
         negative_minibatch_db = []
         for i in range((bottom[0]).num):
-            anchor_minibatch_db.append(self.l2_normalize(bottom[0].data[i]))
-
-            positive_minibatch_db.append(self.l2_normalize(bottom[1].data[i]))
-
-            negative_minibatch_db.append(self.l2_normalize(bottom[2].data[i]))
+            # anchor_minibatch_db.append(self.l2_normalize(bottom[0].data[i]))
+            # positive_minibatch_db.append(self.l2_normalize(bottom[1].data[i]))
+            # negative_minibatch_db.append(self.l2_normalize(bottom[2].data[i]))
+            anchor_minibatch_db.append(bottom[0].data[i])
+            positive_minibatch_db.append(bottom[1].data[i])
+            negative_minibatch_db.append(bottom[2].data[i])
 
         loss = float(0)
         self.no_residual_list = []
@@ -72,9 +73,9 @@ class TripletLossLayer(caffe.Layer):
                     x_n = bottom[2].data[i]
 
                     # L2 normalization
-                    x_a = self.l2_normalize(x_a)
-                    x_p = self.l2_normalize(x_p)
-                    x_n = self.l2_normalize(x_n)
+                    # x_a = self.l2_normalize(x_a)
+                    # x_p = self.l2_normalize(x_p)
+                    # x_n = self.l2_normalize(x_n)
 
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?

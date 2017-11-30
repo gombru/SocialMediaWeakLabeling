@@ -17,7 +17,7 @@ assert os.path.exists(weights)
 
 niter = 10001111
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1 #200
+display_interval = 5 #200
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 1000 #1000
@@ -27,7 +27,7 @@ test_iters = 100 #80
 training_id = 'triplet_withFC_frozen_glove_tfidf_SM'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt', 'prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_triplet_frozen_glove_tfidf_SM.prototxt', 'prototxt/val_triplet_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
