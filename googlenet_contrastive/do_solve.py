@@ -64,7 +64,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
                 solvers[0][1].test_nets[0].forward()
                 loss_val += solvers[0][1].test_nets[0].blobs['loss3/loss3'].data
             loss_val /= test_iters
-            print("Val loss: {:.3f}".format(loss_val))
+            print("Val loss: " + str(loss_val))
 
             val_loss[it/test_interval - 1] = loss_val
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
