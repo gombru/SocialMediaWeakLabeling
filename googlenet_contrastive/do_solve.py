@@ -1,4 +1,4 @@
-def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_id):
+def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_id, batch_size):
     """Run solvers for niter iterations,
        returning the loss and recorded each iteration.
        `solvers` is a list of (name, solver) tuples."""
@@ -11,21 +11,26 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
 
     # SET PLOTS DATA
     train_loss = zeros(niter/disp_interval)
+    train_correct_pairs = zeros(niter/disp_interval)
+
     val_loss = zeros(niter/test_interval)
+    val_correct_pairs = zeros(niter/test_interval)
+
 
     it_axes = (arange(niter) * disp_interval) + disp_interval
     it_val_axes = (arange(niter) * test_interval) + test_interval
 
     _, ax1 = subplots()
-    # ax2 = ax1.twinx()
+    ax2 = ax1.twinx()
     ax1.set_xlabel('iteration')
     ax1.set_ylabel('train loss (r), val loss (g)')
-    # ax2.set_ylabel('val loss (g)')
-    # ax2.set_autoscaley_on(False)
-    # ax2.set_ylim([0, 1])
+    ax2.set_ylabel('train correct pairs (b) val correct pairs (m)')
+    ax2.set_autoscaley_on(False)
+    ax2.set_ylim([0, batch_size])
 
 
     loss = {name: np.zeros(niter) for name, _ in solvers}
+    correct_pairs = {name: np.zeros(niter) for name, _ in solvers}
 
 
     #RUN TRAINING
@@ -36,19 +41,24 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
             # end = time.time()
             # print "Time step: " + str((end - start))
             loss[name][it] = s.net.blobs['loss3/loss3'].data.copy()
+            correct_pairs[name][it] = s.net.blobs['correct_pairs'].data.copy()
 
         #PLOT
         if it % disp_interval == 0 or it + 1 == niter:
-            loss_disp = 'loss=' + str(loss['my_solver'][it])
+            loss_disp = 'loss=' + str(loss['my_solver'][it]) + ' correct_pairs=' + str(correct_pairs['my_solver'][it])
 
             print '%3d) %s' % (it, loss_disp)
 
             train_loss[it/disp_interval] = loss['my_solver'][it]
+            train_correct_pairs[it/disp_interval] = correct_pairs['my_solver'][it]
+
 
             ax1.plot(it_axes[0:it/disp_interval], train_loss[0:it/disp_interval], 'r')
+            ax2.plot(it_axes[0:it/disp_interval], train_correct_pairs[0:it/disp_interval], 'b')
+
             # if it > test_interval:
             #     ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g') #Val always on top
-            ax1.set_ylim([0,0.05])
+            ax1.set_ylim([0,0.06])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
@@ -60,15 +70,23 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
         #VALIDATE
         if it % test_interval == 0 and it > 0:
             loss_val = 0
+            cur_correct_pairs = 0
             for i in range(test_iters):
                 solvers[0][1].test_nets[0].forward()
                 loss_val += solvers[0][1].test_nets[0].blobs['loss3/loss3'].data
+                cur_correct_pairs += solvers[0][1].test_nets[0].blobs['correct_pairs'].data
+
             loss_val /= test_iters
-            print("Val loss: " + str(loss_val))
+            cur_correct_pairs /= test_iters
+
+            print("Val loss: " + str(loss_val) + " Val correct pairs: " + str(cur_correct_pairs))
 
             val_loss[it/test_interval - 1] = loss_val
+            val_correct_pairs[it/test_interval - 1] = cur_correct_pairs
+
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
-            ax1.set_ylim([0,0.05])
+            ax2.plot(it_val_axes[0:it/test_interval], val_correct_pairs[0:it/test_interval], 'm')
+            ax1.set_ylim([0,0.06])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)

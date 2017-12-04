@@ -1,5 +1,5 @@
-train_net: "prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt"
-test_net: "prototxt/trainval_triplet_withFC_frozen_glove_tfidf_SM.prototxt"
+train_net: "prototxt/train_triplet_frozen_glove_tfidf_SM.prototxt"
+test_net: "prototxt/val_triplet_frozen_glove_tfidf_SM.prototxt"
 test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475

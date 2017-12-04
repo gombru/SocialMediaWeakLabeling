@@ -81,7 +81,7 @@ class tripletDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        num_lines = 301
+        num_lines = 3001
 
         self.indices = np.empty([num_lines], dtype="S50")
         self.labels = np.zeros((num_lines, self.num_classes))
@@ -105,8 +105,14 @@ class tripletDataLayer(caffe.Layer):
                 for l in range(0, self.num_classes):
                     self.labels[c, l] = float(data[l + offset])
 
+                if sum(self.labels[c, :]) == 0:
+                    print "0's label found, skipping (repeating previous entry)"
+                    self.indices[c] = self.indices[c-1]
+                    self.labels[c,:] = self.labels[c-1,:]
+
+
                 if c % 1000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                if c == 300:
+                if c == 3000:
                     print "Stopping at 99 labels"
                     break
 
@@ -179,7 +185,7 @@ class tripletDataLayer(caffe.Layer):
                 if cur_dist > dist:
                     dist = cur_dist
                     neg_idx = y
-            self.label_negative[x,] = self.labels[neg_idx,]
+            self.label_negative[x,] = self.label[neg_idx,]
 
 
     def forward(self, bottom, top):
