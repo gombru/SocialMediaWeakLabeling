@@ -9,6 +9,7 @@
 import caffe
 import numpy as np
 from numpy import *
+import time
 
 
 
@@ -34,12 +35,12 @@ class TripletLossLayer(caffe.Layer):
         positive_minibatch_db = []
         negative_minibatch_db = []
         for i in range((bottom[0]).num):
-            # anchor_minibatch_db.append(self.l2_normalize(bottom[0].data[i]))
-            # positive_minibatch_db.append(self.l2_normalize(bottom[1].data[i]))
-            # negative_minibatch_db.append(self.l2_normalize(bottom[2].data[i]))
-            anchor_minibatch_db.append(bottom[0].data[i])
-            positive_minibatch_db.append(bottom[1].data[i])
-            negative_minibatch_db.append(bottom[2].data[i])
+            anchor_minibatch_db.append(self.normalize(bottom[0].data[i]))
+            positive_minibatch_db.append(self.normalize(bottom[1].data[i]))
+            negative_minibatch_db.append(self.normalize(bottom[2].data[i]))
+            #anchor_minibatch_db.append(bottom[0].data[i])
+            #positive_minibatch_db.append(bottom[1].data[i])
+            #negative_minibatch_db.append(bottom[2].data[i])
 
         loss = float(0)
         self.no_residual_list = []
@@ -53,9 +54,10 @@ class TripletLossLayer(caffe.Layer):
             an = np.dot(a_n, a_n)
             dist = (self.margin + ap - an)
             _loss = max(dist, 0.0)
-            # if i == 0:
-                # print ('loss:' + ' ap:' + str(ap) + ' ' + 'an:' + str(an) + ' ' + 'loss:' + str(_loss))
-            if _loss == 0:
+            #if i == 0:
+            #print ('sum a:' + str(sum(a)) + ' ' + 'sum p:' + str(sum(p)))
+            print ('loss:' + ' ap:' + str(ap) + ' ' + 'an:' + str(an) + ' ' + 'loss:' + str(_loss) + ' cur_margin:' + str(ap - an))
+            if _loss == 0 or sum(p == 0) or sum(n == 0) or _loss > 1:
                 self.no_residual_list.append(i)
             loss += _loss
 
@@ -73,9 +75,9 @@ class TripletLossLayer(caffe.Layer):
                     x_n = bottom[2].data[i]
 
                     # L2 normalization
-                    # x_a = self.l2_normalize(x_a)
-                    # x_p = self.l2_normalize(x_p)
-                    # x_n = self.l2_normalize(x_n)
+                    x_a = self.normalize(x_a)
+                    x_p = self.normalize(x_p)
+                    x_n = self.normalize(x_n)
 
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
@@ -96,7 +98,9 @@ class TripletLossLayer(caffe.Layer):
         """Reshaping happens during the call to forward."""
         pass
 
-    def l2_normalize(self, v):
-        l2_norm = np.linalg.norm(v,2)
-        if l2_norm == 0: return v
-        return v / l2_norm
+    def normalize(self, v):
+        norm = np.linalg.norm(v,2)
+        if norm == 0:
+            return v
+        v = v /norm
+        return v

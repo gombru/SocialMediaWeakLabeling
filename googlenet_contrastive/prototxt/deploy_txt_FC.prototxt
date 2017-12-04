@@ -1,0 +1,86 @@
+name: "TextFC"
+layer {
+  name: "label_p"
+  type: "Input"
+  top: "label_p"
+  input_param { shape: { dim: 1 dim: 1 dim: 400 dim: 1 } }
+}
+
+# -- NET FOR THE TEXT.
+# -- I think this should be a siamese net, and it build using same param names in siamese layers, as seen in
+# -- https://github.com/BVLC/caffe/tree/master/examples/siamese
+
+# -- POSITIVE TEXT NET
+# -- TXT_FC_1
+layer {
+  name: "TXT_FC_1"
+  type: "InnerProduct"
+  bottom: "label_p"
+  top: "TXT_FC_1"
+  param {
+    name: "TXT_FC_1_W"
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    name: "TXT_FC_1_B"
+    lr_mult: 20
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 1000
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+# -- ReLU layer for TXT_FC_1
+layer {
+  name: "relu_TXT_1"
+  type: "ReLU"
+  bottom: "TXT_FC_1"
+  top: "TXT_FC_1"
+}
+
+# -- DROPOUT TXT
+layer {
+  name: "dropout_TXT"
+  type: "Dropout"
+  bottom: "TXT_FC_1"
+  top: "dropout_TXT"
+  dropout_param {
+    dropout_ratio: 0.5
+  }
+}
+
+# -- TXT_FC_2
+layer {
+  name: "TXT_FC_2"
+  type: "InnerProduct"
+  bottom: "dropout_TXT"
+  top: "TXT_FC_2"
+  param {
+    name: "TXT_FC_2_W"
+    lr_mult: 10
+    decay_mult: 1
+  }
+  param {
+    name: "TXT_FC_2_B"
+    lr_mult: 20
+    decay_mult: 0
+  }
+  inner_product_param {
+    num_output: 400
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
