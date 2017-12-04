@@ -7,8 +7,8 @@ from gensim import corpora, models
 import gensim
 import glove
 import glob
-from shutil import copyfile
-from scipy.misc import imshow, imread
+import get_NN_txt_embedding
+
 
 
 
@@ -57,6 +57,15 @@ tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvisi
 tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
+
+
+# FC text layers
+FC = True
+if FC:
+    model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
+    prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
+    text_NN = get_NN_txt_embedding.load_net(model_path,prototxt)
+
 
 queries = ['animals','baby','bird','car','female','lake','sea','tree','clouds','dog','sky','structures','sunset','transport','water','flower','food','indoor','plant_life','portrait','river','male','night','people']
 strong_topics_names = ['baby','bird','car','clouds','dog','female','flower','male','night','people','portrait','river','sea','tree']
@@ -143,6 +152,14 @@ for q in queries:
 
     # Create empty dict for ditances
     distances = {}
+
+    if FC:
+        topics = topics - min(topics)
+        if max(topics) > 0:
+            topics = topics / max(topics)
+        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+    topics = topics - min(topics)
+    topics = topics / sum(topics)
 
     # Compute distances)
     for id in database:

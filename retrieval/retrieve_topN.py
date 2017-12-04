@@ -49,10 +49,11 @@ for id in database:
 
 def get_results(database, topics, num_results, results_path):
 
-    topics = topics - min(topics)
-    if max(topics) > 0:
-        topics = topics / max(topics)
-    topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+    if FC:
+        topics = topics - min(topics)
+        if max(topics) > 0:
+            topics = topics / max(topics)
+        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
     topics = topics - min(topics)
     topics = topics / sum(topics)
 
@@ -109,11 +110,11 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text, model, num_topics)
 
-
-    topics = topics - min(topics)
-    if max(topics) > 0:
-        topics = topics / max(topics)
-    topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+    if FC:
+        topics = topics - min(topics)
+        if max(topics) > 0:
+            topics = topics / max(topics)
+        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
     topics = topics - min(topics)
     topics = topics / sum(topics)
 
