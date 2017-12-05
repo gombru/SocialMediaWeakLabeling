@@ -81,7 +81,7 @@ class tripletDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        num_lines = 3001
+        # num_lines = 3001
 
         self.indices = np.empty([num_lines], dtype="S50")
         self.labels = np.zeros((num_lines, self.num_classes))
@@ -96,6 +96,7 @@ class tripletDataLayer(caffe.Layer):
         print "Offset: " + str(offset)
 
         print "Reading labels file: " + '{}/{}.txt'.format(self.dir, self.split)
+        incorrect_lables = 0
         with open(split_f, 'r') as annsfile:
             for c, i in enumerate(annsfile):
                 data = i.split(',')
@@ -108,15 +109,16 @@ class tripletDataLayer(caffe.Layer):
                 self.labels[c,:] = self.labels[c,:] - min(self.labels[c,:])
 
                 if sum(self.labels[c, :]) == 0:
-                    print "0's label found, skipping (repeating previous entry)"
+                    # print "0's label found, skipping (repeating previous entry)"
+                    incorrect_lables += 1
                     self.indices[c] = self.indices[c-1]
                     self.labels[c,:] = self.labels[c-1,:]
 
 
-                if c % 1000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                if c == 3000:
-                    print "Stopping at 3000 labels"
-                    break
+                if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines) + " / 0s labels: " + str(incorrect_lables)
+                # if c == 3000:
+                #     print "Stopping at 3000 labels"
+                #     break
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
