@@ -104,6 +104,8 @@ class tripletDataLayer(caffe.Layer):
                 # Load regression labels
                 for l in range(0, self.num_classes):
                     self.labels[c, l] = float(data[l + offset])
+                # Min should be 0?
+                self.labels[c,:] = self.labels[c,:] - min(self.labels[c,:])
 
                 if sum(self.labels[c, :]) == 0:
                     print "0's label found, skipping (repeating previous entry)"
@@ -113,7 +115,7 @@ class tripletDataLayer(caffe.Layer):
 
                 if c % 1000 == 0: print "Read " + str(c) + " / " + str(num_lines)
                 if c == 3000:
-                    print "Stopping at 99 labels"
+                    print "Stopping at 3000 labels"
                     break
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]

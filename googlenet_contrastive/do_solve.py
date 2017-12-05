@@ -40,6 +40,9 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
             s.step(1)  # run a single SGD step in Caffe
             # end = time.time()
             # print "Time step: " + str((end - start))
+            # print "Max before ReLU: " + str(np.max(s.net.blobs['inception_5b/pool_proj'].data))
+            # print "Max last FC: " + str(np.max(s.net.blobs['loss3/classifierCustom'].data))
+
             loss[name][it] = s.net.blobs['loss3/loss3'].data.copy()
             correct_pairs[name][it] = s.net.blobs['correct_pairs'].data.copy()
 

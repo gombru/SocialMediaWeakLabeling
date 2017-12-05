@@ -17,7 +17,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # affecting memory utilization.
     s.iter_size = 1
 
-    s.max_iter = 1000000  # # of times to update the net (training iterations)
+    s.max_iter = 500000  # # of times to update the net (training iterations)
 
     # Solve using the stochastic gradient descent (SGD) algorithm.
     # Other choices include 'Adam' and 'RMSProp'.

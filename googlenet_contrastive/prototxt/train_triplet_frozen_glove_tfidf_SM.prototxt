@@ -2110,24 +2110,13 @@ layer {
   bottom: "label_p"
   bottom: "label_n"
   top: "loss3/loss3"
+  top: "correct_pairs"
   python_param {
     module: "triplet_loss_layer"
     layer: "TripletLossLayer"
-    param_str: "{'margin': 0.1}"
+    param_str: "{'margin': 0.05}"
   }
   loss_weight: 1
-}
+  loss_weight: 0
 
-layer {
-  name: "correct_pairs"
-  type: "Python"
-  bottom: "loss3/classifierCustom"
-  bottom: "label_p"
-  bottom: "label_n"
-  top: "correct_pairs"
-  python_param {
-    module: "correct_pairs_layer"
-    layer: "CorrectPairsLayer"
-    param_str: "{'margin': 0.1}"
-  }
 }

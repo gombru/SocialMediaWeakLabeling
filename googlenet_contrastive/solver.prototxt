@@ -10,7 +10,7 @@ gamma: 0.10000000149
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
-snapshot: 100
+snapshot: 20000
 snapshot_prefix: "../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM"
 solver_mode: GPU
 iter_size: 1

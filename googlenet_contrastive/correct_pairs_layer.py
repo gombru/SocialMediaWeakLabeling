@@ -49,7 +49,7 @@ class CorrectPairsLayer(caffe.Layer):
             an = np.dot(a_n, a_n)
             dist = (self.margin + ap - an)
             _loss = max(dist, 0.0)
-            if _loss == 0: #
+            if _loss == 0:
                 correct_pairs += 1
 
         top[0].data[...] = correct_pairs
@@ -63,7 +63,7 @@ class CorrectPairsLayer(caffe.Layer):
         pass
 
     def normalize(self, v):
-        norm = np.linalg.norm(v,1)
+        norm = np.linalg.norm(v,2)
         if norm == 0:
             return v
         v = v /norm
