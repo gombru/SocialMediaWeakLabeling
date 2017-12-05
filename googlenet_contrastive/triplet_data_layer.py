@@ -206,7 +206,7 @@ class tripletDataLayer(caffe.Layer):
                 cur_dist = self.label[x,]  - self.label[y,]
                 cur_dist = np.dot(cur_dist, cur_dist)
                 if cur_dist > mean_dist:
-                    neg_idices.append[y]
+                    neg_idices.append(y)
 
             neg_idx = neg_idices[random.randint(0, len(neg_idices) - 1)]
             self.label_negative[x,] = self.label[neg_idx,]
