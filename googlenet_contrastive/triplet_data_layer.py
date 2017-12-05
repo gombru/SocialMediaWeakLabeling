@@ -115,7 +115,7 @@ class tripletDataLayer(caffe.Layer):
                     self.labels[c,:] = self.labels[c-1,:]
 
 
-                if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines) + " / 0s labels: " + str(incorrect_lables)
+                if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines) + "  --  0s labels: " + str(incorrect_lables)
                 # if c == 3000:
                 #     print "Stopping at 3000 labels"
                 #     break
@@ -179,18 +179,37 @@ class tripletDataLayer(caffe.Layer):
             self.label[x,] = self.labels[self.idx[x],]
             # self.label_negative[x,] = self.labels[self.indices_negative[self.idx[x]],]
 
+        # HARD NEGATIVE SELECTION
         # For each image of the batch select a negative txt. Use the text in the batch with higher distance
+        # for x in range(0, self.batch_size):
+        #     dist = 0
+        #     neg_idx = 0
+        #     for y in range(0, self.batch_size):
+        #         cur_dist = self.label[x,]  - self.label[y,]
+        #         cur_dist = np.dot(cur_dist, cur_dist)
+        #         if cur_dist > dist:
+        #             dist = cur_dist
+        #             neg_idx = y
+        #     self.label_negative[x,] = self.label[neg_idx,]
+
+        # SOFT NEGATIVE SELECTION
+        # Select a random element from the half that have more w2v distance than the mean w2v distance in the batch.
         for x in range(0, self.batch_size):
-            dist = 0
-            neg_idx = 0
+            mean_dist = 0
+            neg_idices = []
             for y in range(0, self.batch_size):
                 cur_dist = self.label[x,]  - self.label[y,]
                 cur_dist = np.dot(cur_dist, cur_dist)
-                if cur_dist > dist:
-                    dist = cur_dist
-                    neg_idx = y
-            self.label_negative[x,] = self.label[neg_idx,]
+                mean_dist += cur_dist
+            mean_dist /= self.batch_size
+            for y in range(0, self.batch_size):
+                cur_dist = self.label[x,]  - self.label[y,]
+                cur_dist = np.dot(cur_dist, cur_dist)
+                if cur_dist > mean_dist:
+                    neg_idices.append[y]
 
+            neg_idx = neg_idices[random.randint(0, len(neg_idices) - 1)]
+            self.label_negative[x,] = self.label[neg_idx,]
 
     def forward(self, bottom, top):
         # assign output
