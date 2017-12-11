@@ -17,7 +17,7 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 10 #200
+display_interval = 1 #200
 
 batch_size = 120 #Only used to print here
 
