@@ -105,8 +105,8 @@ class TripletLossLayer(caffe.Layer):
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
                     # Divided per batch size because Caffe doesn't average by default?
-                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
-                    bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
+                    bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
+                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
                     #bottom[1].diff[i] = self.a * ((x_p - x_a) / ((bottom[1]).num))
                     #bottom[2].diff[i] = self.a * ((x_a - x_n) / ((bottom[2]).num))
 
