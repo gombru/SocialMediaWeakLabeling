@@ -87,14 +87,11 @@ class customDataLayer(caffe.Layer):
         self.labels = np.zeros((num_lines, self.num_classes))
 
         # Webvision has class id so 2 offset
-        if self.dir == '../../../datasets/SocialMedia':
-            offset = 1
-        elif self.dir == '../../../datasets/Wikipedia':
-            offset = 1
-        elif self.dir == '../../../datasets/MIRFLICKR25K':
-            offset = 1
-        else:
+        if self.dir == '../../../datasets/WebVision':
             offset = 2
+            print("Using offset 2 (WebVision dataset)")
+        else:
+            offset = 1
 
         print "Offset: " + str(offset)
 
@@ -185,7 +182,8 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'images', idx + '.jpg'))
         elif self.dir == '../../../datasets/MIRFLICKR25K':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
-
+        elif self.dir == '../../../ssd2/InstaBarcelona':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
 
@@ -193,25 +191,25 @@ class customDataLayer(caffe.Layer):
             if im.size[0] != self.resize_w or im.size[1] != self.resize_h:
                 im = im.resize((self.resize_w, self.resize_h), Image.ANTIALIAS)
 
-        if self.train:  # Data Aumentation
+        #if self.train:  # Data Aumentation
 
-            if (self.scaling_prob is not 0):
-                im = self.rescale_image(im)
+        if (self.scaling_prob is not 0):
+            im = self.rescale_image(im)
 
-            if (self.rotate_prob is not 0):
-                im = self.rotate_image(im)
+        if (self.rotate_prob is not 0):
+            im = self.rotate_image(im)
 
-            if self.crop_h is not im.size[0] or self.crop_h is not im.size[1]:
-                im = self.random_crop(im)
+        if self.crop_h is not im.size[0] or self.crop_h is not im.size[1]:
+            im = self.random_crop(im)
 
-            if (self.mirror and random.randint(0, 1) == 1):
-                im = self.mirror_image(im)
+        if (self.mirror and random.randint(0, 1) == 1):
+            im = self.mirror_image(im)
 
-            if (self.HSV_prob is not 0):
-                im = self.saturation_value_jitter_image(im)
+        if (self.HSV_prob is not 0):
+            im = self.saturation_value_jitter_image(im)
 
-            if (self.color_casting_prob is not 0):
-                im = self.color_casting(im)
+        if (self.color_casting_prob is not 0):
+            im = self.color_casting(im)
 
         # end = time.time()
         # print "Time data aumentation: " + str((end - start))
@@ -233,7 +231,6 @@ class customDataLayer(caffe.Layer):
     def random_crop(self, im):
         # Crops a random region of the image that will be used for training. Margin won't be included in crop.
         width, height = im.size
-        print im.size
         margin = self.crop_margin
         left = random.randint(margin, width - self.crop_w - 1 - margin)
         top = random.randint(margin, height - self.crop_h - 1 - margin)
