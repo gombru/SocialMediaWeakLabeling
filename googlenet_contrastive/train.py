@@ -26,7 +26,7 @@ test_interval = 1000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'triplet_softNegativeBatch_m01_notNormalize_frozen_glove_tfidf_SM'
+training_id = 'triplet_softNegativeBatch_m10_notNormalize_frozen_glove_tfidf_SM'
 
 #Set solver configuration
 solver_filename = create_solver('prototxt/train_triplet_frozen_glove_tfidf_SM.prototxt', 'prototxt/val_triplet_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
