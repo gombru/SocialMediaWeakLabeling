@@ -2114,7 +2114,7 @@ layer {
   python_param {
     module: "triplet_loss_layer"
     layer: "TripletLossLayer"
-    param_str: "{'margin': 0.1}"
+    param_str: "{'margin': 50}"
   }
   loss_weight: 1
   loss_weight: 0

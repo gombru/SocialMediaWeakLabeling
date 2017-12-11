@@ -17,16 +17,16 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1 #200
+display_interval = 100 #200
 
 batch_size = 120 #Only used to print here
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 100 #1000
-test_iters = 10 #100
+test_interval = 1000 #1000
+test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'triplet_softNegativeBatch_not_normalize_frozen_glove_tfidf_SM'
+training_id = 'triplet_softNegativeBatch_m01_notNormalize_frozen_glove_tfidf_SM'
 
 #Set solver configuration
 solver_filename = create_solver('prototxt/train_triplet_frozen_glove_tfidf_SM.prototxt', 'prototxt/val_triplet_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)

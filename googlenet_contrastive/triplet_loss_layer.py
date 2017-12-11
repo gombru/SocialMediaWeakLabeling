@@ -46,7 +46,7 @@ class TripletLossLayer(caffe.Layer):
         loss = float(0)
         self.no_residual_list = []
         correct_pairs = 0
-        print "-------------Start Batch --> min(a): " + str(min(np.array(anchor_minibatch_db[0]))) + " /  a: " + str(np.array(anchor_minibatch_db[0][0:5]))
+        # print "-------------Start Batch --> min(a): " + str(min(np.array(anchor_minibatch_db[0]))) + " /  a: " + str(np.array(anchor_minibatch_db[0][0:5]))
 
         self.aux_idx = 0
         for i in range(((bottom[0]).num)):
@@ -61,7 +61,7 @@ class TripletLossLayer(caffe.Layer):
             _loss = max(dist, 0.0)
 
             # if i == 0:
-            #     print ('ap:' + str(ap) + ' ' + 'an:' + str(an) + ' ' + 'loss:' + str(_loss) + ' dist:' + str(dist) + ' cur_margin:' + str(ap - an))
+            # print ('ap:' + str(ap) + ' ' + 'an:' + str(an) + ' ' + 'loss:' + str(_loss) + ' dist:' + str(dist) + ' cur_margin:' + str(ap - an))
             if _loss == 0: #
                 correct_pairs += 1
                 self.no_residual_list.append(i)
@@ -78,7 +78,7 @@ class TripletLossLayer(caffe.Layer):
         top[0].data[...] = loss
         top[1].data[...] = correct_pairs
 
-        print "----------------END Batch --> loss: " + str(loss) + ' --> eq = ' + str(eq) + 'correct_pairs = ' + str(correct_pairs)
+        # print "----------------END Batch --> loss: " + str(loss) + ' --> eq = ' + str(eq) + 'correct_pairs = ' + str(correct_pairs)
         # if eq > 5:
         #     print "Sum(a): " + str(sum(a)) + " --> a " + str(a[0:5])
         #     time.sleep(30)
@@ -105,8 +105,8 @@ class TripletLossLayer(caffe.Layer):
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
                     # Divided per batch size because Caffe doesn't average by default?
-                    bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
-                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
+                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
+                    bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
                     #bottom[1].diff[i] = self.a * ((x_p - x_a) / ((bottom[1]).num))
                     #bottom[2].diff[i] = self.a * ((x_a - x_n) / ((bottom[2]).num))
 
