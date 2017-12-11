@@ -39,7 +39,7 @@ class TripletLossLayer(caffe.Layer):
             # anchor_minibatch_db.append(self.normalize(bottom[0].data[i]))
             # positive_minibatch_db.append(self.normalize(bottom[1].data[i]))
             # negative_minibatch_db.append(self.normalize(bottom[2].data[i]))
-            anchor_minibatch_db.append(bottom[0].data[i] / np.max(bottom[0].data[i]))
+            anchor_minibatch_db.append(bottom[0].data[i])
             positive_minibatch_db.append(bottom[1].data[i])
             negative_minibatch_db.append(bottom[2].data[i])
         eq = 0
@@ -86,7 +86,6 @@ class TripletLossLayer(caffe.Layer):
 
     def backward(self, top, propagate_down, bottom):
         considered_instances = bottom[0].num - len(self.no_residual_list)
-        print "considered_instances: " + str(considered_instances)
         if propagate_down[0]:
             for i in range((bottom[0]).num):
 
