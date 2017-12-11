@@ -36,12 +36,12 @@ class TripletLossLayer(caffe.Layer):
         positive_minibatch_db = []
         negative_minibatch_db = []
         for i in range((bottom[0]).num):
-            anchor_minibatch_db.append(self.normalize(bottom[0].data[i]))
-            positive_minibatch_db.append(self.normalize(bottom[1].data[i]))
-            negative_minibatch_db.append(self.normalize(bottom[2].data[i]))
-            #anchor_minibatch_db.append(bottom[0].data[i])
-            #positive_minibatch_db.append(bottom[1].data[i])
-            #negative_minibatch_db.append(bottom[2].data[i])
+            # anchor_minibatch_db.append(self.normalize(bottom[0].data[i]))
+            # positive_minibatch_db.append(self.normalize(bottom[1].data[i]))
+            # negative_minibatch_db.append(self.normalize(bottom[2].data[i]))
+            anchor_minibatch_db.append(bottom[0].data[i] / np.max(bottom[0].data[i]))
+            positive_minibatch_db.append(bottom[1].data[i])
+            negative_minibatch_db.append(bottom[2].data[i])
         eq = 0
         loss = float(0)
         self.no_residual_list = []
@@ -85,8 +85,8 @@ class TripletLossLayer(caffe.Layer):
 
 
     def backward(self, top, propagate_down, bottom):
-        considered_instances = len(bottom[0].num) - len(no_residual_list)
-        print considered_instances
+        considered_instances = bottom[0].num - len(self.no_residual_list)
+        print "considered_instances: " + str(considered_instances)
         if propagate_down[0]:
             for i in range((bottom[0]).num):
 
@@ -100,14 +100,14 @@ class TripletLossLayer(caffe.Layer):
 
                     # L2 normalization
                     # x_a = self.normalize(x_a)
-                    x_p = self.normalize(x_p)
-                    x_n = self.normalize(x_n)
+                    # x_p = self.normalize(x_p)
+                    # x_n = self.normalize(x_n)
 
                     # print x_a,x_p,x_n
                     # Raul. What is self.a? Is this gradient ok?
                     # Divided per batch size because Caffe doesn't average by default?
-                    bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
-                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
+                    # bottom[0].diff[i] = self.a * ((x_n - x_p) / considered_instances)
+                    bottom[0].diff[i] = self.a * ((x_n - x_p) / ((bottom[0]).num))
                     #bottom[1].diff[i] = self.a * ((x_p - x_a) / ((bottom[1]).num))
                     #bottom[2].diff[i] = self.a * ((x_a - x_n) / ((bottom[2]).num))
 
