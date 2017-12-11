@@ -4,14 +4,14 @@ test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475
 display: 1000000
-max_iter: 1000000
+max_iter: 500000
 lr_policy: "step"
 gamma: 0.10000000149
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
 snapshot: 20000
-snapshot_prefix: "../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM"
+snapshot_prefix: "../../../datasets/SocialMedia/models/CNNContrastive/triplet_softNegativeBatch_frozen_glove_tfidf_SM"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

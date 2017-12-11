@@ -17,13 +17,13 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 200 #200
+display_interval = 10 #200
 
 batch_size = 120 #Only used to print here
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 1000 #1000
-test_iters = 100 #100
+test_interval = 100 #1000
+test_iters = 10 #100
 
 #Name for training plot and snapshots
 training_id = 'triplet_softNegativeBatch_frozen_glove_tfidf_SM'
