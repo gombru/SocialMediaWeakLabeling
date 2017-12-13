@@ -29,7 +29,7 @@ def load_regressions_from_txt(path, num_topics):
 
 path_to_dataset = "/home/Imatge/hd/datasets/MIRFLICKR25K/"
 
-data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
+data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
