@@ -115,7 +115,6 @@ def word2vec_mean(text, word_weights, model, num_topics):
 
     embedding = np.zeros(num_topics)
     c = 0
-    print word_weights
     for e,tok in enumerate(tokens_filtered):
         try:
 
@@ -126,7 +125,6 @@ def word2vec_mean(text, word_weights, model, num_topics):
             continue
 
     if sum(word_weights) > 0:
-        print sum(word_weights)
         embedding /= sum(word_weights)
 
     return embedding

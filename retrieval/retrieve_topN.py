@@ -11,10 +11,11 @@ import gensim
 import glove
 import get_NN_txt_embedding
 
-data = 'SocialMedia_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_150000'
+
+data = 'triplet_softNegativeBatch_m10_notNormalize_frozen_glove_tfidf_SM_iter_140000'
 model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
-num_results = 20 # Num retrival results we want to take into accountnt
+num_results = 5 # Num retrival results we want to take into accountnt
 
 #-----------> if tfidf
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -36,7 +37,7 @@ elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 elif embedding == 'glove' or embedding == 'glove_tfidf': model = glove.Glove.load(model_path)
 
 # FC text layers
-FC = True
+FC = False
 if FC:
     model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
     prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
@@ -53,7 +54,7 @@ def get_results(database, topics, num_results, results_path):
         topics = topics - min(topics)
         if max(topics) > 0:
             topics = topics / max(topics)
-        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+            topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
     topics = topics - min(topics)
     topics = topics / sum(topics)
 
@@ -114,7 +115,7 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
         topics = topics - min(topics)
         if max(topics) > 0:
             topics = topics / max(topics)
-        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+            topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
     topics = topics - min(topics)
     topics = topics / sum(topics)
 
@@ -219,9 +220,6 @@ for e,cur_q in enumerate(q):
 
     else:
         get_results_complex(database, cur_q, cur_w, num_results, results_path)
-
-
-
 
 
 

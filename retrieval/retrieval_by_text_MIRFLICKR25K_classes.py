@@ -1,5 +1,3 @@
-# Evaluates the TOPN retrieval precision using as queries the city names.
-
 import text2topics
 import numpy as np
 import operator
@@ -8,7 +6,6 @@ import gensim
 import glove
 import glob
 import get_NN_txt_embedding
-
 
 
 
@@ -32,18 +29,18 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
-path_to_dataset = "/home/raulgomez/datasets/MIRFLICKR25K/"
+path_to_dataset = "/home/Imatge/hd//datasets/MIRFLICKR25K/"
 
-data = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half_iter_3000'
+data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = path_to_dataset+ 'regression_output/' + data +'/test_half.txt'
 filtered_topics = path_to_dataset+ 'filtered_topics/'
 
-model_name = 'word2vec_model_MIRFlickr_finetuned_half.model'
-embedding = 'word2vec_mean'
-model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/' + model_name
+model_name = 'glove_model_InstaCities1M.model'
+embedding = 'glove'
+model_path = '../../../datasets/MIRFLICKR25K/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -60,7 +57,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 
 # FC text layers
-FC = True
+FC = False
 if FC:
     model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
     prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'

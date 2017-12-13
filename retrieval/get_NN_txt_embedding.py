@@ -13,4 +13,3 @@ def get_NN_txt_embedding(net,txt_embedding):
     net.forward()
     NN_txt_embedding = net.blobs['TXT_FC_2'].data[0]
     return NN_txt_embedding
-

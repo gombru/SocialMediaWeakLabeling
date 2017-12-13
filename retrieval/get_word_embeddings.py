@@ -12,9 +12,9 @@ import gensim
 import glove
 
 
-f = open('word_embeddings.txt','w')
+f = open('food_word_embeddings.txt','w')
 
-model_name = 'glove_model_InstaCities1M.model'
+model_name = 'word2vec_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 
 #-----------> if tfidf
@@ -24,8 +24,8 @@ tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
-embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
+model_path = '../../../datasets/SocialMedia/models/word2vec/' + model_name
+embedding = 'word2vec_mean' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
 
 
 # Load LDA model
@@ -70,39 +70,43 @@ def get_embedding_complex(text, word_weights):
 # Do default queryes
 q = []
 
+search_words = ['food','eat','drink','dinner','breakfast','lunch','wine','beer','cocktail','restaurant','bar','cook','meat','fish','hamburguer','sushi','salad','fruit','vegetables']
+for w in search_words:
+    q.append(w)
+
 # # Simple
-q.append('car')
-q.append('skyline')
-q.append('bike')
-
-q.append('sunrise')
-q.append('snow')
-q.append('rain')
-
-q.append('icecream')
-q.append('cake')
-q.append('pizza')
-
-q.append('woman')
-q.append('man')
-q.append('kid')
-
-# Complex
-q.append('yellow car')
-q.append('skyline night')
-q.append('bike park')
-
-q.append('sunrise beach')
-q.append('snow ski')
-q.append('rain umbrella')
-
-q.append('icecream beach')
-q.append('chocolate cake')
-q.append('pizza wine')
-
-q.append('woman bag')
-q.append('man boat')
-q.append('kid dog')
+# q.append('car')
+# q.append('skyline')
+# q.append('bike')
+#
+# q.append('sunrise')
+# q.append('snow')
+# q.append('rain')
+#
+# q.append('icecream')
+# q.append('cake')
+# q.append('pizza')
+#
+# q.append('woman')
+# q.append('man')
+# q.append('kid')
+#
+# # Complex
+# q.append('yellow car')
+# q.append('skyline night')
+# q.append('bike park')
+#
+# q.append('sunrise beach')
+# q.append('snow ski')
+# q.append('rain umbrella')
+#
+# q.append('icecream beach')
+# q.append('chocolate cake')
+# q.append('pizza wine')
+#
+# q.append('woman bag')
+# q.append('man boat')
+# q.append('kid dog')
 
 
 

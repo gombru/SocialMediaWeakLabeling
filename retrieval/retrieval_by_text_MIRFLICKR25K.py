@@ -1,5 +1,3 @@
-# Evaluates the TOPN retrieval precision using as queries the city names.
-
 import text2topics
 import numpy as np
 import operator
@@ -10,7 +8,6 @@ import glob
 from shutil import copyfile
 from scipy.misc import imshow, imread
 import get_NN_txt_embedding
-
 
 def load_regressions_from_txt(path, num_topics):
 
@@ -39,8 +36,8 @@ database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/re
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
 
-model_name = 'word2vec_model_WebVision.model'
-embedding = 'word2vec_mean'
+model_name = 'glove_model_InstaCities1M.model'
+embedding = 'glove'
 model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
@@ -63,7 +60,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 # tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # FC text layers
-FC = True
+FC = False
 if FC:
     model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
     prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
@@ -86,7 +83,7 @@ for id in database:
 
 img_topics = {}
 # Load topics of all images
-for file_name in glob.glob("/home/raulgomez/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+for file_name in glob.glob("/home/Imatge/hd/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
     file = open(file_name, "r")
     lines = []
     for line in file:
