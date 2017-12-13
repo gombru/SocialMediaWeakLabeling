@@ -7,7 +7,6 @@ import glove
 import glob
 from shutil import copyfile
 from scipy.misc import imshow, imread
-import get_NN_txt_embedding
 
 def load_regressions_from_txt(path, num_topics):
 

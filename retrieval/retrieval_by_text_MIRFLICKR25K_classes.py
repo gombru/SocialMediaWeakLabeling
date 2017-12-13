@@ -5,8 +5,6 @@ from gensim import corpora, models
 import gensim
 import glove
 import glob
-import get_NN_txt_embedding
-
 
 
 def load_regressions_from_txt(path, num_topics):
@@ -29,7 +27,7 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
-path_to_dataset = "/home/Imatge/hd//datasets/MIRFLICKR25K/"
+path_to_dataset = "/home/Imatge/hd/datasets/MIRFLICKR25K/"
 
 data = 'WebVision_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_460000'
 num_topics = 400
@@ -40,7 +38,7 @@ filtered_topics = path_to_dataset+ 'filtered_topics/'
 
 model_name = 'glove_model_InstaCities1M.model'
 embedding = 'glove'
-model_path = '../../../datasets/MIRFLICKR25K/models/glove/' + model_name
+model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
