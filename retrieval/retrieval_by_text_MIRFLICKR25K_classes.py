@@ -199,15 +199,15 @@ for q in queries:
         map_strong_classes[q] = map_q
 
 map = 0
-for q,v in map_classes.iteritems():
+for q,v in map_classes.items():
     map = map + v
 map = map / len(queries)
 print("Mean map all topics toguether: " + str(map))
 
 map = 0
-for q,v in map_classes.iteritems():
+for q,v in map_classes.items():
     map = map + v
-for q,v in map_strong_classes.iteritems():
+for q,v in map_strong_classes.items():
     map = map + v
 map = map / (len(queries) + len(strong_topics_names))
 print("Mean considering separate topics: " + str(map))
