@@ -154,12 +154,13 @@ for q in queries:
         if max(topics) > 0:
             topics = topics / max(topics)
         topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+
     topics = topics - min(topics)
-    topics = topics / sum(topics)
+    topics = topics / max(topics)
 
     # Compute distances)
     for id in database:
-        distances[id] = np.linalg.norm(database[id]-topics)
+        distances[id] = np.dot(database[id],topics)
 
 
     # Get elements with min distances
@@ -167,7 +168,7 @@ for q in queries:
     strong_correct = 0
 
     #Sort dictionary
-    distances = sorted(distances.items(), key=operator.itemgetter(1))
+    distances = sorted(distances.items(), key=operator.itemgetter(1), reverse=True)
 
     for idx,id in enumerate(distances):
 

@@ -162,14 +162,16 @@ for q in queries_indices:
         if max(topics) > 0:
             topics = topics / max(topics)
         topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+
+
     topics = topics - min(topics)
-    topics = topics / sum(topics)
+    topics = topics / max(topics)
 
 
     # print topics
     # Compute distances)
     for id in database:
-        distances[id] = np.linalg.norm(database[id]-topics)
+        distances[id] = np.dot(database[id],topics)
 
 
     # Get elements with min distances
@@ -177,7 +179,7 @@ for q in queries_indices:
     precisions = []
 
     #Sort dictionary
-    distances = sorted(distances.items(), key=operator.itemgetter(1))
+    distances = sorted(distances.items(), key=operator.itemgetter(1), reverse=True)
 
     query_labels = img_topics[str(int(q))][0] + img_topics[str(int(q))][1]
     # query_labels = img_topics[str(int(q))][1]
