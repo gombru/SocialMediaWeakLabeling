@@ -9,7 +9,6 @@ from shutil import copyfile
 from gensim import corpora, models
 import gensim
 import glove
-import get_NN_txt_embedding
 
 
 data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
