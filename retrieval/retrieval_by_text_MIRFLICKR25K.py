@@ -31,9 +31,9 @@ data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_26
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/MIRFLICKR25K/regression_output/' + data +'/retrieval_list.txt'
-filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
-queries_fname = '../../../datasets/MIRFLICKR25K/query_list.txt'
+database_path = '../../../hd/datasets/MIRFLICKR25K/regression_output/' + data +'/retrieval_list.txt'
+filtered_topics = '../../../hd/datasets/MIRFLICKR25K/filtered_topics/'
+queries_fname = '../../../hd/datasets/MIRFLICKR25K/query_list.txt'
 
 model_name = 'glove_model_InstaCities1M.model'
 embedding = 'glove'
