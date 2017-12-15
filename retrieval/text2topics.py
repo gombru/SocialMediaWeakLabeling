@@ -184,6 +184,8 @@ def glove(text, word_weights, model, num_topics):
     tokens = gensim.utils.simple_preprocess(filtered_text)
     stopped_tokens = [i for i in tokens if not i in en_stop]
     embedding = np.zeros(num_topics)
+    if word_weights == 0:
+        word_weights = [1.0 for x in text.split()]
     word_weights = [float(x) for x in word_weights.split()]
 
     c = 0

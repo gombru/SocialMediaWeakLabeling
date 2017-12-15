@@ -127,7 +127,7 @@ for q in queries:
 
     elif embedding == 'word2vec_mean':
         word_weights = 0
-        topics = text2topics.word2vec_mean(text_query, word_weights, model, num_topics)
+        topics = text2topics.word2vec_mean(text_query, word_weights, word_weights, model, num_topics)
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text_query, model, num_topics, tfidf_model, tfidf_dictionary)
@@ -139,7 +139,8 @@ for q in queries:
 
 
     elif embedding == 'glove':
-        topics = text2topics.glove(text_query, model, num_topics)
+        word_weights = 0
+        topics = text2topics.glove(text_query, word_weights, model, num_topics)
 
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text_query, model, num_topics)

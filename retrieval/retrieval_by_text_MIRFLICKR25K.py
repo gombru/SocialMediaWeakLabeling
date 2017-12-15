@@ -142,7 +142,8 @@ for q in queries_indices:
 
 
     elif embedding == 'glove':
-        topics = text2topics.glove(text_query, model, num_topics)
+        word_weights = 0
+        topics = text2topics.glove(text_query, word_weights, model, num_topics)
 
     elif embedding == 'glove_tfidf':
         topics = text2topics.glove_tfidf(text_query, model, num_topics)
