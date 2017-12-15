@@ -17,11 +17,11 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1 #200
+display_interval = 200 #200
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 10 #1000
-test_iters = 2 #100
+test_interval = 1000 #1000
+test_iters = 100 #100
 
 #Name for training plot and snapshots
 training_id = 'instaFashion_Inception_frozen_word2vec_tfidf'
