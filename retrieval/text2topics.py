@@ -186,7 +186,8 @@ def glove(text, word_weights, model, num_topics):
     embedding = np.zeros(num_topics)
     if word_weights == 0:
         word_weights = [1.0 for x in text.split()]
-    word_weights = [float(x) for x in word_weights.split()]
+    else:
+        word_weights = [float(x) for x in word_weights.split()]
 
     c = 0
     for e,tok in enumerate(stopped_tokens):
