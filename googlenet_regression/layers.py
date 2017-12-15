@@ -81,7 +81,7 @@ class customDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        #num_lines = 100001
+        num_lines = 10001
 
         self.indices = np.empty([num_lines], dtype="S50")
         self.labels = np.zeros((num_lines, self.num_classes))
@@ -106,9 +106,9 @@ class customDataLayer(caffe.Layer):
                     self.labels[c, l] = float(data[l + offset])
 
                 if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                #if c == 100000:
-                #  print "Stopping at 10000 labels"
-                #  break
+                if c == 10000:
+                    print "Stopping at 10000 labels"
+                    break
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
