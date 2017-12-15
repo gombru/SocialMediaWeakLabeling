@@ -95,7 +95,7 @@ for file_name in glob.glob("/home/Imatge/hd/datasets/MIRFLICKR25K/filtered_topic
 num_per_cat = {}
 for i, topics in img_topics.items():
     for cat in topics[1]:
-        if num_per_cat.has_key(cat):
+        if cat in num_per_cat:
             num_per_cat[cat] += 1
         else:
             num_per_cat[cat] = 1
