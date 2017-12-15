@@ -12,7 +12,7 @@ import glove
 import get_NN_txt_embedding
 
 
-data = 'triplet_softNegativeBatch_m10_notNormalize_frozen_glove_tfidf_SM_iter_140000'
+data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
 model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
