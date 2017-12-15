@@ -62,14 +62,7 @@ def get_results(database, topics, num_results, results_path):
     distances = {}
 
 
-    print sum(topics)
-    print max(topics)
-    print topics[0:10]
-
     for id in database:
-        print max(database[id])
-        print sum(database[id])
-        print database[id][0:10]
         distances[id] = np.dot(database[id],topics)
 
     #Sort dictionary
