@@ -61,7 +61,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
 
             # if it > test_interval:
             #     ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g') #Val always on top
-            ax1.set_ylim([0,1])
+            ax1.set_ylim([0,0.055])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
@@ -89,7 +89,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
 
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
             ax2.plot(it_val_axes[0:it/test_interval], val_correct_pairs[0:it/test_interval], 'm')
-            ax1.set_ylim([0,1])
+            ax1.set_ylim([0,0.055])
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
