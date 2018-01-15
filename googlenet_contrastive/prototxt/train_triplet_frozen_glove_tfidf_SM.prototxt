@@ -2111,9 +2111,64 @@ layer {
 }
 
 layer {
+  name: "denom"
+  type: "Reduction"
+  bottom: "loss3/classifierCustom"
+  top: "denom"
+  reduction_param {
+    operation: SUMSQ
+    axis: 1
+  }
+}
+layer {
+  name: "power"
+  type: "Power"
+  bottom: "denom"
+  top: "power"
+  power_param {
+    power: -0.5
+    shift: 9.99999996004e-13
+  }
+}
+layer {
+  name: "reshape"
+  type: "Reshape"
+  bottom: "power"
+  top: "reshape"
+  reshape_param {
+    shape {
+      dim: 1
+    }
+    axis: -1
+    num_axes: 0
+  }
+}
+layer {
+  name: "tile"
+  type: "Tile"
+  bottom: "reshape"
+  top: "tile"
+  tile_param {
+    axis: 1
+    tiles: 400
+  }
+}
+layer {
+  name: "elwise"
+  type: "Eltwise"
+  bottom: "loss3/classifierCustom"
+  bottom: "tile"
+  top: "elwise"
+  eltwise_param {
+    operation: PROD
+  }
+}
+
+
+layer {
   name: "loss3/loss3"
   type: "Python"
-  bottom: "loss3/classifierCustom"
+  bottom: "elwise"
   bottom: "label_p"
   bottom: "label_n"
   top: "loss3/loss3"
