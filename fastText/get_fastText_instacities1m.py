@@ -33,7 +33,7 @@ test_file = open(gt_path_test, "w")
 
 cities = ['london','newyork','sydney','losangeles','chicago','melbourne','miami','toronto','singapore','sanfrancisco']
 
-model = gensim.models.Word2Vec.load(model_path)
+model = gensim.models.FastText.load(model_path)
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
