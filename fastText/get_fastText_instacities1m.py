@@ -113,12 +113,12 @@ def infer_LDA(file_name):
         #     embedding = embedding / sum(embedding)
 
         # L2 normalized
-        if sum(embedding) > 0:
-            embedding = embedding / np.linalg.norm(embedding)
+        # if sum(embedding) > 0:
+        #     embedding = embedding / np.linalg.norm(embedding)
 
         # Div by max
-        # if max(embedding) > 0:
-        #     embedding = embedding / max(embedding)
+        if max(embedding) > 0:
+            embedding = embedding / max(embedding)
 
         # Add zeros to topics without score
         out_string = ''
