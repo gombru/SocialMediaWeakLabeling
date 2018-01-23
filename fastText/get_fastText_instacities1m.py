@@ -16,7 +16,7 @@ import multiprocessing
 
 # Load data and model
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
-model_path = '../../../datasets/SocialMedia/models/fastText/fastText_model_InstaCities1M.model'
+model_path = '../../../datasets/SocialMedia/models/fastText/fastText_model_SocialMedia.model'
 tfidf_weighted = False
 tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
