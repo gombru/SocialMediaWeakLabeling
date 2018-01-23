@@ -24,10 +24,10 @@ test_interval = 1000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'instaFashion_Inception_frozen_word2vec_tfidf'
+training_id = 'SocialMedia_Inception_frozen_fastText_mean'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_word2vec_tfidf_instaFashion.prototxt', 'prototxt/val_frozen_word2vec_tfidf_instaFashion.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_fastText_mean_SM.prototxt', 'prototxt/val_frozen_fastText_mean_SM.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
