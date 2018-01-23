@@ -6,9 +6,41 @@ import hues
 import sys
 import datetime
 import dateutil.relativedelta
+import os
 
 console = hues.SimpleConsole(stdout=sys.stderr)
 
+def save_cookies(session):
+    """Save cookies from a session.
+    Arguments:
+        session (`requests.Session`): a session with cookies
+            to save.
+    Note:
+        Cookies are saved in a plain text file in the system
+        system temporary directory. Use ``tempfile.gettempdir()``
+        to find where it is.
+    """
+    try:
+        if not os.path.isdir(os.path.dirname(session.cookies.filename)):
+            os.mkdir(os.path.dirname(session.cookies.filename))
+        session.cookies.save()
+    except IOError:
+        pass
+
+def load_cookies(session):
+    """Load saved cookies to a session.
+    Arguments:
+        session (`requests.session`): a session with saved
+            cookies to load.
+    Note:
+        Expired cookies are cleaned, so the session will
+        only load active cookies.
+    """
+    try:
+        session.cookies.load()
+    except IOError:
+        pass
+    session.cookies.clear_expired_cookies()
 
 def get_times(timeframe):
     if timeframe is None:

@@ -5,26 +5,21 @@ from __future__ import (
     unicode_literals,
 )
 
-import atexit
 import copy
 import json
 import os
 import datetime
-import contextlib
 import progressbar
 import random
 import re
 import warnings
-import threading
 import requests
 import six
 import time
-import tempfile
 import bs4 as bs
 
-from urlgen import default
 from worker import InstaDownloader
-from utils import get_times, save_cookies, load_cookies
+from utils import get_times
 
 PARSER = 'html.parser'
 
@@ -41,8 +36,6 @@ class InstaLooter(object):
     URL_LOGIN = "https://www.instagram.com/accounts/login/ajax/"
     URL_LOGOUT = "https://www.instagram.com/accounts/logout/"
 
-    COOKIE_FILE = os.path.join(tempfile.gettempdir(), "instaLooter", "cookies.txt")
-
     _TEMPLATE_MAP = {
         'id': lambda m: m.get('id'),
         'code': lambda m: m.get('code') or m.get('shortcode'),
@@ -52,10 +45,9 @@ class InstaLooter(object):
         'datetime': lambda m: ("{0.year}-{0.month}-{0.day} {0.hour}h{0.minute}m{0.second}"
             "s{0.microsecond}".format(datetime.datetime.fromtimestamp(m['date'])))
             if 'date' in m else None,
-        'date': lambda m: datetime.date.fromtimestamp(m['date'])
-            if 'date' in m else None,
+        'date': lambda m: datetime.date.fromtimestamp(m['date']) if 'date' in m else None,
         'width': lambda m: m.get('dimensions', dict()).get('width'),
-        'height': lambda m: m.get('dimensions', dict()).get('height'),
+        'heigth': lambda m: m.get('dimensions', dict()).get('height'),
         'likescount': lambda m: m.get('likes', dict()).get('count'),
         'commentscount': lambda m: m.get('comments', dict()).get('count'),
         'display_src': lambda m: m.get('display_src'),
@@ -64,21 +56,9 @@ class InstaLooter(object):
 
     _OWNER_MAP = {}
 
-    _HASHTAG_MAP = {
-        'id': 'id', 'comments_disabled': 'comments_disabled',
-        'dimensions': 'dimensions', 'owner': 'owner',
-        'thumbnail_src': 'thumbnail_src', 'is_video': 'is_video',
-        'thumbnail_resources': 'thumbnail_resources',
-        'code': 'shortcode', 'date': 'taken_at_timestamp',
-        'display_src': 'display_url', 'likes': 'edge_liked_by',
-        'comments': 'edge_media_to_comment',
-    }
-
-
     def __init__(self, directory=None, profile=None, hashtag=None,
                 add_metadata=False, get_videos=False, videos_only=False,
-                jobs=16, template="{id}", url_generator=default,
-                dump_json=False, dump_only=False, extended_dump=False, timeframe=None):
+                jobs=16, template="{id}"):
         """Create a new looter instance.
 
         Keyword Arguments:
@@ -97,22 +77,8 @@ class InstaLooter(object):
             jobs (`bool`): the number of parallel threads to use to
                 download media (12 or more is advised to have a true parallel
                 download of media files) **[default: 16]**
-            template (`str`): a filename format, in Python new-style-formatting
-                format. See the the Template page of the documentation
-                for available keys. **[default: {id}]
-            url_generator (`function`): a callable that takes a media
-                dictionary as argument and returs the URL it should
-                download the picture from. The default tries to get
-                the best available size. **[default: `urlgen.default`]**
-            dump_json (`bool`): Save each resource metadata to a
-                JSON file next to the actual image/video. **[default: False]**
-            dump_only (`bool`): Only save metadata and discard the actual
-                resource. **[default: False]**
-            extended_dump (`bool`): Attempt to fetch as much metadata as
-                possible, at the cost of more time. Set to `True` if, for
-                instance, you always want the top comments to be downloaded
-                in the dump. **[default: False]**
         """
+
         if profile is not None and hashtag is not None:
             raise ValueError("Give only a profile or an hashtag, not both !")
 
@@ -136,30 +102,20 @@ class InstaLooter(object):
         self.template = template
         self._required_template_keys = self._RX_TEMPLATE.findall(template)
 
-        self.url_generator = url_generator
-        if not callable(url_generator):
-            raise ValueError("url_generator must be a callable !")
-
         self.directory = directory
         self.add_metadata = add_metadata
         self.get_videos = get_videos or videos_only
         self.videos_only = videos_only
-        self.dump_json = dump_json or dump_only
-        self.dump_only = dump_only
-        self.extended_dump = extended_dump
         self.jobs = jobs
 
         self.session = requests.Session()
-        self.session.cookies = six.moves.http_cookiejar.LWPCookieJar(self.COOKIE_FILE)
-        load_cookies(self.session)
-
+        self.csrftoken = None
         self.user_agent = ("Mozilla/5.0 (Windows NT 10.0; WOW64; "  # seems legit
                            "rv:50.0) Gecko/20100101 Firefox/50.0")
 
         self.dl_count = 0
         self.metadata = {}
         self._workers = []
-        self.dl_count_lock = threading.Lock()
 
         self.session.headers.update({
             'User-Agent': self.user_agent,
@@ -171,8 +127,6 @@ class InstaLooter(object):
             'Upgrade-Insecure-Requests': '1',
         })
 
-        atexit.register(self.__del__)
-
     def __del__(self):
         if hasattr(self, 'session'):
             try:
@@ -182,14 +136,9 @@ class InstaLooter(object):
         if hasattr(self, "_workers"):
             for worker in self._workers:
                 worker.kill()
-
-    def __length_hint__(self):
-        try:
-            data = next(self.pages())['entry_data'][self._page_name][0]
-            length = data[self._section_name]['media']['count']
-        except (KeyError, StopIteration):
-            length = 0
-        return length
+        if hasattr(self, '_pbar'):
+            self._pbar.max_value = self._pbar.value
+            self._pbar.finish()
 
     def login(self, username, password):
         """Login with provided credentials.
@@ -202,15 +151,15 @@ class InstaLooter(object):
 
             Code taken from LevPasha/instabot.py
         """
-        # self.session.cookies.update({
-        #     'sessionid': '',
-        #     'mid': '',
-        #     'ig_pr': '1',
-        #     'ig_vw': '1920',
-        #     'csrftoken': '',
-        #     's_network': '',
-        #     'ds_user_id': ''
-        # })
+        self.session.cookies.update({
+            'sessionid': '',
+            'mid': '',
+            'ig_pr': '1',
+            'ig_vw': '1920',
+            'csrftoken': '',
+            's_network': '',
+            'ds_user_id': ''
+        })
 
         login_post = {'username': username,
                       'password': password}
@@ -222,39 +171,35 @@ class InstaLooter(object):
             'X-Requested-With': 'XMLHttpRequest',
         })
 
-        with self.session.get(self.URL_HOME) as res:
-            self.session.headers.update({'X-CSRFToken': res.cookies['csrftoken']})
-        time.sleep(5 * random.random()) # nosec
+        res = self.session.get(self.URL_HOME)
+        self.session.headers.update({'X-CSRFToken': res.cookies['csrftoken']})
+        time.sleep(5 * random.random())
 
-        with self.session.post(self.URL_LOGIN,
-                data=login_post, allow_redirects=True) as login:
+        login = self.session.post(self.URL_LOGIN, data=login_post, allow_redirects=True)
+        self.session.headers.update({'X-CSRFToken': login.cookies['csrftoken']})
+        self.csrftoken = login.cookies['csrftoken']
 
-            self.session.headers.update({'X-CSRFToken': login.cookies['csrftoken']})
-            # save_cookies(self.session, 'cookies.txt')
-            if not login.status_code == 200:
-                raise SystemError("Login error: check your connection")
-
-        with self.session.get(self.URL_HOME) as res:
-            if res.text.find(username) == -1:
+        if login.status_code != 200:
+            self.csrftoken = None
+            raise SystemError("Login error: check your connection")
+        else:
+            r = self.session.get(self.URL_HOME)
+            if r.text.find(username) == -1:
                 raise ValueError('Login error: check your login data')
-            save_cookies(self.session)
 
     def logout(self):
-        """Log out from current session.
+        """Log out from current session
 
         .. note::
 
             Code taken from LevPasha/instabot.py
         """
-        logout_post = {'csrfmiddlewaretoken': self.session.cookies._cookies.get(
-            "www.instagram.com", {"/":{}})["/"].get("sessionid") is not None
-        }
-        self.session.post(self.URL_LOGOUT, data=logout_post)
-        if os.path.isfile(self.COOKIE_FILE):
-            os.remove(self.COOKIE_FILE)
+        logout_post = {'csrfmiddlewaretoken': self.csrftoken}
+        logout = self.session.post(self.URL_LOGOUT, data=logout_post)
+        self.csrftoken = None
 
     def _init_workers(self):
-        """Initialize a pool of workers to download files.
+        """Initialize a pool of workers to download files
         """
         self._shared_map = {}
         self._workers = []
@@ -264,61 +209,7 @@ class InstaLooter(object):
             worker.start()
             self._workers.append(worker)
 
-    def _transform_hashtag_page(self, data):
-        """
-        This function does a transformation of the entry_data from a hashtag page into the format expected by the rest
-        of the application (due to IG changing the JSON format for hashtag pages)
-
-        Arguments:
-            data (`dict`): a GraphQL style JSON dictionary holding hashtag data
-
-        Returns:
-            `dict`: an old-style dictionary holding hashtag data, usable by the
-                looter instance.
-
-        Note:
-            Implementation thanks to Geoff (@gffde3).
-        """
-
-        try:
-            # Shift tag index
-            data['entry_data'][self._page_name][0][self._section_name] = \
-                data['entry_data'][self._page_name][0].pop('graphql')['hashtag']
-
-            # Shift media index
-            data['entry_data'][self._page_name][0][self._section_name]['media'] =\
-                data['entry_data'][self._page_name][0][self._section_name].pop('edge_hashtag_to_media')
-
-            # Note: this is an approximation of what is available from the profile json structure (may be missing
-            # some details as I've never seen the original hashtag json structure)
-            data['entry_data'][self._page_name][0][self._section_name]['media']['nodes'] = nodes = []
-            for node_data in data['entry_data'][self._page_name][0][self._section_name]['media'].pop('edges'):
-
-                node = node_data['node']  # pull out the node from edge list
-
-                # Restructure the data
-                transformed_node = {
-                    dst: node[src] for dst, src in six.iteritems(self._HASHTAG_MAP)
-                }
-
-                # Sometimes there are no captions, check if there are any.
-                if node['edge_media_to_caption']['edges']:
-                    transformed_node['caption'] = node['edge_media_to_caption']['edges'][0]['node']['text']
-                else:
-                    transformed_node['caption'] = ""
-
-                nodes.append(transformed_node)
-
-            return data
-
-        except KeyError:
-            warnings.warn("There was a KeyError transforming json from page: {}".format(self.target), stacklevel=1)
-            return {}
-        except Exception as e:  # Catch-all random garbage
-            warnings.warn('Unexpected exception in JSON transformation: {}'.format(e), stacklevel=1)
-            return {}
-
-    def pages(self, media_count=None, with_pbar=False, timeframe= False):
+    def pages(self, media_count=None, with_pbar=False):
         """An iterator over the shared data of a profile or hashtag.
 
         Create a connection to www.instagram.com and use successive
@@ -335,28 +226,16 @@ class InstaLooter(object):
         """
         url = self._base_url.format(self.target)
         current_page = 0
-        start_time, end_time = get_times(timeframe)
-
-        advances = 0
         while True:
-
-            with self.session.get(url) as res:
-                data = self._get_shared_data(res)
-
-                if self._section_name == 'tag':
-                    data = self._transform_hashtag_page(data)
-                    media_date = datetime.date.fromtimestamp(data['entry_data']['TagPage'][0]['tag']['media']['nodes'][0]['date'])
+            current_page += 1
+            res = self.session.get(url)
+            data = self._get_shared_data(res)
 
             try:
                 media_info = data['entry_data'][self._page_name][0][self._section_name]['media']
             except KeyError:
                 warnings.warn("Could not find page of user: {}".format(self.target), stacklevel=1)
                 return
-
-            if start_time <= media_date:
-                url = '{}?max_id={}'.format(self._base_url.format(self.target), media_info['page_info']["end_cursor"])
-                print("Advancing. Date = " + str(media_date) + " -- " + url)
-                continue
 
             if media_count is None:
                 media_count = data['entry_data'][self._page_name][0][self._section_name]['media']['count']
@@ -376,19 +255,16 @@ class InstaLooter(object):
             yield data
 
             # Break if the page is private (no media to show) or if the last page was reached
-            if not media_info['page_info']['has_next_page'] or not media_info['nodes']:
-
-                if not media_info['nodes']:
-                    if self._section_name == "tag":
-                        msg = "#{} has no medias to show.".format(self.target)
-                    elif not self.is_logged_in():
-                        msg = "Profile {} is private, retry after logging in.".format(self.target)
-                    else:
-                        msg = "Profile {} is private, and you are not following it.".format(self.target)
-                    warnings.warn(msg)
-
+            if not media_info['page_info']['has_next_page']:
                 break
-
+            elif not media_info["nodes"]:
+                if self._section_name == "tag":
+                    warnings.warn("#{} has no medias to show.".format(self.target))
+                elif not self.is_logged_in():
+                    warnings.warn("Profile {} is private, retry after logging in.".format(self.target))
+                else:
+                    warnings.warn("Profile {} is private, and you are not following it.".format(self.target))
+                break
             else:
                 url = '{}?max_id={}'.format(self._base_url.format(self.target), media_info['page_info']["end_cursor"])
 
@@ -413,25 +289,17 @@ class InstaLooter(object):
             return self._timed_medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe)
 
     def _timeless_medias(self, media_count=None, with_pbar=False):
-        seen = set()
         for page in self.pages(media_count=media_count, with_pbar=with_pbar):
             for media in page['entry_data'][self._page_name][0][self._section_name]['media']['nodes']:
-                if media['id'] in seen:
-                    return
                 yield media
-                seen.add(media['id'])
 
     def _timed_medias(self, media_count=None, with_pbar=False, timeframe=None):
-        seen = set()
         start_time, end_time = get_times(timeframe)
-        for page in self.pages(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
+        for page in self.pages(media_count=media_count, with_pbar=with_pbar):
             for media in page['entry_data'][self._page_name][0][self._section_name]['media']['nodes']:
                 media_date = datetime.date.fromtimestamp(media['date'])
                 if start_time >= media_date >= end_time:
-                    if media['id'] in seen:
-                        return
                     yield media
-                    seen.add(media['id'])
                 elif media_date < end_time:
                     return
 
@@ -481,16 +349,16 @@ class InstaLooter(object):
             `dict`: the owner metadata deserialised from JSON
         """
         url = "https://www.instagram.com/p/{}/".format(code)
-        with self.session.get(url) as res:
-            data = self._get_shared_data(res)
-        return data['entry_data']['PostPage'][0]['graphql']['shortcode_media']['owner']
+        res = self.session.get(url)
+        data = self._get_shared_data(res)
+        return data['entry_data']['PostPage'][0]['media']['owner']
 
     def download(self, **kwargs):
         """Download all the medias from provided target.
 
         This method follwows the parameters given in the :obj:`__init__`
-        method (profile or hashtag, directory, get_videos, videos_only,
-        add_metadata and dump_json).
+        method (profile or hashtag, directory, get_videos, videos_only
+        and add_metadata).
 
         Keyword Arguments:
             media_count (`int`): how many media to download before
@@ -527,7 +395,6 @@ class InstaLooter(object):
                 condition = lambda media: True
         else:
             condition = kwargs.get('_condition')
-
         medias_queued = self._fill_media_queue(
             media_count=media_count, with_pbar=with_pbar,
             condition=condition, timeframe=timeframe,
@@ -562,13 +429,11 @@ class InstaLooter(object):
 
         self._poison_workers()
         self._join_workers()
-
-    def get_metadata(self):
-        if self._page_name == 'TagPage':
-            raise ValueError("Cannot get metadata of an hashtag !")
-        elif not self.metadata:
-            next(self.pages())
-        return self.metadata
+        if self.add_metadata and not media['is_video']:
+            self._add_metadata(
+                os.path.join(self.directory, self._make_filename(media)),
+                media
+            )
 
     def get_post_info(self, code):
         """Get info about a single post referenced by its code
@@ -579,16 +444,8 @@ class InstaLooter(object):
                 at a specific media.
         """
         url = "https://www.instagram.com/p/{}/".format(code)
-        with self.session.get(url) as res:
-            # media = self._get_shared_data(res)['entry_data']['PostPage'][0]['media']
-            media = self._get_shared_data(res)['entry_data']['PostPage'][0]\
-                                              ['graphql']['shortcode_media']
-        # Fix renaming of attributes
-        media.setdefault('code', media.get('shortcode'))
-        media.setdefault('date', media.get('taken_at_timestamp'))
-        media.setdefault('display_src', media.get('display_url'))
-        media.setdefault('likes', media['edge_media_preview_like'])
-        media.setdefault('comments', media['edge_media_to_comment'])
+        res = self.session.get(url)
+        media = self._get_shared_data(res)['entry_data']['PostPage'][0]['media']
         return media
 
     @classmethod
@@ -674,10 +531,9 @@ class InstaLooter(object):
             template_values = {}
             for x in required_template_keys:
                 template_values[x] = value = self._TEMPLATE_MAP[x](media)
-                if value is None:
-                    raise ValueError
-        except ValueError:
-            media = self.get_post_info(media.get('code') or media['shortcode'])
+                assert value is not None
+        except AssertionError:
+            media = self.get_post_info(media['code'])
             template_values = {x:self._TEMPLATE_MAP[x](media) for x in required_template_keys}
         finally:
             self._OWNER_MAP[media['owner']['id']] = media['owner']
@@ -691,11 +547,9 @@ class InstaLooter(object):
     def _join_workers(self, with_pbar=False):
         while any(w.is_alive() for w in self._workers):
             if with_pbar and hasattr(self, '_pbar'):
-                with self.dl_count_lock:
-                    self._pbar.update(self.dl_count)
-        if with_pbar and hasattr(self, '_pbar'):
-            with self.dl_count_lock:
                 self._pbar.update(self.dl_count)
+        if with_pbar and hasattr(self, '_pbar'):
+            self._pbar.update(self.dl_count)
 
     def _init_pbar(self, ini_val, max_val, label):
         self._pbar = progressbar.ProgressBar(
@@ -728,23 +582,11 @@ class InstaLooter(object):
         return metadata
 
     @staticmethod
-    def _sidecar_to_media(sidecar, media, index):
-        for key in ("owner", "location"):
-            sidecar.setdefault(key, media[key])
-
-        # try to get a caption if available
-        captions = media['edge_media_to_caption']['edges']
-        try:
-            sidecar['caption'] = captions[index]['node']['text']
-        except IndexError:
-            if captions:
-                sidecar['caption'] = captions[0]['node']['text']
-
-        sidecar['likes'] = media['edge_media_preview_like']
-        sidecar['comments'] = media['edge_media_to_comment']
-        sidecar['display_src'] = sidecar['display_url']
-        sidecar['code'] = sidecar['shortcode']
-        sidecar['date'] = media['taken_at_timestamp']
+    def _sidecar_to_media(sidecar, media):
+        for key in ("owner", "likes", "comments", "caption", "location", "date"):
+            sidecar.setdefault(key, media.get(key))
+        sidecar['display_src'] = sidecar.get('display_url')
+        sidecar['code'] = sidecar.get('shortcode')
         return sidecar
 
     def is_logged_in(self):
@@ -753,5 +595,4 @@ class InstaLooter(object):
         Returns:
             `bool`: if the user is logged in or not
         """
-        return self.session.cookies._cookies.get(
-            "www.instagram.com", {"/":{}})["/"].get("sessionid") is not None
+        return self.csrftoken is not None

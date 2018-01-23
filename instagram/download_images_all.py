@@ -11,9 +11,11 @@ import hues
 import time
 from core import InstaLooter
 import requests.packages.urllib3
+import datetime
+
 requests.packages.urllib3.disable_warnings()
 
-directory = '/home/Imatge/hd/datasets/instaFashion/img/'
+directory = '/home/raulgomez/datasets/test/img/'
 # directory = '/home/raulgomez/datasets/instaFashion/img/'
 get_videos = False
 first = True
@@ -22,8 +24,15 @@ password1 = password ='Gata20'
 login2 = 'bruballa_gomez'
 password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
+# timeframe: Download images between these dates
+start_date = datetime.date.today()
+start_day = 1
+end_day = 21
+start_date = start_date.replace(day=start_day)
+end_date = start_date.replace(day=end_day)
+timeframe = (start_date,end_date)
 
-queries = open('queries_fashion.txt')
+queries = open('queries_test.txt')
 jobs = 16
 num_2_query_first = 50000 #2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 50000 #50000 #Num of images to build the looter affter (will download new updated images)
@@ -80,7 +89,7 @@ while True:
                 continue
 
             try:
-                looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
+                looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False, timeframe=timeframe)
             except:
                 print "Error while downloading, continuing ... "
 
