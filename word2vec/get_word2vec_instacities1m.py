@@ -18,15 +18,15 @@ import multiprocessing
 text_data_path = '../../../datasets/SocialMedia/captions_resized_1M/cities_instagram/'
 model_path = '../../../datasets/SocialMedia/models/word2vec/word2vec_model_InstaCities1M.model'
 tfidf_weighted = True
-tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_InstaCities1M.model'
+tfidf_model_path = '../../../datasets/SocialMedia/models/tfidf/tfidf_model_instaCities1M.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
 
 # Create output files
 dir = "word2vec_mean_gt"
 if tfidf_weighted: dir = "word2vec_tfidf_weighted_gt"
-gt_path_train = '../../../datasets/SocialMedia/' + dir + '/train_InstaCities1M_divbymax.txt'
-gt_path_val = '../../../datasets/SocialMedia/' + dir + '/val_InstaCities1M_divbymax.txt'
-gt_path_test = '../../../datasets/SocialMedia/' + dir + '/test_InstaCities1M_divbymax.txt'
+gt_path_train = '../../../datasets/SocialMedia/' + dir + '/train_InstaCities1M_unitnormed.txt'
+gt_path_val = '../../../datasets/SocialMedia/' + dir + '/val_InstaCities1M_unitnormed.txt'
+gt_path_test = '../../../datasets/SocialMedia/' + dir + '/test_InstaCities1M_unitnormed.txt'
 train_file = open(gt_path_train, "w")
 val_file = open(gt_path_val, "w")
 test_file = open(gt_path_test, "w")
@@ -105,11 +105,20 @@ def infer_LDA(file_name):
                 word_embedding = model[tfidf_dictionary[tok[0]]]
                 embedding += word_embedding * tok[1]
 
-        embedding = embedding - min(embedding)
+        if min(embedding) < 0:
+            embedding = embedding - min(embedding)
+
+        # L1 normalized
         # if sum(embedding) > 0:
         #     embedding = embedding / sum(embedding)
-        if max(embedding) > 0:
-            embedding = embedding / max(embedding)
+
+        # L2 normalized
+        if sum(embedding) > 0:
+            embedding = embedding / np.linalg.norm(embedding)
+
+        # Div by max
+        # if max(embedding) > 0:
+        #     embedding = embedding / max(embedding)
 
         # Add zeros to topics without score
         out_string = ''

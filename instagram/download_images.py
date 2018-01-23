@@ -29,7 +29,7 @@ num_2_query_first = 2500000 #Num of images to build the looter the first time (w
 num_2_query_next = 50000 #Num of images to build the looter affter (will download new updated images)
 num_2_download = 5000000 #Num of images we want to end up having
 
-sleep_seconds = 60*300
+sleep_seconds = 60*30
 
 
 num_2_query = num_2_query_first

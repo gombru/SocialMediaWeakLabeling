@@ -18,7 +18,7 @@ for id in data:
 
 
 #Model name
-model = 'SocialMedia_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_150000'
+model = 'triplet_softNegativeBatch_m10_sigmoid_frozen_glove_tfidf_SM_iter_500000'
 
 #Output file
 output_file_dir = '../../../datasets/COCO/regression_output/' + model

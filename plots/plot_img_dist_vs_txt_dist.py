@@ -2,14 +2,25 @@ import numpy as np
 import random
 import matplotlib.pyplot as plt
 import glob
-embedding = 'SocialMedia_Inception_frozen_word2vec_tfidfweighted_divbymax_iter_150000'
+import scipy
+from scipy import stats
+
+embedding = 'instagram_cities_1M_Inception_frozen_200_20passes_iter_460000'
 data_file = '../../../datasets/MIRFLICKR25K/both_embeddings/'+ embedding + '/data.txt'
 filtered_topics = '../../../datasets/MIRFLICKR25K/filtered_topics/'
 gradient_colors = ['#ff0000','#ff8000','#ffbf00','#ffff00','#00ff00']
 
+def rsquared(x, y):
+    """ Return R^2 where x and y are array-like."""
+    slope, intercept, r_value, p_value, std_err = stats.linregress(x, y)
+    return r_value**2
+
+def get_r2_numpy_corrcoef(x, y):
+    return np.corrcoef(x, y)[0, 1]**2
+
 num_topics = 400
 
-num_pairs = 20000
+num_pairs = 200000
 
 # Read data
 img_embeddings = {}
@@ -85,15 +96,22 @@ print "Img embeddigns: Max distance: " + str(max(img_distances)) + " Min distanc
 print "Txt embeddigns: Max distance: " + str(max(txt_distances)) + " Min distance: " + str(min(txt_distances))
 
 # colors_works = np.random.rand(num_pairs)
+plt.figure(figsize=(5,5))
 print len(colors)
 print colors[0]
 print len(txt_distances)
 plt.scatter(txt_distances, img_distances, c=colors, alpha=0.5, s = 1)
+R2 = get_r2_numpy_corrcoef(txt_distances,img_distances)
+print "Coefficient of determination R2: " + str(R2)
+R2 = rsquared(txt_distances,img_distances)
+print "Coefficient of determination R2: " + str(R2)
 # min = min(min(txt_distances),min(img_distances))
 max = max(max(txt_distances),max(img_distances))
 plt.plot((0,1), 'b--')
 plt.xlim(0, max)
 plt.ylim(0, max)
-plt.title("Word2vec" )
+plt.title("Word2Vec" )
+plt.xlabel("txt distance")
+plt.ylabel("img distance")
 plt.show()
 
