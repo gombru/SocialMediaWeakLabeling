@@ -2357,7 +2357,7 @@ layer {
   name: "loss3/classifierCustom"
   type: "InnerProduct"
   bottom: "pool5/7x7_s1"
-  top: "loss3/classifier"
+  top: "loss3/classifierCustom"
   param {
     lr_mult: 1
     decay_mult: 1
