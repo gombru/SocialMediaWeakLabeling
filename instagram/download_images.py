@@ -14,7 +14,7 @@ import requests.packages.urllib3
 import datetime
 requests.packages.urllib3.disable_warnings()
 
-directory = '../../../datasets/instaLikes/img/'
+directory = '../../../datasets/instaEmotions/img/'
 get_videos = False
 first = True
 login1 = login = 'lazarpitas'
@@ -30,8 +30,8 @@ end_date = start_date.replace(day=start_day)
 start_date = start_date.replace(day=end_day)
 timeframe = (start_date,end_date)
 
-cities = ['tarragona','girona','valencia','granada','murcia','lugo','bilbao']
-jobs = 2 #16
+cities = ['amusement','anger','awe','contentment','disgusting','exiting','fear','sadness']
+jobs = 16 #16
 num_2_query_first = 2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 50000 #Num of images to build the looter affter (will download new updated images)
 num_2_download = 5000000 #Num of images we want to end up having
