@@ -17,7 +17,7 @@ import multiprocessing
 
 # Load data and model
 text_data_path = '../../../datasets/WebVision/'
-model_path = '../../../datasets/WebVision/models/fastText/fastText_model_webvision.model'
+model_path = '../../../datasets/WebVision/models/fastText/fastText_model_WebVision.model'
 tfidf_weighted = False
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
 tfidf_dictionary_path = '../../../datasets/SocialMedia/models/tfidf/docs.dict'
