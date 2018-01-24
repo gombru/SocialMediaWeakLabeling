@@ -23,15 +23,16 @@ login2 = 'lazarpitas'
 password2 = 'Gata20'
 new_only = False # Download only images newer than the current images in folder
 # timeframe: Download images between these dates
-start_date = datetime.date.today()
-start_day = 1
-end_day = 21
-end_date = start_date.replace(day=start_day)
-start_date = start_date.replace(day=end_day)
-timeframe = (start_date,end_date)
+# start_date = datetime.date.today()
+# start_day = 1
+# end_day = 21
+# end_date = start_date.replace(day=start_day)
+# start_date = start_date.replace(day=end_day)
+# timeframe = (start_date,end_date)
+timeframe = None
 
 cities = ['amusement','anger','awe','contentment','disgusting','exiting','fear','sadness']
-jobs = 16 #16
+jobs = 2 #16
 num_2_query_first = 2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 50000 #Num of images to build the looter affter (will download new updated images)
 num_2_download = 5000000 #Num of images we want to end up having

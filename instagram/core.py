@@ -318,7 +318,7 @@ class InstaLooter(object):
             warnings.warn('Unexpected exception in JSON transformation: {}'.format(e), stacklevel=1)
             return {}
 
-    def pages(self, media_count=None, with_pbar=False, timeframe= False):
+    def pages(self, media_count=None, with_pbar=False, timeframe= None):
         """An iterator over the shared data of a profile or hashtag.
 
         Create a connection to www.instagram.com and use successive
@@ -335,7 +335,8 @@ class InstaLooter(object):
         """
         url = self._base_url.format(self.target)
         current_page = 0
-        start_time, end_time = get_times(timeframe)
+        if timeframe != None:
+            start_time, end_time = get_times(timeframe)
 
         advances = 0
         while True:
@@ -353,10 +354,11 @@ class InstaLooter(object):
                 warnings.warn("Could not find page of user: {}".format(self.target), stacklevel=1)
                 return
 
-            if start_time <= media_date:
-                url = '{}?max_id={}'.format(self._base_url.format(self.target), media_info['page_info']["end_cursor"])
-                print("Advancing. Date = " + str(media_date) + " -- " + url)
-                continue
+            if timeframe != None:
+                if start_time <= media_date:
+                    url = '{}?max_id={}'.format(self._base_url.format(self.target), media_info['page_info']["end_cursor"])
+                    print("Advancing. Date = " + str(media_date) + " -- " + url)
+                    continue
 
             if media_count is None:
                 media_count = data['entry_data'][self._page_name][0][self._section_name]['media']['count']
