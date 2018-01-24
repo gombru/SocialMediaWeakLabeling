@@ -601,10 +601,15 @@ class InstaLooter(object):
         else:
             return result.group(1)
 
-    def _get_shared_data(self, res):
+    def  _get_shared_data(self, res):
         soup = bs.BeautifulSoup(res.text, PARSER)
         script = soup.find('body').find('script', {'type': 'text/javascript'})
-        return json.loads(self._RX_SHARED_DATA.match(script.text).group(1))
+        a = {}
+        try:
+            a = json.loads(self._RX_SHARED_DATA.match(script.text).group(1))
+        except:
+            print("Error in _get_shared_data, returning empty dict")
+        return a
 
     def _fill_media_queue(self, media_count=None, with_pbar=False, condition=None, timeframe=None, new_only=False):
         medias_queued = 0
