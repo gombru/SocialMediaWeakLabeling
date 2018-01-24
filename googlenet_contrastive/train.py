@@ -17,7 +17,7 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 1 #200
+display_interval = 200 #200
 
 batch_size = 120 #Only used to print here
 
@@ -26,10 +26,10 @@ test_interval = 1000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'triplet_softNegativeBatch_m01_unitnormed_frozen_word2vec_tfidf_SM'
+training_id = 'emotions_triplet_softNegativeBatch_m01'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_triplet_frozen_glove_tfidf_SM.prototxt', 'prototxt/val_triplet_frozen_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_emotions.prototxt', 'prototxt/val_emotions.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
