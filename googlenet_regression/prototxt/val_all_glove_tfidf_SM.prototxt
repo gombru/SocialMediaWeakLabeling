@@ -904,29 +904,7 @@ layer {
   loss_weight: 0.3
 }
 
-layer {
-  name: "loss1/top-1"
-  type: "Accuracy"
-  bottom: "loss1/classifier"
-  bottom: "label"
-  top: "loss1/top-1"
-  include {
-    phase: TEST
-  }
-}
-layer {
-  name: "loss1/top-5"
-  type: "Accuracy"
-  bottom: "loss1/classifier"
-  bottom: "label"
-  top: "loss1/top-5"
-  include {
-    phase: TEST
-  }
-  accuracy_param {
-    top_k: 5
-  }
-}
+
 layer {
   name: "inception_4b/1x1"
   type: "Convolution"
@@ -1671,29 +1649,6 @@ layer {
 }
 
 
-layer {
-  name: "loss2/top-1"
-  type: "Accuracy"
-  bottom: "loss2/classifier"
-  bottom: "label"
-  top: "loss2/top-1"
-  include {
-    phase: TEST
-  }
-}
-layer {
-  name: "loss2/top-5"
-  type: "Accuracy"
-  bottom: "loss2/classifier"
-  bottom: "label"
-  top: "loss2/top-5"
-  include {
-    phase: TEST
-  }
-  accuracy_param {
-    top_k: 5
-  }
-}
 layer {
   name: "inception_4e/1x1"
   type: "Convolution"
