@@ -2353,7 +2353,7 @@ layer {
   }
 }
 layer {
-  name: "loss3/classifier"
+  name: "loss3/classifierCustom"
   type: "InnerProduct"
   bottom: "pool5/7x7_s1"
   top: "loss3/classifier"
