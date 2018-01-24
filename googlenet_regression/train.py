@@ -9,7 +9,7 @@ from pylab import *
 import os
 
 
-caffe.set_device(0)
+caffe.set_device(1)
 caffe.set_mode_gpu()
 
 weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
@@ -24,10 +24,10 @@ test_interval = 1000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'SocialMedia_Inception_frozen_fastText_mean'
+training_id = 'WebVision_Inception_frozen_fastText_mean'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_fastText_mean_SM.prototxt', 'prototxt/val_frozen_fastText_mean_SM.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_frozen_fastText_mean_WV.prototxt', 'prototxt/val_frozen_fastText_mean_WV.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

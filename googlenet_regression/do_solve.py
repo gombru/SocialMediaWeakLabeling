@@ -74,7 +74,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
             plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../datasets/SocialMedia/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
+            title = '../../../datasets/WebVision/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 
