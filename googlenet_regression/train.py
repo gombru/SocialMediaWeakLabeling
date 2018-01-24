@@ -9,30 +9,30 @@ from pylab import *
 import os
 
 
-caffe.set_device(1)
+caffe.set_device(3)
 caffe.set_mode_gpu()
 
-weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
-assert os.path.exists(weights)
+# weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
+# assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
 display_interval = 200 #200
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 1000 #1000
+test_interval = 10000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'WebVision_Inception_frozen_fastText_mean'
+training_id = 'SocialMedia_Inception_all_glove_tfidf_fromScratch'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_frozen_fastText_mean_WV.prototxt', 'prototxt/val_frozen_fastText_mean_WV.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_all_glove_tfidf_SM.prototxt', 'prototxt/val_all_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
 #Copy init weights
-solver.net.copy_from(weights)
+# solver.net.copy_from(weights)
 
 #Restore solverstate
 #solver.restore('../../../datasets/SocialMedia/models/CNNRegression/instagram_cities_1M_Inception_frozen_500_chunck_iter_280000.solverstate')
