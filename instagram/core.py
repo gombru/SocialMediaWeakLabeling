@@ -346,7 +346,8 @@ class InstaLooter(object):
 
                 if self._section_name == 'tag':
                     data = self._transform_hashtag_page(data)
-                    media_date = datetime.date.fromtimestamp(data['entry_data']['TagPage'][0]['tag']['media']['nodes'][0]['date'])
+                    if timeframe != None:
+                        media_date = datetime.date.fromtimestamp(data['entry_data']['TagPage'][0]['tag']['media']['nodes'][0]['date'])
 
             try:
                 media_info = data['entry_data'][self._page_name][0][self._section_name]['media']
