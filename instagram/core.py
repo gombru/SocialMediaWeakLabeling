@@ -78,7 +78,7 @@ class InstaLooter(object):
     def __init__(self, directory=None, profile=None, hashtag=None,
                 add_metadata=False, get_videos=False, videos_only=False,
                 jobs=16, template="{id}", url_generator=default,
-                dump_json=False, dump_only=False, extended_dump=False, timeframe=None):
+                dump_json=False, dump_only=False, extended_dump=False):
         """Create a new looter instance.
 
         Keyword Arguments:
@@ -318,7 +318,7 @@ class InstaLooter(object):
             warnings.warn('Unexpected exception in JSON transformation: {}'.format(e), stacklevel=1)
             return {}
 
-    def pages(self, media_count=None, with_pbar=False, timeframe= None):
+    def pages(self, media_count=None, with_pbar=False):
         """An iterator over the shared data of a profile or hashtag.
 
         Create a connection to www.instagram.com and use successive
@@ -335,31 +335,19 @@ class InstaLooter(object):
         """
         url = self._base_url.format(self.target)
         current_page = 0
-        if timeframe != None:
-            start_time, end_time = get_times(timeframe)
-
-        advances = 0
         while True:
-
+            current_page += 1
             with self.session.get(url) as res:
                 data = self._get_shared_data(res)
 
                 if self._section_name == 'tag':
                     data = self._transform_hashtag_page(data)
-                    if timeframe != None:
-                        media_date = datetime.date.fromtimestamp(data['entry_data']['TagPage'][0]['tag']['media']['nodes'][0]['date'])
 
             try:
                 media_info = data['entry_data'][self._page_name][0][self._section_name]['media']
             except KeyError:
                 warnings.warn("Could not find page of user: {}".format(self.target), stacklevel=1)
                 return
-
-            if timeframe != None:
-                if start_time <= media_date:
-                    url = '{}?max_id={}'.format(self._base_url.format(self.target), media_info['page_info']["end_cursor"])
-                    print("Advancing. Date = " + str(media_date) + " -- " + url)
-                    continue
 
             if media_count is None:
                 media_count = data['entry_data'][self._page_name][0][self._section_name]['media']['count']
@@ -427,7 +415,7 @@ class InstaLooter(object):
     def _timed_medias(self, media_count=None, with_pbar=False, timeframe=None):
         seen = set()
         start_time, end_time = get_times(timeframe)
-        for page in self.pages(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
+        for page in self.pages(media_count=media_count, with_pbar=with_pbar):
             for media in page['entry_data'][self._page_name][0][self._section_name]['media']['nodes']:
                 media_date = datetime.date.fromtimestamp(media['date'])
                 if start_time >= media_date >= end_time:
@@ -602,67 +590,47 @@ class InstaLooter(object):
         else:
             return result.group(1)
 
-    def  _get_shared_data(self, res):
+    def _get_shared_data(self, res):
         soup = bs.BeautifulSoup(res.text, PARSER)
         script = soup.find('body').find('script', {'type': 'text/javascript'})
-        a = {}
-        try:
-            a = json.loads(self._RX_SHARED_DATA.match(script.text).group(1))
-        except:
-            print("Error in _get_shared_data, returning empty dict")
-        return a
+        return json.loads(self._RX_SHARED_DATA.match(script.text).group(1))
 
     def _fill_media_queue(self, media_count=None, with_pbar=False, condition=None, timeframe=None, new_only=False):
         medias_queued = 0
-        medias_refused = 0
         condition = condition or (lambda media: self.get_videos or not media['is_video'])
-        print 'Downloading images...'
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
-            medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, medias_refused, new_only)
-            # print " + Queued: " + str(medias_queued)
-            # print " - Refused: " + str(medias_refused)
-            if medias_refused > 1000:
-                stop = True
-                print "Medias refused limit (1000) reached. It seems all images have been downloaded for this city. Or maybe images already existed in the folder. Check that."
+            medias_queued, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
             if stop:
-                print "Stopping"
                 break
-        print 'Num of media downloaded: ' + str(medias_queued)
         return medias_queued
 
-    def _add_media_to_queue(self, media, condition, media_count, medias_queued, medias_refused, new_only):
-
+    def _add_media_to_queue(self, media, condition, media_count, medias_queued, new_only):
         if media.get('__typename') == "GraphSidecar":
             return self._add_sidecars_to_queue(
                 media, condition, media_count, medias_queued, new_only)
         elif condition(media):
+            if self.extended_dump:
+                media = self.get_post_info(media.get('shortcode') or media['code'])
             media_basename = self._make_filename(media)
             if not os.path.exists(os.path.join(self.directory, media_basename)):
                 medias_queued += 1
                 self._medias_queue.put(media)
-
             # stop here if the file already exists and we want only new files
             elif new_only:
                 return medias_queued, True
             # stop here if we have as many files queued as wanted
             if media_count is not None and medias_queued >= media_count:
                 return medias_queued, True
-
-            if os.path.exists(os.path.join(self.directory, media_basename)):
-                medias_refused += 1
-
-        return medias_queued, medias_refused, False
+        return medias_queued, False
 
     def _add_sidecars_to_queue(self, media, condition, media_count, medias_queued, new_only):
-        media = self.get_post_info(media['code'])
-        for sidecar in media['edge_sidecar_to_children']['edges']:
-            sidecar = self._sidecar_to_media(sidecar['node'], media)
+        media = self.get_post_info(media.get('shortcode') or media['code'])
+        for index, sidecar in enumerate(media['edge_sidecar_to_children']['edges']):
+            sidecar = self._sidecar_to_media(sidecar['node'], media, index)
             medias_queued, stop = self._add_media_to_queue(
                 sidecar, condition, media_count, medias_queued, new_only)
             if stop:
                 break
-        print "looter ended"
-        print "medias_queued: " + str(medias_queued)
         return medias_queued, stop
 
     def _make_filename(self, media):

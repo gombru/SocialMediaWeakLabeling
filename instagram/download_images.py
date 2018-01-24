@@ -70,7 +70,7 @@ while True:
             continue
 
         looter = InstaLooter(directory=city_dir, hashtag=query,
-            add_metadata=False, get_videos=get_videos, jobs=jobs, timeframe=timeframe)
+            add_metadata=False, get_videos=get_videos, jobs=jobs)
 
         try:
             looter.login(login, password)
@@ -88,6 +88,6 @@ while True:
             continue
 
         # try:
-        looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False, timeframe=timeframe)
+        looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
         # except:
         #     print "Error while downloading, continuing ... "
