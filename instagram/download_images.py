@@ -13,7 +13,7 @@ import requests.packages.urllib3
 import datetime
 requests.packages.urllib3.disable_warnings()
 
-directory = '../../../datasets/instaEmotions/img/'
+directory = '../../../hd/datasets/instaEmotions/img/'
 get_videos = False
 first = True
 login1 = login = 'lazarpitas'
