@@ -9,14 +9,14 @@ caffe.set_device(0)
 caffe.set_mode_gpu()
 
 # test = np.loadtxt('../../../datasets/Wikipedia/testset_txt_img_cat.list', dtype=str)
-with open('../../../datasets/MIRFLICKR25K/test_half.txt') as f:
-# with open('../../../datasets/MIRFLICKR25K/retrieval_list.txt') as f:
+# with open('../../../datasets/MIRFLICKR25K/test_half.txt') as f:
+with open('../../../datasets/MIRFLICKR25K/retrieval_list.txt') as f:
 #with open('../../../datasets/PascalVOC2007/labels.txt') as f:
     test = f.readlines()
 
 
 #Model name
-model = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
+model = 'SocialMedia_Inception_onlyFC_glove_tfidf_fromScratch_iter_2000'
 
 #Output file
 output_file_dir = '../../../datasets/MIRFLICKR25K/regression_output/' + model
