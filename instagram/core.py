@@ -599,12 +599,20 @@ class InstaLooter(object):
         medias_queued = 0
         condition = condition or (lambda media: self.get_videos or not media['is_video'])
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
-            medias_queued, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
+            medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
+
+            if medias_refused > 1000:
+                stop = True
+                print "Medias refused limit (1000) reached. It seems all images have been downloaded for this tag. Or maybe images already existed in the folder. Check that."
             if stop:
+                print "Stopping"
                 break
+
+        print 'Num of media downloaded: ' + str(medias_queued)
+
         return medias_queued
 
-    def _add_media_to_queue(self, media, condition, media_count, medias_queued, new_only):
+    def _add_media_to_queue(self, media, condition, media_count, medias_queued, medias_refused, new_only):
         if media.get('__typename') == "GraphSidecar":
             return self._add_sidecars_to_queue(
                 media, condition, media_count, medias_queued, new_only)
@@ -621,7 +629,11 @@ class InstaLooter(object):
             # stop here if we have as many files queued as wanted
             if media_count is not None and medias_queued >= media_count:
                 return medias_queued, True
-        return medias_queued, False
+
+            if os.path.exists(os.path.join(self.directory, media_basename)):
+                medias_refused += 1
+
+        return medias_queued, medias_refused, False
 
     def _add_sidecars_to_queue(self, media, condition, media_count, medias_queued, new_only):
         media = self.get_post_info(media.get('shortcode') or media['code'])

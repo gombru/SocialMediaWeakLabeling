@@ -5,7 +5,6 @@
 # It fires 4 ever every X minutes, so new uploaded images have been uploaded and can be dowloaded as the first results.
 # Tried to do a controled navigation of page results, but did not work, still repeated results.
 
-
 import os
 import hues
 import time
@@ -76,7 +75,7 @@ while True:
             looter.login(login, password)
             hues.success('Logged in.')
         except:
-            print "Error while loggining"
+            print "Error while logging in"
             if login == login1:
                 login = login2
                 password = password2
