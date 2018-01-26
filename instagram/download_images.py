@@ -13,7 +13,7 @@ import requests.packages.urllib3
 import datetime
 requests.packages.urllib3.disable_warnings()
 
-directory = '../../../hd/datasets/instaEmotions/img/'
+directory = '../../../datasets/instaEmotions/img/'
 get_videos = False
 first = True
 login1 = login = 'lazarpitas'
@@ -86,7 +86,7 @@ while True:
             time.sleep(60)
             continue
 
-        try:
-            looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
-        except:
-            print "Error while downloading, continuing ... "
+        # try:
+        looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)
+        # except:
+        #     print "Error while downloading, continuing ... "

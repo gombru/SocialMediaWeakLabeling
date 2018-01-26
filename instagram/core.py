@@ -597,9 +597,10 @@ class InstaLooter(object):
 
     def _fill_media_queue(self, media_count=None, with_pbar=False, condition=None, timeframe=None, new_only=False):
         medias_queued = 0
+        medias_refused = 0
         condition = condition or (lambda media: self.get_videos or not media['is_video'])
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
-            medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, new_only)
+            medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, medias_refused, new_only)
 
             if medias_refused > 1000:
                 stop = True
