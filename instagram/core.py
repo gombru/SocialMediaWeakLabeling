@@ -602,9 +602,9 @@ class InstaLooter(object):
         for media in self.medias(media_count=media_count, with_pbar=with_pbar, timeframe=timeframe):
             medias_queued, medias_refused, stop = self._add_media_to_queue(media, condition, media_count, medias_queued, medias_refused, new_only)
 
-            if medias_refused > 1000:
+            if medias_refused > 1001:
                 stop = True
-                print "Medias refused limit (1000) reached. It seems all images have been downloaded for this tag. Or maybe images already existed in the folder. Check that."
+                print "Medias refused limit (1001) reached. It seems all images have been downloaded for this tag. Or maybe images already existed in the folder. Check that."
             if stop:
                 print "Stopping"
                 break
