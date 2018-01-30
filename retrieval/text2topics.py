@@ -204,7 +204,7 @@ def glove(text, word_weights, model, num_topics):
     return embedding
 
 
-def glove_tfidf(text,  model, num_topics):
+def glove_tfidf(text, model, num_topics):
 
     filtered_text = ''
     # Replace hashtags with spaces

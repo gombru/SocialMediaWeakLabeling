@@ -27,7 +27,7 @@ def load_regressions_from_txt(path, num_topics):
     return database
 
 
-data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
+data = 'SocialMedia_Inception_onlyFC_glove_tfidf_fromScratch_iter_2000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
@@ -45,6 +45,7 @@ if embedding == 'LDA': model = models.ldamodel.LdaModel.load(model_path)
 elif embedding == 'word2vec_mean' or embedding == 'word2vec_tfidf': model = models.Word2Vec.load(model_path)
 elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 elif embedding == 'glove' or embedding == 'glove_tfidf': model = glove.Glove.load(model_path)
+elif embedding == 'fasttext_mean' or embedding == 'fasttext_tfidf': model = models.FastText.load(model_path)
 
 #-----------> if tfidf
 tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
@@ -59,11 +60,11 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 # tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # FC text layers
-FC = False
-if FC:
-    model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
-    prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
-    text_NN = get_NN_txt_embedding.load_net(model_path,prototxt)
+# FC = False
+# if FC:
+#     model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
+#     prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
+#     text_NN = get_NN_txt_embedding.load_net(model_path,prototxt)
 
 
 
@@ -82,7 +83,7 @@ for id in database:
 
 img_topics = {}
 # Load topics of all images
-for file_name in glob.glob("/home/Imatge/hd/datasets/MIRFLICKR25K/filtered_topics/*.txt"):
+for file_name in glob.glob("../../../datasets/MIRFLICKR25K/filtered_topics/*.txt"):
     file = open(file_name, "r")
     lines = []
     for line in file:
@@ -128,11 +129,11 @@ for q in queries_indices:
                 used_words += 1
         topics = topics / used_words
 
-    elif embedding == 'word2vec_mean':
+    elif embedding == 'word2vec_mean' or embedding == 'fasttext_mean':
         word_weights = 0
         topics = text2topics.word2vec_mean(text_query, word_weights, model, num_topics)
 
-    elif embedding == 'word2vec_tfidf':
+    elif embedding == 'word2vec_tfidf' or embedding == 'fasttext_tfidf':
         topics = text2topics.word2vec_tfidf(text_query, model, num_topics, tfidf_model, tfidf_dictionary)
         # topics = topics + w_topics
         # topics = topics / len(words)
@@ -157,11 +158,11 @@ for q in queries_indices:
     distances = {}
 
 
-    if FC:
-        topics = topics - min(topics)
-        if max(topics) > 0:
-            topics = topics / max(topics)
-        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
+    # if FC:
+    #     topics = topics - min(topics)
+    #     if max(topics) > 0:
+    #         topics = topics / max(topics)
+    #     topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
 
 
     topics = topics - min(topics)

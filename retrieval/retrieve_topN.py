@@ -25,7 +25,7 @@ tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
 model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
-embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf'
+embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf' 'fasttext' 'fasttext_tfidf'
 test_dataset = 'instacities1m' #'instacities1m' #webvision
 
 # Load LDA model
@@ -34,6 +34,8 @@ if embedding == 'LDA': model = models.ldamodel.LdaModel.load(model_path)
 elif embedding == 'word2vec_mean' or embedding == 'word2vec_tfidf': model = models.Word2Vec.load(model_path)
 elif embedding == 'doc2vec': model = models.Doc2Vec.load(model_path)
 elif embedding == 'glove' or embedding == 'glove_tfidf': model = glove.Glove.load(model_path)
+elif embedding == 'fasttext_mean' or embedding == 'fasttext_tfidf': model = models.FastText.load(model_path)
+
 
 # FC text layers
 FC = False
@@ -87,10 +89,10 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
             topics = topics + w_topics
         topics = topics / len(words)
 
-    elif embedding == 'word2vec_mean':
+    elif embedding == 'word2vec_mean' or embedding == 'fasttext_mean':
         topics = text2topics.word2vec_mean(text, word_weights, model, num_topics)
 
-    elif embedding == 'word2vec_tfidf':
+    elif embedding == 'word2vec_tfidf' or embedding == 'fasttext_tfidf':
         topics = text2topics.word2vec_tfidf(text, model, num_topics, tfidf_model, tfidf_dictionary)
 
     elif embedding == 'doc2vec':
@@ -200,9 +202,9 @@ for e,cur_q in enumerate(q):
     if len(cur_q.split(' ')) == 1:
 
         if embedding == 'LDA': topics = text2topics.LDA(cur_q,  model, num_topics)
-        elif embedding == 'word2vec_mean': topics = text2topics.word2vec_mean(cur_q, cur_w, model, num_topics)
+        elif embedding == 'word2vec_mean' or embedding == 'fasttext_mean': topics = text2topics.word2vec_mean(cur_q, cur_w, model, num_topics)
         elif embedding == 'doc2vec': topics = text2topics.doc2vec(cur_q, model, num_topics)
-        elif embedding == 'word2vec_tfidf': topics = text2topics.word2vec_tfidf(cur_q, model, num_topics, tfidf_model, tfidf_dictionary)
+        elif embedding == 'word2vec_tfidf' or embedding == 'fasttext_tfidf': topics = text2topics.word2vec_tfidf(cur_q, model, num_topics, tfidf_model, tfidf_dictionary)
         elif embedding == 'glove': topics = text2topics.glove(cur_q, cur_w, model, num_topics)
         elif embedding == 'glove_tfidf': topics = text2topics.glove_tfidf(cur_q, model, num_topics)
 
