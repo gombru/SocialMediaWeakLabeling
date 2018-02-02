@@ -13,7 +13,7 @@ import requests.packages.urllib3
 import datetime
 requests.packages.urllib3.disable_warnings()
 
-directory = '../../../hd/datasets/instaEmotions2/img/'
+directory = '../../../hd/datasets/instaEmotions/img/'
 get_videos = False
 first = True
 login1 = login = 'lazarpitas'
@@ -30,7 +30,7 @@ new_only = False # Download only images newer than the current images in folder
 # timeframe = (start_date,end_date)
 timeframe = None
 
-cities = ['amusement','anger','awe','contentment','disgusting','exiting','fear','sadness']
+cities = ['amusement','anger','awe','contentment','disgusting','exciting','fear','sadness','fun','diversion','angry','wrath','rage','admiration','apprehension','astonishment','shock','complacency','pleasure','abominable','awful','distasteful','hateful','breathtaking','stimulating','thrilling','scare','scary','terror','anguish','grief','melancholy','dolor']
 jobs = 32 #16
 num_2_query_first = 2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 50000 #Num of images to build the looter affter (will download new updated images)
