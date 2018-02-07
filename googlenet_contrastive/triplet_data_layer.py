@@ -175,7 +175,10 @@ class tripletDataLayer(caffe.Layer):
         self.label_negative = np.zeros((self.batch_size, self.num_classes))
 
         for x in range(0, self.batch_size):
-            self.data[x,] = self.load_image(self.indices[self.idx[x]])
+            try:
+                self.data[x,] = self.load_image(self.indices[self.idx[x]])
+            except:
+                print("Image could not be loaded. Using 0s")
             self.label[x,] = self.labels[self.idx[x],]
             # self.label_negative[x,] = self.labels[self.indices_negative[self.idx[x]],]
 
@@ -255,6 +258,8 @@ class tripletDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
         elif self.dir == '../../../ssd2/InstaBarcelona':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
+        elif self.dir == '../../../hd/datasets/EmotionDataset':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img', idx))
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
 
@@ -303,6 +308,9 @@ class tripletDataLayer(caffe.Layer):
         # Crops a random region of the image that will be used for training. Margin won't be included in crop.
         width, height = im.size
         margin = self.crop_margin
+        if width or height < self.crop_h:
+            im = im.resize((self.crop_h+1, self.crop_h+1), Image.ANTIALIAS)
+            width, height = im.size
         left = random.randint(margin, width - self.crop_w - 1 - margin)
         top = random.randint(margin, height - self.crop_h - 1 - margin)
         im = im.crop((left, top, left + self.crop_w, top + self.crop_h))

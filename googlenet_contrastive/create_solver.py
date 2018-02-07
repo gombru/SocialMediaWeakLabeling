@@ -49,8 +49,8 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
 
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
-    s.snapshot = 20000
-    s.snapshot_prefix = '../../../datasets/SocialMedia/models/CNNContrastive/'+ training_id
+    s.snapshot = 2000
+    s.snapshot_prefix = '../../../datasets/EmotionDataset/models/CNNContrastive/'+ training_id
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU
