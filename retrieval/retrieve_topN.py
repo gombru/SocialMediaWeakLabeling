@@ -11,7 +11,7 @@ import gensim
 import glove
 
 
-data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
+data = 'SocialMedia_Inception_all_glove_tfidf_fromWebVision_iter_600000'
 model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
