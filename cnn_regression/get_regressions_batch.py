@@ -8,22 +8,22 @@ import os
 caffe.set_device(0)
 caffe.set_mode_gpu()
 
-test = np.loadtxt('../../../datasets/instaFashion/word2vec_tfidf_weighted_gt/test_instaFashion_divbymax.txt', dtype=str)
-# test = np.loadtxt('../../../datasets/SocialMedia/glove_tfidf_weighted_gt/test_InstaCities1M_divbymax.txt', dtype=str)
+# test = np.loadtxt('../../../datasets/instaFashion/word2vec_tfidf_weighted_gt/test_instaFashion_divbymax.txt', dtype=str)
+test = np.loadtxt('../../../datasets/SocialMedia/glove_tfidf_weighted_gt/test_InstaCities1M_divbymax.txt', dtype=str)
 # test = np.loadtxt('../../../datasets/WebVision/info/test_filelist.txt', dtype=str)
 
 #Model name
-model = 'instaFashion_Inception_frozen_word2vec_tfidf_iter_75000'
+model = 'SocialMedia_Inception_all_glove_tfidf_fromWebVision_iter_600000'
 
 #Output file
-output_file_dir = '../../../datasets/instaFashion/regression_output/' + model
+output_file_dir = '../../../datasets/SocialMedia/regression_output/' + model
 if not os.path.exists(output_file_dir):
     os.makedirs(output_file_dir)
 output_file_path = output_file_dir + '/test.txt'
 output_file = open(output_file_path, "w")
 
 # load net
-net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/instaFashion/models/saved/'+ model + '.caffemodel', caffe.TEST)
+net = caffe.Net('../googlenet_regression/prototxt/deploy.prototxt', '../../../datasets/SocialMedia/models/saved/'+ model + '.caffemodel', caffe.TEST)
 
 
 size = 227
@@ -48,7 +48,7 @@ while i < len(test):
 
         # load image
         # filename = '../../../datasets/WebVision/test_images_256/' + test[i]
-        filename = '../../../datasets/instaFashion/img_resized/' + test[i].split(',')[0] + '.jpg'
+        filename = '../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + test[i].split(',')[0] + '.jpg'
         im = Image.open(filename)
         im_o = im
         im = im.resize((size, size), Image.ANTIALIAS)
