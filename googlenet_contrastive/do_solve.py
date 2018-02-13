@@ -95,7 +95,7 @@ def do_solve(niter, solvers, disp_interval, test_interval, test_iters, training_
             plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../hd/datasets/EmotionDataset/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
+            title = '../../../hd/datasets/instaEmotions/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
 

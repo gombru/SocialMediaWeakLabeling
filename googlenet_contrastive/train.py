@@ -26,7 +26,7 @@ test_interval = 1000 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'emotions_contrastive_softNegativeBatch_m01'
+training_id = 'instaEmotions_contrastive_softNegativeBatch_m01'
 
 #Set solver configuration
 solver_filename = create_solver('prototxt/train_emotions.prototxt', 'prototxt/val_emotions.prototxt', training_id, base_lr=base_lr)
