@@ -26,10 +26,10 @@ test_interval = 1600 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'instaBCN_datasetv1_contrastive_softNegativeBatch_m01_'
+training_id = 'SocialMedia_contrastive_perWord_glove_m01'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_instaBCN.prototxt', 'prototxt/val_instaBCN.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_val_SM_peroWord_glove.prototxt', 'prototxt/train_val_SM_peroWord_glove.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
