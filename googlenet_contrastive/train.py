@@ -17,19 +17,19 @@ assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 400 #200
+display_interval = 5 #200
 
-batch_size = 120 #Only used to print here
+batch_size = 10 #Only used to print here
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 1600 #1000
-test_iters = 100 #100
+test_interval = 20 #1000
+test_iters = 2 #100
 
 #Name for training plot and snapshots
-training_id = 'SocialMedia_contrastive_perWord_glove_m01'
+training_id = 'EmotionsDataset_noisy_2head_lstml2norm_m01_l02'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_val_SM_peroWord_glove.prototxt', 'prototxt/train_val_SM_peroWord_glove.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_val_ED_2head.prototxt', 'prototxt/train_val_ED_2head.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
