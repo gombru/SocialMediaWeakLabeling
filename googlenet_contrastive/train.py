@@ -26,10 +26,10 @@ test_interval = 20 #1000
 test_iters = 2 #100
 
 #Name for training plot and snapshots
-training_id = 'EmotionsDataset_noisy_2head_lstml2norm_m01_l02'
+training_id = 'EmotionsDataset_noisy_2head_lstml2norm_m04_l02_correced'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_val_ED_2head.prototxt', 'prototxt/train_val_ED_2head.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/train_val_ED_2head_arch2.prototxt', 'prototxt/train_val_ED_2head_arch2.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

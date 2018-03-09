@@ -153,12 +153,13 @@ class twoHeadTripletDataLayer(caffe.Layer):
         self.label = np.zeros((self.batch_size, 1))
 
         for x in range(0, self.batch_size):
-            # try:
-            # except:
-            #     print("Image could not be loaded. Using 0s")
+
             self.label_regression[x,] = self.regression_labels[self.idx[x],]
             self.label[x,] = int(self.labels[self.idx[x]])
-            self.data[x,] = self.load_image(self.indices[self.idx[x]], self.label[x,])
+            try:
+                self.data[x,] = self.load_image(self.indices[self.idx[x]], self.label[x,])
+            except:
+                print("Image could not be loaded. Using 0s")
 
         # SOFT NEGATIVE SELECTION
         # Select a random element from the half that have more w2v distance than the mean w2v distance in the batch.
@@ -179,6 +180,7 @@ class twoHeadTripletDataLayer(caffe.Layer):
         top[1].data[...] = self.label_regression
         top[2].data[...] = self.label_regression_negative
         top[3].data[...] = self.label
+        print self.label
 
         self.idx = np.arange(self.batch_size)
 
@@ -217,7 +219,7 @@ class twoHeadTripletDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
         elif self.dir == '../../../ssd2/InstaBarcelona':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
-        elif self.dir == '../../../datasets/EmotionDataset':
+        elif self.dir == '../../../datasets/EmotionDataset' or self.dir == '../../../hd/datasets/EmotionDataset':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img/' + str(self.emotions[int(label)]), idx + '.jpg'))
         elif self.dir == '../../../hd/datasets/instaEmotions':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized', idx + '.jpg'))

@@ -11,7 +11,7 @@ import cv2
 import random
 
 
-class customDataLayer(caffe.Layer):
+class emotionsDataLayerCrossEntropy(caffe.Layer):
     """
     Load (input image, label image) pairs from the SBDD extended labeling
     of PASCAL VOC for semantic segmentation
@@ -66,13 +66,15 @@ class customDataLayer(caffe.Layer):
         self.scaling_prob = params['scaling_prob']
         self.scaling_factor = params['scaling_factor']
 
+        self.emotions = ['amusement', 'anger', 'awe', 'contentment', 'disgust', 'excitement', 'fear', 'sadness']
+
         self.num_classes = params['num_classes']
 
         print "Initialiting data layer"
 
-        # two tops: data and label
-        if len(top) != 2:
-            raise Exception("Need to define two tops: data and label.")
+        # three tops: data and label_p, label_n
+        if len(top) != 3:
+            raise Exception("Need to define 3 tops: data, regression label and label.")
         # data layers have no bottoms
         if len(bottom) != 0:
             raise Exception("Do not define a bottom.")
@@ -81,34 +83,37 @@ class customDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        # num_lines = 1001
+        #num_lines = 2001
 
         self.indices = np.empty([num_lines], dtype="S50")
-        self.labels = np.zeros((num_lines, self.num_classes))
+        self.regression_labels = np.zeros((num_lines, self.num_classes))
+        self.labels = np.zeros((num_lines,1))
 
-        # Webvision has class id so 2 offset
-        if self.dir == '../../../datasets/WebVision':
-            offset = 2
-            print("Using offset 2 (WebVision dataset)")
-        else:
-            offset = 1
 
-        print "Offset: " + str(offset)
 
+        offset = 2
         print "Reading labels file: " + '{}/{}.txt'.format(self.dir, self.split)
+        incorrect_lables = 0
         with open(split_f, 'r') as annsfile:
             for c, i in enumerate(annsfile):
                 data = i.split(',')
                 # Load path
                 self.indices[c] = data[0]
+                self.labels[c] = int(data[1])
                 # Load regression labels
                 for l in range(0, self.num_classes):
-                    self.labels[c, l] = float(data[l + offset])
+                    self.regression_labels[c, l] = float(data[l + offset])
+                if sum(self.regression_labels[c, :]) == 0:
+                    # print "0's label found, skipping (repeating previous entry)"
+                    incorrect_lables += 1
+                    self.indices[c] = self.indices[c-1]
+                    self.regression_labels[c,:] = self.regression_labels[c-1,:]
 
-                if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                # if c == 1000:
-                #     print "Stopping at 10000 labels"
-                #     break
+
+                if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines) + "  --  0s labels: " + str(incorrect_lables)
+                # if c == 2000:
+                #      print "Stopping at 3000 labels"
+                #      break
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
@@ -117,15 +122,18 @@ class customDataLayer(caffe.Layer):
         #     self.random = False
 
         self.idx = np.arange(self.batch_size)
+
         # randomization: seed and pick
         if self.random:
             print "Randomizing image order"
             random.seed(self.seed)
             for x in range(0, self.batch_size):
                 self.idx[x] = random.randint(0, len(self.indices) - 1)
+
         else:
             for x in range(0, self.batch_size):
                 self.idx[x] = x
+
 
         # reshape tops to fit
         # === reshape tops ===
@@ -133,19 +141,30 @@ class customDataLayer(caffe.Layer):
         # once. Else, we'd have to do it in the reshape call.
         top[0].reshape(self.batch_size, 3, params['crop_w'], params['crop_h'])
         top[1].reshape(self.batch_size, self.num_classes)
+        top[2].reshape(self.batch_size, 1)
+
 
     def reshape(self, bottom, top):
         # load image + label image pair
         self.data = np.zeros((self.batch_size, 3, self.crop_w, self.crop_h))
-        self.label = np.zeros((self.batch_size, self.num_classes))
+        self.label_regression = np.zeros((self.batch_size, self.num_classes))
+        self.label = np.zeros((self.batch_size, 1))
+
         for x in range(0, self.batch_size):
-            self.data[x,] = self.load_image(self.indices[self.idx[x]])
-            self.label[x,] = self.labels[self.idx[x],]
+
+            self.label_regression[x,] = self.regression_labels[self.idx[x],]
+            self.label[x,] = int(self.labels[self.idx[x]])
+            try:
+                self.data[x,] = self.load_image(self.indices[self.idx[x]], self.label[x,])
+            except:
+                print("Image could not be loaded. Using 0s")
 
     def forward(self, bottom, top):
         # assign output
         top[0].data[...] = self.data
-        top[1].data[...] = self.label
+        top[1].data[...] = self.label_regression
+        top[2].data[...] = self.label
+        print self.label
 
         self.idx = np.arange(self.batch_size)
 
@@ -165,7 +184,7 @@ class customDataLayer(caffe.Layer):
     def backward(self, top, propagate_down, bottom):
         pass
 
-    def load_image(self, idx):
+    def load_image(self, idx, label):
         """
         Load input image and preprocess for Caffe:
         - cast to float
@@ -182,10 +201,12 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'images', idx + '.jpg'))
         elif self.dir == '../../../datasets/MIRFLICKR25K':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
-        elif self.dir == '../../../hd/datasets/instaBarcelona':
+        elif self.dir == '../../../ssd2/InstaBarcelona':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
-        elif self.dir == '../../../hd/datasets/instaFashion':
-            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
+        elif self.dir == '../../../datasets/EmotionDataset' or self.dir == '../../../hd/datasets/EmotionDataset':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img/' + str(self.emotions[int(label)]), idx + '.jpg'))
+        elif self.dir == '../../../hd/datasets/instaEmotions':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized', idx + '.jpg'))
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
 
@@ -234,6 +255,9 @@ class customDataLayer(caffe.Layer):
         # Crops a random region of the image that will be used for training. Margin won't be included in crop.
         width, height = im.size
         margin = self.crop_margin
+        if width or height < self.crop_h:
+            im = im.resize((self.crop_h+1, self.crop_h+1), Image.ANTIALIAS)
+            width, height = im.size
         left = random.randint(margin, width - self.crop_w - 1 - margin)
         top = random.randint(margin, height - self.crop_h - 1 - margin)
         im = im.crop((left, top, left + self.crop_w, top + self.crop_h))
