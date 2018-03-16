@@ -19,17 +19,17 @@ niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
 display_interval = 5 #200
 
-batch_size = 10 #Only used to print here
+batch_size = 120 #Only used to print here
 
 #number of validating images  is  test_iters * batchSize
 test_interval = 20 #1000
 test_iters = 2 #100
 
 #Name for training plot and snapshots
-training_id = 'EmotionsDataset_noisy_2head_lstml2norm_m04_l02_correced'
+training_id = 'instaBarcelona_contrastive_en_m04'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_val_ED_2head_arch2.prototxt', 'prototxt/train_val_ED_2head_arch2.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/trainval_instaBCN.prototxt', 'prototxt/trainval_instaBCN.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
