@@ -9,25 +9,25 @@ from pylab import *
 import os
 
 
-caffe.set_device(3)
+caffe.set_device(0)
 caffe.set_mode_gpu()
 
-# weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
-# assert os.path.exists(weights)
+weights = '../../../datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'
+assert os.path.exists(weights)
 
 niter = 500000
 base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
-display_interval = 200 #200
+display_interval = 1 #200
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 10000 #1000
+test_interval = 800 #1000
 test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'SocialMedia_Inception_all_glove_tfidf_fromScratch'
+training_id = 'instaBarcelona_regression_en'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/train_all_glove_tfidf_SM.prototxt', 'prototxt/val_all_glove_tfidf_SM.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/trainval_frozen_instaBCN.prototxt', 'prototxt/trainval_frozen_instaBCN.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 

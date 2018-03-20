@@ -184,6 +184,8 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', 'im' + idx + '.jpg'))
         elif self.dir == '../../../hd/datasets/instaBarcelona':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
+        elif self.dir == '../../../ssd2/instaBarcelona':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
         elif self.dir == '../../../hd/datasets/instaFashion':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
         else:
