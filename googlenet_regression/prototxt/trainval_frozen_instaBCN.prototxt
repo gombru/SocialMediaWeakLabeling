@@ -2110,7 +2110,7 @@ layer {
     decay_mult: 0
   }
   inner_product_param {
-    num_output: 400
+    num_output: 300
     weight_filler {
       type: "xavier"
     }
