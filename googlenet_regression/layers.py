@@ -176,6 +176,9 @@ class customDataLayer(caffe.Layer):
         if self.dir == '../../../datasets/SocialMedia':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized_1M/cities_instagram', idx + '.jpg'))
 
+        elif self.dir == '../../../hd/datasets/SocialMedia':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized_1M/cities_instagram', idx + '.jpg'))
+
         elif self.split == '/info/val_filelist':
             im = Image.open('{}/{}/{}'.format(self.dir, 'val_images_256', idx))
         elif self.dir == '../../../datasets/Wikipedia':
@@ -188,6 +191,7 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
         elif self.dir == '../../../hd/datasets/instaFashion':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
+
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
 

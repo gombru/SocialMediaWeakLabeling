@@ -1,5 +1,5 @@
-train_net: "prototxt/train_frozen_fastText_mean_SM.prototxt"
-test_net: "prototxt/val_frozen_fastText_mean_SM.prototxt"
+train_net: "prototxt/chapter_instaCities1M_glove_tfidf_MSE.prototxt"
+test_net: "prototxt/chapter_instaCities1M_glove_tfidf_MSE.prototxt"
 test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475
@@ -11,7 +11,7 @@ momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
 snapshot: 25000
-snapshot_prefix: "../../../datasets/SocialMedia/models/CNNRegression/SocialMedia_Inception_frozen_fastText_mean"
+snapshot_prefix: "../../../hd/datasets/SocialMedia/models/CNNRegression/chapter_instaCities1M_glove_tfidf_MSE_"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"
