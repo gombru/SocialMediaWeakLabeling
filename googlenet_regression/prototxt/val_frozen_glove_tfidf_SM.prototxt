@@ -2104,7 +2104,7 @@ layer {
 }
 layer {
   name: "loss3/loss3"
-  type: "EUCLIDEAN_LOSS"
+  type: "EuclideanLoss"
   bottom: "loss3/classifierCustom"
   bottom: "label"
   top: "loss3/loss3"
