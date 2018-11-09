@@ -2104,7 +2104,7 @@ layer {
 }
 layer {
   name: "loss3/loss3"
-  type: "EuclideanLoss"
+  type: "SigmoidCrossEntropyLoss"
   bottom: "loss3/classifierCustom"
   bottom: "label"
   top: "loss3/loss3"
