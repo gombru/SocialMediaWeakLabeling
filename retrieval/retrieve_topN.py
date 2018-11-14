@@ -11,20 +11,20 @@ import gensim
 import glove
 
 
-data = 'SocialMedia_Inception_all_glove_tfidf_fromWebVision_iter_600000'
+data = 'chapter_instaCities1M_glove_tfidf_MSE_iter_475000.caffemodel'
 model_name = 'glove_model_InstaCities1M.model'
 num_topics = 400 # Num LDA model topics
 num_results = 5 # Num retrival results we want to take into accountnt
 
 #-----------> if tfidf
-tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
-tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
+tfidf_model_path = '../../../hd/datasets/WebVision/models/tfidf/tfidf_model_webvision.model'
+tfidf_dictionary_path = '../../../hd/datasets/WebVision/models/tfidf/docs.dict'
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
-database_path = '../../../datasets/SocialMedia/regression_output/' + data +'/test.txt'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+database_path = '../../../hd/datasets/SocialMedia/regression_output/' + data +'/test.txt'
+model_path = '../../../hd/datasets/SocialMedia/models/glove/' + model_name
 embedding = 'glove' #'word2vec_mean' 'doc2vec' 'LDA' 'word2vec_tfidf' 'glove' 'glove_tfidf' 'fasttext' 'fasttext_tfidf'
 test_dataset = 'instacities1m' #'instacities1m' #webvision
 
@@ -40,7 +40,7 @@ elif embedding == 'fasttext_mean' or embedding == 'fasttext_tfidf': model = mode
 # FC text layers
 FC = False
 if FC:
-    model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
+    model_path = '../../../hd/datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
     prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
     text_NN = get_NN_txt_embedding.load_net(model_path,prototxt)
 
@@ -73,9 +73,9 @@ def get_results(database, topics, num_results, results_path):
     for idx,id in enumerate(distances):
         # Copy image results
         if test_dataset == 'webvision':
-            copyfile('../../../datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
+            copyfile('../../../hd/datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
         else:
-            copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
+            copyfile('../../../hd/datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
         if idx == num_results - 1: break
 
 def get_results_complex(database, text, word_weights, num_results, results_path):
@@ -129,9 +129,9 @@ def get_results_complex(database, text, word_weights, num_results, results_path)
     for idx, id in enumerate(distances):
         # Copy image results
         if test_dataset == 'webvision':
-            copyfile('../../../datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
+            copyfile('../../../hd/datasets/WebVision/test_images_256/' + id[0] , results_path + id[0].replace('/', '_'))
         else:
-            copyfile('../../../datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
+            copyfile('../../../hd/datasets/SocialMedia/img_resized_1M/cities_instagram/' + id[0] + '.jpg', results_path + id[0].replace('/', '_') + '.jpg')
         if idx == num_results - 1: break
 
 
@@ -173,6 +173,18 @@ q.append('woman bag')
 q.append('man boat')
 q.append('kid dog')
 
+# q.append('lunch london')
+# q.append('lunch chicago')
+# q.append('lunch losangeles')
+# q.append('lunch melbourne')
+# q.append('lunch miami')
+# q.append('lunch newyork')
+# q.append('lunch sanfrancisco')
+# q.append('lunch singapore')
+# q.append('lunch sydney')
+# q.append('lunch toronto')
+
+
 
 
 # im_query = database['toronto/1490715299619322186']
@@ -192,8 +204,8 @@ for e,cur_q in enumerate(q):
     print(cur_q)
     # cur_w = w[e]
     cur_w = '0.5 0.5'
-    if test_dataset == 'webvision': results_path = "../../../datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
-    else: results_path = "../../../datasets/SocialMedia/rr/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
+    if test_dataset == 'webvision': results_path = "../../../hd/datasets/WebVision/rr/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
+    else: results_path = "../../../hd/datasets/SocialMedia/rr/" + data + "/" + cur_q.replace(' ', '_') + '__' + cur_w.replace(' ', '_') + '/'
     if not os.path.exists(results_path):
         print("Creating dir: " + results_path)
         os.makedirs(results_path)
