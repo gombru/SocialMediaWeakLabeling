@@ -81,7 +81,7 @@ class customDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        # num_lines = 1001
+        #num_lines = 1001
 
         self.indices = np.empty([num_lines], dtype="S50")
         self.labels = np.zeros((num_lines, self.num_classes))
@@ -95,6 +95,7 @@ class customDataLayer(caffe.Layer):
 
         print "Offset: " + str(offset)
 
+
         print "Reading labels file: " + '{}/{}.txt'.format(self.dir, self.split)
         with open(split_f, 'r') as annsfile:
             for c, i in enumerate(annsfile):
@@ -106,9 +107,20 @@ class customDataLayer(caffe.Layer):
                     self.labels[c, l] = float(data[l + offset])
 
                 if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines)
-                # if c == 1000:
-                #     print "Stopping at 10000 labels"
-                #     break
+                #if c == 1000:
+                #    print "Stopping at 1000 labels"
+                #    break
+
+        # noise = 0 # % Using noise % of noise!
+        # print("Introducing noise: " + str(noise) + " % ")
+        # print("Num instances is: " + str(len(self.labels)))
+        # print("Split is: " + split_f)
+        # print(str(random.randint(0,len(self.labels))))
+        # if 'train' in split_f:
+        #     print("Training split, introducing noise")
+        #     for i in range(0,len(self.labels)):
+        #         if random.randint(0,100) < noise:
+        #             self.labels[i, :] = self.labels[random.randint(0,len(self.labels)-1), :]
 
         self.indices = [i.split(',', 1)[0] for i in self.indices]
 
