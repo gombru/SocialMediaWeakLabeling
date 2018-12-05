@@ -271,6 +271,8 @@ class tripletDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img', idx))
         elif self.dir == '../../../hd/datasets/instaEmotions':
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized', idx + '.jpg'))
+        elif self.dir == '../../../hd/datasets/instaFashion':
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
         else:
             im = Image.open('{}/{}'.format(self.dir, idx))
 

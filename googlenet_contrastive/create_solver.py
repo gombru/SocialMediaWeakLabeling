@@ -17,7 +17,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # affecting memory utilization.
     s.iter_size = 1
 
-    s.max_iter = 500000  # # of times to update the net (training iterations)
+    s.max_iter = 1000000  # # of times to update the net (training iterations)
 
     # Solve using the stochastic gradient descent (SGD) algorithm.
     # Other choices include 'Adam' and 'RMSProp'.
@@ -50,7 +50,7 @@ def create_solver(train_net_path, test_net_path=None, training_id='training', ba
     # Snapshots are files used to store networks we've trained.  Here, we'll
     # snapshot every 10K iterations -- ten times during training.
     s.snapshot = 50000
-    s.snapshot_prefix = '../../../ssd2/instaBarcelona/models/CNNContrastive/'+ training_id
+    s.snapshot_prefix = '../../../hd/datasets/instaFashion/models/CNNContrastive/'+ training_id
 
     # Train on the GPU.  Using the CPU to train large networks is very slow.
     s.solver_mode = caffe_pb2.SolverParameter.GPU
