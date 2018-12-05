@@ -164,7 +164,6 @@ class emotionsDataLayerCrossEntropy(caffe.Layer):
         top[0].data[...] = self.data
         top[1].data[...] = self.label_regression
         top[2].data[...] = self.label
-        print self.label
 
         self.idx = np.arange(self.batch_size)
 

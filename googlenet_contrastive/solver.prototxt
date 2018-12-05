@@ -1,5 +1,5 @@
-train_net: "prototxt/train_emotions.prototxt"
-test_net: "prototxt/val_emotions.prototxt"
+train_net: "prototxt/train_val_ED_2head_arch2.prototxt"
+test_net: "prototxt/train_val_ED_2head_arch2.prototxt"
 test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475
@@ -10,8 +10,8 @@ gamma: 0.10000000149
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
-snapshot: 2000
-snapshot_prefix: "../../../datasets/EmotionDataset/models/CNNContrastive/emotions_contrastive_softNegativeBatch_m01"
+snapshot: 20000
+snapshot_prefix: "../../../hd/datasets/EmotionDataset/models/CNN2head/EmotionsDataset_noisy_2head_lstml2norm_m04_l02_correced"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"

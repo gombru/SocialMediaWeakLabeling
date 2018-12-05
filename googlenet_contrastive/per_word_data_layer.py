@@ -55,11 +55,12 @@ class perWordDataLayer(caffe.Layer):
         split_f = '{}/{}.txt'.format(self.dir,
                                      self.split)
         num_lines = sum(1 for line in open(split_f))
-        #num_lines = 2001
+        #num_lines = 20001
 
         self.indices = np.empty([num_lines], dtype="S50")
         # self.labels = np.zeros((num_lines, self.num_classes))
-        self.per_word_labels = {}
+        self.images_words = {}
+        self.word_embeddings = {}
 
         # Webvision has class id so 2 offset
         if self.dir == '../../../datasets/WebVision':
@@ -74,19 +75,31 @@ class perWordDataLayer(caffe.Layer):
         incorrect_lables = 0
         with open(split_f, 'r') as annsfile:
             for c, i in enumerate(annsfile):
-                data = i.split(',')
-                self.indices[c] = i
+                self.indices[c] = i.strip('\n')
                 # Load json with per word labels
-                self.per_word_labels = json.load(self.dir + "/word_labels/" + i.split('/')[1] + '.json')
+                try:
+                    with open(self.dir + "/glove_perWord_gt/word_embeddings/" + i.split('/')[1].strip('\n') + '.json','r') as f:
+                        data = json.load(f)
+                        self.images_words[self.indices[c]] = data.keys()
+                        for k,v in data.iteritems():
+                            if k not in self.word_embeddings:
+                                self.word_embeddings[k] = np.asarray(v)
+                        # self.per_word_labels[self.indices[c]] = json.load(f)
+                except:
+                    #print "Couldn't read per word labels for: " + str(i)
+                    continue
 
                 if c % 10000 == 0: print "Read " + str(c) + " / " + str(num_lines) + "  --  0s labels: " + str(incorrect_lables)
-                # if c == 2000:
-                #      print "Stopping at 3000 labels"
-                #      break
+                #if c == 20000:
+                #     print "Stopping at 2000 labels"
+                #     break
 
-        self.indices = [i.split(',', 1)[0] for i in self.indices]
+        self.indices = [i.split(',', 1)[0] for i in self.indices if len(i) > 1]
 
         self.idx = np.arange(self.batch_size)
+
+        print "Number of images: " + str(len(self.indices)) + " out of " + str(num_lines) + " lines"
+        print "Number of words: " + str(len(self.word_embeddings))
 
         # randomization: seed and pick
         if self.random:
@@ -121,22 +134,32 @@ class perWordDataLayer(caffe.Layer):
             except:
                 print("Image could not be loaded. Using 0s")
 
-            # Select as positive label the embedding fo a random word of the caption
-            word = random.choice(self.per_word_labels[self.indices[self.idx[x]]].keys())
-            self.label[x,] =  np.asarray(self.per_word_labels[im_idx][word])
+            # Select as positive label the embedding of a random word of the caption
+            try:
+                word = random.choice(self.images_words[self.indices[self.idx[x]]])
+                self.label[x,] = self.word_embeddings[word]
+            except:
+                print("Could not find word or embedding for that image. Using 0s")
+
 
             # Select as negative label any word of an image caption in the batch not containing in the anchor image
-            im_labels = self.per_word_labels[self.indices[self.idx[x]]].keys()
+            try:
+                im_labels = self.images_words[self.indices[self.idx[x]]]
+            except:
+                im_labels = []
             while(True):
                 # Random image
-                im_idx = random.randint(0,len(self.indices))
+                im_idx = random.randint(0,len(self.indices) - 1)
                 # Random label
-                word = random.choice(self.per_word_labels[im_idx].keys())
-                if word in im_labels:
-                    continue
-                else:
-                    self.label_negative = np.asarray(self.per_word_labels[im_idx][word])
-                    break
+                try:
+                    word = random.choice(self.images_words[self.indices[im_idx]])
+                    if word in im_labels:
+                        continue
+                    else:
+                        self.label_negative[x,] = self.word_embeddings[word]
+                        break
+                except:
+                    print("Could not find word or embedding for that image. Using 0s")
 
 
 

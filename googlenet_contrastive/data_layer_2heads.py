@@ -180,7 +180,6 @@ class twoHeadTripletDataLayer(caffe.Layer):
         top[1].data[...] = self.label_regression
         top[2].data[...] = self.label_regression_negative
         top[3].data[...] = self.label
-        print self.label
 
         self.idx = np.arange(self.batch_size)
 

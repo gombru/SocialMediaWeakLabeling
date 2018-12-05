@@ -28,9 +28,10 @@ new_only = False # Download only images newer than the current images in folder
 # start_date = start_date.replace(day=end_day)
 # timeframe = (start_date,end_date)
 timeframe = None
-
+❤️😍😘😂😊😎😉💕💋👍✌️👌👊🙌💪😈😇🙏💯😬👀🇺🇸🍻🙈🙊💩🔫
 # cities = ['amusement','anger','awe','contentment','disgusting','exciting','excitement','fear','sadness','fun','diversion','angry','wrath','rage','admiration','apprehension','astonishment','shock','complacency','pleasure','abominable','awful','distasteful','hateful','breathtaking','stimulating','thrilling','scare','scary','terror','anguish','grief','melancholy','dolor']
-cities = ['None']
+emojis = {}
+emojis['heart'] =
 jobs = 32 #16
 num_2_query_first = 2500000 #Num of images to build the looter the first time (will downlaod old images)
 num_2_query_next = 100000 #Num of images to build the looter affter (will download new updated images)
@@ -71,20 +72,20 @@ while True:
         looter = InstaLooter(directory=city_dir, hashtag=query,
             add_metadata=False, get_videos=get_videos, jobs=jobs)
 
-        # try:
-        looter.login(login, password)
-        hues.success('Logged in.')
-        # except:
-        #     print "Error while logging in"
-        #     if login == login1:
-        #         login = login2
-        #         password = password2
-        #     else:
-        #         login = login1
-        #         password = password1
-        #
-        #     time.sleep(60)
-        #     continue
+        try:
+            looter.login(login, password)
+            hues.success('Logged in.')
+        except:
+            print "Error while logging in"
+            if login == login1:
+                login = login2
+                password = password2
+            else:
+                login = login1
+                password = password1
+
+            time.sleep(60)
+            continue
 
         # try:
         looter.download(media_count=num_2_query, new_only = new_only, with_pbar=False)

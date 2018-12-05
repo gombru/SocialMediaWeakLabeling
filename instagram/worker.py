@@ -85,6 +85,7 @@ class InstaDownloader(threading.Thread):
             }
 
             img.save(path, exif=piexif.dump(exif_dict))
+            img.close()
 
     def _download_photo(self, media):
         """

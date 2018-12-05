@@ -11,21 +11,15 @@ from PIL import Image
 
 
 # -- CONFIG --
-tweets_data_path = '/home/imatge/disk2/twitter_data/tweets_cities_27-3-17.txt'
-min_text_length = 3
-images_dir = '../../../datasets/SocialMedia/img/cities_1day/'
-tweets_info_dir = '../../../datasets/SocialMedia/tweets_info/cities_1day/'
+tweets_data_path = 'hate_tweets_1.txt'
+min_text_length = 4
+images_dir = '../../../datasets/HateSPic/twitter/img/'
+tweets_info_dir = '../../../datasets/HateSPic/twitter/txt/'
 
-cities = ['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid']
-discard = ['sex','model','xvideos','cam','porn','nude','fuck','girl','milf','babe','adult','naked','cock','dating','date','hookups','lingerie','boobs','swingers']
+discard = ['naked','beautiful','sexy','videos','sex','nude','girl','porn','pics']
 
 threads = 10
 
-for city in cities:
-    if not os.path.exists(images_dir + '/' + city):
-        os.makedirs(images_dir + '/' + city)
-    if not os.path.exists(tweets_info_dir + '/' + city):
-        os.makedirs(tweets_info_dir + '/' + city)
 
 def download_save_image(url, image_path):
     resource = urllib.urlopen(url)
@@ -52,7 +46,6 @@ def process_tweet(line):
     # Discard tweets without mandatory fields
     if not t.has_key(u'id'): return
     if not t.has_key(u'text'): return
-    if not t.has_key(u'created_at'): return
 
     # Discard retweets
     if t.has_key('retweeted_status'): return;
@@ -75,37 +68,19 @@ def process_tweet(line):
                 if t['entities']['media'][0]['media_url'][-3:] != 'jpg':
                     return
 
-
-                # Create text
-                text = ''
-                hashtags_str = ''
-                if t.has_key(u'entities'):
-                    for hashtag in t['entities']['hashtags']:
-                        hashtags_str = hashtags_str + ',' + hashtag['text']
-                text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '') + '\n' + hashtags_str[1:].encode("utf8", "ignore")
-                text = text.lower()
+                text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '')
 
                 # Discard if containing words
                 for w in discard:
                     if text.__contains__(w):
-                        print "Discarding: " + text
+                        # print "Discarding: " + text
                         return
 
-                # Find city
-                tweet_city = 'None'
-                for city in cities:
-                    if text.__contains__(city):
-                        tweet_city = city
-                        break
 
-                image_path = images_dir + city + '/' + str(t['id']) + ".jpg"
+                image_path = images_dir + '/' + str(t['id']) + ".jpg"
                 # Check if file already exists
                 if os.path.isfile(image_path):
                     print "Image already exists"
-                    return
-
-                if tweet_city is'None':
-                    print "City not found in: " + text
                     return
 
                 # Download image
@@ -118,13 +93,10 @@ def process_tweet(line):
                         os.remove(image_path) #Remove the corrupted file
                     print "Failed downloading image from: " + t['entities']['media'][0]['media_url']
                     return
-                # i += 1
-                # print str(i) + ': ' + t['entities']['media'][0]['media_url']
 
 
-                with open(tweets_info_dir + tweet_city + '/' +str(t['id']) + '.txt', "w") as text_file:
-                    text_file.write(str(t['id']) + '\n' + t['created_at'].encode("utf8", "ignore") + '\n' + text + '\n' + city)
-
+                with open(tweets_info_dir + '/' +str(t['id']) + '.txt', "w") as text_file:
+                    text_file.write(str(t['id']) + text + '\n')
 
 
 

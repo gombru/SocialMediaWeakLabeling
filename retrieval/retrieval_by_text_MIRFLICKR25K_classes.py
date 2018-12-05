@@ -18,7 +18,6 @@ def load_regressions_from_txt(path, num_topics):
 
     for line in file:
         d = line.split(',')
-        d = line.split(',')
         regression_values = np.zeros(num_topics)
         for t in range(0,num_topics):
             # regression_values[t-1] = d[t+1]  #-1 in regression values should not be there. So I'm skipping using topic 0 somewhere
@@ -27,18 +26,18 @@ def load_regressions_from_txt(path, num_topics):
 
     return database
 
-path_to_dataset = "/home/Imatge/hd/datasets/MIRFLICKR25K/"
+path_to_dataset = "../../../datasets/MIRFLICKR25K/"
 
-data = 'triplet_softNegativeBatch_m50_notNormalize_frozen_glove_tfidf_SM_iter_260000'
+data = 'mirflickr_Inception_frozen_word2vec_mean_finetuned_5000lrdecrease_half_iter_1000'
 num_topics = 400
 
 # Topic distribution given by the CNN to test images. .txt file with format city/{im_id},score1,score2 ...
 database_path = path_to_dataset+ 'regression_output/' + data +'/test_half.txt'
 filtered_topics = path_to_dataset+ 'filtered_topics/'
 
-model_name = 'glove_model_InstaCities1M.model'
-embedding = 'glove'
-model_path = '../../../datasets/SocialMedia/models/glove/' + model_name
+model_name = 'word2vec_model_MIRFlickr_finetuned.model'
+embedding = 'word2vec_mean'
+model_path = '../../../datasets/MIRFLICKR25K/models/word2vec/' + model_name
 
 # Load LDA model
 print("Loading " +embedding+ " model ...")
@@ -52,14 +51,6 @@ tfidf_model_path = '../../../datasets/WebVision/models/tfidf/tfidf_model_webvisi
 tfidf_dictionary_path = '../../../datasets/WebVision/models/tfidf/docs.dict'
 tfidf_model = gensim.models.TfidfModel.load(tfidf_model_path)
 tfidf_dictionary = gensim.corpora.Dictionary.load(tfidf_dictionary_path)
-
-
-# FC text layers
-FC = False
-if FC:
-    model_path = '../../../datasets/SocialMedia/models/CNNContrastive/triplet_withFC_frozen_glove_tfidf_SM_iter_60000.caffemodel'
-    prototxt = '../googlenet_contrastive/prototxt/deploy_txt_FC.prototxt'
-    text_NN = get_NN_txt_embedding.load_net(model_path,prototxt)
 
 
 queries = ['animals','baby','bird','car','female','lake','sea','tree','clouds','dog','sky','structures','sunset','transport','water','flower','food','indoor','plant_life','portrait','river','male','night','people']
@@ -76,7 +67,7 @@ for q in strong_topics_names:
 
 # Load dataset
 database = load_regressions_from_txt(database_path, num_topics)
-for id in database:
+for i, id in enumerate(database):
     database[id] = database[id] / sum(database[id])
 # queries = load_regressions_from_txt(queries_embedding_path, num_topics + 1)
 
@@ -127,7 +118,7 @@ for q in queries:
 
     elif embedding == 'word2vec_mean':
         word_weights = 0
-        topics = text2topics.word2vec_mean(text_query, word_weights, word_weights, model, num_topics)
+        topics = text2topics.word2vec_mean(text_query, word_weights, model, num_topics)
 
     elif embedding == 'word2vec_tfidf':
         topics = text2topics.word2vec_tfidf(text_query, model, num_topics, tfidf_model, tfidf_dictionary)
@@ -148,12 +139,6 @@ for q in queries:
 
     # Create empty dict for ditances
     distances = {}
-
-    if FC:
-        topics = topics - min(topics)
-        if max(topics) > 0:
-            topics = topics / max(topics)
-        topics = get_NN_txt_embedding.get_NN_txt_embedding(text_NN,topics)
 
     topics = topics - min(topics)
     topics = topics / max(topics)

@@ -25,6 +25,9 @@ class StdOutListener(StreamListener):
 
 if __name__ == '__main__':
 
+    keywords = ['refugeesnotwelcome', 'DeportallMuslims', 'banislam', 'banmuslims', 'destroyislam', 'norefugees', 'nomuslims','asian drive', 'feminazi', 'nigger', 'sjw', 'WomenAgainstFeminism', 'blameonenotall', 'islam terrorism', 'notallmen', 'victimcard', 'arab terror', 'gamergate', 'jsil', 'racecard', 'race card','border jumper','border nigger']
+    # keywords = ['refugeesnotwelcome', 'DeportallMuslims', 'banislam', 'banmuslims', 'destroyislam', 'norefugees', 'nomuslims','asian drive', 'feminazi', 'nigger', 'sjw', 'WomenAgainstFeminism', 'blameonenotall', 'islam terrorism', 'notallmen', 'victimcard', 'arab terror', 'gamergate', 'jsil', 'racecard', 'race card','border jumper','border nigger','muslim', 'islam', 'islamic', 'immigration', 'migrant', 'immigrant', 'refugee', 'asylum','ban', 'kill', 'die','hate', 'attack', 'terrorist', 'terrorism', 'threat', 'deport','woman','cunt','queer','tranny','closetfag','homosexual','lesbian']
+
     #This handles Twitter authetification and the connection to Twitter Streaming API
     l = StdOutListener()
     auth = OAuthHandler(consumer_key, consumer_secret)
@@ -32,5 +35,5 @@ if __name__ == '__main__':
     stream = Stream(auth, l)
 
     #This line filter Twitter Streams to capture data by the keywords: 'python', 'javascript', 'ruby'
-    stream.filter(track=['paris','istanbul','rome','prague','milan','barcelona','amsterdam','vienna','moscow','berlin','madrid'])
+    stream.filter(languages = ["en"], track=keywords)
     # stream.filter(languages = ["en"], locations=[-127.73,24.36,-66,49.65])

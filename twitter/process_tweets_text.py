@@ -7,12 +7,12 @@ import urllib
 import os.path
 
 # -- CONFIG --
-tweets_data_path = '/home/imatge/disk2/twitter_data/tweets_cities_27-3-17.txt'
-min_text_length = 10
-text_dir = '../../../datasets/SocialMedia/text/'
-text_filename = 'text_cities_1day.txt'
+tweets_data_path = 'hate_tweets_1.txt'
+min_text_length = 4
+text_dir = '../../../datasets/HateSPic/twitter/txt/'
+text_filename = 'hate_tweets_1.txt'
 
-discard = ['sex','model','xvideos','cam','porn','nude','fuck','girl','milf','babe','adult','naked','cock','dating','date','hookups','lingerie','boobs','swingers']
+discard = ['naked','beautiful','sexy','videos','sex','nude','girl','porn','pics']
 
 
 with open(text_dir + text_filename, "w") as text_file:
@@ -45,12 +45,12 @@ with open(text_dir + text_filename, "w") as text_file:
                 print "Text too short: " + t['text']
                 continue
 
-            hashtags_str = ''
-            if t.has_key(u'entities'):
-                for hashtag in t['entities']['hashtags']:
-                    hashtags_str = hashtags_str + ',' + hashtag['text']
+            # hashtags_str = ''
+            # if t.has_key(u'entities'):
+            #     for hashtag in t['entities']['hashtags']:
+            #         hashtags_str = hashtags_str + ',' + hashtag['text']
 
-            text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '').replace(','," ") + ' ' + hashtags_str[1:].encode("utf8", "ignore").replace(',',' ')
+            # text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '').replace(','," ") + ' ' + hashtags_str[1:].encode("utf8", "ignore").replace(',',' ')
 
             # Discard if containing words
             todiscard = False
@@ -58,12 +58,12 @@ with open(text_dir + text_filename, "w") as text_file:
                 if text.__contains__(w):
                     # print "Discarding: " + text
                     todiscard = True
-                    continue
+                    break
             if todiscard: continue
             # Save single text file with lines (id,text)
+            text = t['text'].encode("utf8", "ignore").replace('\n', ' ').replace('\r', '')
             correct += 1
-            text_file.write(
-                str(t['id']) + ',' + text + '\n')
+            text_file.write(str(t['id']) + ',' + text + '\n')
 
 
 

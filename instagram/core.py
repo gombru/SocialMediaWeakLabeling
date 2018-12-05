@@ -128,7 +128,6 @@ class InstaLooter(object):
             self._base_url = "https://www.instagram.com/explore/tags/{}/"
         else:
             self.target = None
-
         # Create self.directory if it doesn't exist.
         if directory is not None and not os.path.exists(directory):
             os.makedirs(directory)
@@ -338,7 +337,10 @@ class InstaLooter(object):
         while True:
             current_page += 1
             with self.session.get(url) as res:
-                data = self._get_shared_data(res)
+                try:
+                    data = self._get_shared_data(res)
+                except:
+                    continue
 
                 if self._section_name == 'tag':
                     data = self._transform_hashtag_page(data)

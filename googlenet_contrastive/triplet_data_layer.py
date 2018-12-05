@@ -197,21 +197,30 @@ class tripletDataLayer(caffe.Layer):
 
         # SOFT NEGATIVE SELECTION
         # Select a random element from the half that have more w2v distance than the mean w2v distance in the batch.
-        for x in range(0, self.batch_size):
-            mean_dist = 0
-            neg_idices = []
-            for y in range(0, self.batch_size):
-                cur_dist = self.label[x,]  - self.label[y,]
-                cur_dist = np.dot(cur_dist, cur_dist)
-                mean_dist += cur_dist
-            mean_dist /= self.batch_size
-            for y in range(0, self.batch_size):
-                cur_dist = self.label[x,]  - self.label[y,]
-                cur_dist = np.dot(cur_dist, cur_dist)
-                if cur_dist > mean_dist:
-                    neg_idices.append(y)
+        # for x in range(0, self.batch_size):
+        #     mean_dist = 0
+        #     neg_idices = []
+        #     for y in range(0, self.batch_size):
+        #         cur_dist = self.label[x,]  - self.label[y,]
+        #         cur_dist = np.dot(cur_dist, cur_dist)
+        #         mean_dist += cur_dist
+        #     mean_dist /= self.batch_size
+        #     for y in range(0, self.batch_size):
+        #         cur_dist = self.label[x,]  - self.label[y,]
+        #         cur_dist = np.dot(cur_dist, cur_dist)
+        #         if cur_dist > mean_dist:
+        #             neg_idices.append(y)
+        #
+        #     neg_idx = neg_idices[random.randint(0, len(neg_idices) - 1)]
+        #     self.label_negative[x,] = self.label[neg_idx,]
 
-            neg_idx = neg_idices[random.randint(0, len(neg_idices) - 1)]
+
+        # RANDOM NEGATIVE SELECTION (VERY SOFT)
+        # Select a random element of the batch as negative
+        for x in range(0, self.batch_size):
+            neg_idx = x
+            while neg_idx == x:
+                neg_idx = random.randint(0, self.batch_size - 1)
             self.label_negative[x,] = self.label[neg_idx,]
 
     def forward(self, bottom, top):
