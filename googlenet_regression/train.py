@@ -9,7 +9,7 @@ from pylab import *
 import os
 
 
-caffe.set_device(0)
+caffe.set_device(1)
 caffe.set_mode_gpu()
 
 weights = '../../../hd/datasets/SocialMedia/models/pretrained/bvlc_googlenet.caffemodel'

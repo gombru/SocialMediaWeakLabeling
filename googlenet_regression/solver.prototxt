@@ -1,5 +1,5 @@
-train_net: "prototxt/chapter_instaCities1M_glove_tfidf_MSE.prototxt"
-test_net: "prototxt/chapter_instaCities1M_glove_tfidf_MSE.prototxt"
+train_net: "prototxt/trainval_instaFashion_GoogleNet_regression_all1loss.prototxt"
+test_net: "prototxt/trainval_instaFashion_GoogleNet_regression_all1loss.prototxt"
 test_iter: 10
 test_interval: 1000000
 base_lr: 0.0010000000475
@@ -10,8 +10,8 @@ gamma: 0.10000000149
 momentum: 0.899999976158
 weight_decay: 0.000199999994948
 stepsize: 100000
-snapshot: 25000
-snapshot_prefix: "../../../hd/datasets/SocialMedia/models/CNNRegression/chapter_instaCities1M_glove_tfidf_MSE_"
+snapshot: 50000
+snapshot_prefix: "../../../hd/datasets/instaFashion/models/CNNRegression/instaFashion_GoogleNet_regression_all1loss"
 solver_mode: GPU
 iter_size: 1
 type: "SGD"
