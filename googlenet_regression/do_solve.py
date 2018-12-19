@@ -69,20 +69,20 @@ def do_solve(niter, solver, disp_interval, test_interval, test_iters, training_i
             val_loss[it/test_interval - 1] = loss_val
             ax1.plot(it_val_axes[0:it/test_interval], val_loss[0:it/test_interval], 'g')
             ax1.set_ylim([0,300])
-            ax1.set_xlabel('iteration ' + 'Best it: ' + str(best_it) + ' Best Val Loss: ' + str(int(lowest_val_loss))
+            ax1.set_xlabel('iteration ' + 'Best it: ' + str(best_it) + ' Best Val Loss: ' + str(int(lowest_val_loss)))
             plt.title(training_id)
             plt.ion()
             plt.grid(True)
             plt.show()
             plt.pause(0.001)
-            title = '../../../hd/datasets/instaFashion/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
+            title = '../../../hd/datasets/instaMiro/models/training/' + training_id + str(it) + '.png'  # Save graph to disk
             savefig(title, bbox_inches='tight')
 
             if loss_val < lowest_val_loss:
                 print("Best Val loss!")
                 lowest_val_loss = loss_val
                 best_it = it
-                filename = '../../../hd/datasets/instaFashion/models/CNNRegression/' + training_id + 'best_valLoss_' + str(int(loss_val)) +'_it_' + str(it) + '.caffemodel'
+                filename = '../../../hd/datasets/instaMiro/models/CNNRegression/' + training_id + 'best_valLoss_' + str(int(loss_val)) +'_it_' + str(it) + '.caffemodel'
                 prefix = 30
                 for cur_filename in glob.glob(filename[:-prefix] + '*'):
                     print(cur_filename)

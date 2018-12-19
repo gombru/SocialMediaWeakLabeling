@@ -205,7 +205,7 @@ class customDataLayer(caffe.Layer):
             im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized',idx + '.jpg'))
 
         else:
-            im = Image.open('{}/{}'.format(self.dir, idx))
+            im = Image.open('{}/{}/{}'.format(self.dir, 'img_resized', idx + '.jpg'))
 
         if self.resize:
             if im.size[0] != self.resize_w or im.size[1] != self.resize_h:

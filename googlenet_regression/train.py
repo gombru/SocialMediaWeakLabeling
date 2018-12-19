@@ -20,14 +20,14 @@ base_lr = 0.001 #Starting from 0.01 (from quick solver) -- Working 0.001
 display_interval = 1000 #400
 
 #number of validating images  is  test_iters * batchSize
-test_interval = 10000 #1000
-test_iters = 600 #100
+test_interval = 1000 #10000
+test_iters = 100 #100
 
 #Name for training plot and snapshots
-training_id = 'instaFashion_GoogleNet_regression_all1loss'
+training_id = 'instaMiro_GoogleNet_regression_frozen'
 
 #Set solver configuration
-solver_filename = create_solver('prototxt/trainval_instaFashion_GoogleNet_regression_all1loss.prototxt', 'prototxt/trainval_instaFashion_GoogleNet_regression_all1loss.prototxt', training_id, base_lr=base_lr)
+solver_filename = create_solver('prototxt/trainval_frozen_insta.prototxt', 'prototxt/trainval_frozen_insta.prototxt', training_id, base_lr=base_lr)
 #Load solver
 solver = caffe.get_solver(solver_filename)
 
